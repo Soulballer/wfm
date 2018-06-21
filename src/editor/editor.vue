@@ -130,13 +130,15 @@
   import * as _ from 'lodash';
   import {validators} from '_validators';
 
+  import buyModal from './buyModal';
+
   const {required, jsExpressionNonEmptyString, generateValidators} = validators;
   const eventHub = new Vue();
 
 export default {
   name       : 'editor-Wait-for-message',
   props      : ['template', 'schema', 'step', 'stepId', 'steps', 'readonly'],
-  components : {},
+  components : {buyModal},
 
   created () {
     eventHub.$on('ungroup', this.handleUngroup);
