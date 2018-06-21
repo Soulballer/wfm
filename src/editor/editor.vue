@@ -134,7 +134,7 @@
   const eventHub = new Vue();
 
 export default {
-  name       : 'editor-test-example',
+  name       : 'editor-Wait-for-message',
   props      : ['template', 'schema', 'step', 'stepId', 'steps', 'readonly'],
   components : {},
 
