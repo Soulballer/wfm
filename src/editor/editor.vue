@@ -130,6 +130,8 @@
     import {validators} from '_validators';
     import email from './email.vue';
     import password from './password.vue';
+    import eventHub from 'eventHub';
+    import Promise from 'bluebird';
 
     const {required, jsExpressionNonEmptyString, generateValidators} = validators;
 
