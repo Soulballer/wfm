@@ -130,10 +130,11 @@
     import {validators} from '_validators';
     import email from './email.vue';
     import password from './password.vue';
-  const eventHub = new Vue({});
     import Promise from 'bluebird';
+    import Vue from 'vue';
 
     const {required, jsExpressionNonEmptyString, generateValidators} = validators;
+    const eventHub = new Vue();
 
     export default {
         name       : 'editor-test-example',
