@@ -130,7 +130,7 @@
   import * as _ from 'lodash';
   import {validators} from '_validators';
 
-  import buyModal from './buyModal';
+  import buyModal from './buyModal.vue';
 
   const {required, jsExpressionNonEmptyString, generateValidators} = validators;
   const eventHub = new Vue();
