@@ -828,6 +828,52 @@ export default {
 </script>
 
 <style scoped lang="scss" rel="stylesheet/scss">
-    @import '../scss/colors.scss';
+  .main {
+    margin-bottom: 30px;
+  }
+
+  h3 {
+    margin-bottom: 15px;
+    font-size: 16px;
+  }
+
+  .no-numbers {
+    margin-bottom: 40px;
+    color: #5E656D;
+    font-size: 16px;
+    line-height: 23px;
+    
+    p {
+      color: #0F232E;
+    }
+    a, .add-new-num {
+      color: #65b3da;
+      white-space: nowrap;
+    }
+    .add-new-num {
+      cursor: pointer;
+    }
+  }
+
+  .read-only {
+    pointer-events: none;
+    cursor: default;
+    color: rgba(0,0,0,.38) !important;
+  } 
+
+  .data {
+    padding: 0 10px;
+  }
+
+  .container{
+    padding:2px 0 20px;
+    border-radius:4px;
+
+    &_for-modal {
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+  }
 
 </style>
