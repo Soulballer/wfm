@@ -4,8 +4,8 @@ export default [
 ];
 
 export const meta = {
-    name    : 'test-external-component',
+    name    : 'waif-for-message',
     type    : 'onereach-studio-plugin',
-    label   : 'Test example',
-    version : '1.0'
+    label   : 'Wait for message',
+    version : '2.0.3'
 };

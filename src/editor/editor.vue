@@ -136,7 +136,8 @@
 export default {
   name       : 'editor-test-example',
   props      : ['template', 'schema', 'step', 'stepId', 'steps', 'readonly'],
-  components : {email, password},
+  components : {},
+  
   created () {
     eventHub.$on('ungroup', this.handleUngroup);
     eventHub.$on('add numbers to group', this.handleAddNumbersToGroup);
