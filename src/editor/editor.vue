@@ -137,7 +137,7 @@ export default {
   name       : 'editor-test-example',
   props      : ['template', 'schema', 'step', 'stepId', 'steps', 'readonly'],
   components : {},
-  
+
   created () {
     eventHub.$on('ungroup', this.handleUngroup);
     eventHub.$on('add numbers to group', this.handleAddNumbersToGroup);
@@ -815,8 +815,8 @@ export default {
 
     export const validator = (template) => {
         return {
-            email    : generateValidators(template.validateRequired, {required}),
-            password : generateValidators(template.validateRequired, {required}),
+            // email    : generateValidators(template.validateRequired, {required}),
+            // password : generateValidators(template.validateRequired, {required}),
         };
     };
 
