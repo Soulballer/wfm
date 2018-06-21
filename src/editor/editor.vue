@@ -126,39 +126,36 @@
   </div>
 </template>
 <script>
-    import * as _ from 'lodash';
-    import {validators} from '_validators';
-    import email from './email.vue';
-    import password from './password.vue';
-    import Promise from 'bluebird';
-    import Vue from 'vue';
+  import Promise from 'bluebird';
+  import * as _ from 'lodash';
+  import {validators} from '_validators';
 
-    const {required, jsExpressionNonEmptyString, generateValidators} = validators;
-    const eventHub = new Vue();
+  const {required, jsExpressionNonEmptyString, generateValidators} = validators;
+  const eventHub = new Vue();
 
-    export default {
-        name       : 'editor-test-example',
-        props      : ['template', 'schema', 'step', 'stepId', 'steps', 'readonly'],
-        components : {email, password},
-        created () {
-          eventHub.$on('ungroup', this.handleUngroup);
-          eventHub.$on('add numbers to group', this.handleAddNumbersToGroup);
-          eventHub.$on('put number to general list', this.putNumberToGeneralList);
-          eventHub.$on('remove number from general list', this.removeNumberFromGeneralList);
-          eventHub.$on('update numbers data', this.updateNumbersData);
-          
-        },
-        destroyed () {
-          eventHub.$off('ungroup', this.handleUngroup);
-          eventHub.$off('add numbers to group', this.handleAddNumbersToGroup);
-          eventHub.$off('put number to general list', this.putNumberToGeneralList);
-          eventHub.$off('remove number from general list', this.removeNumberFromGeneralList);
-          eventHub.$off('update numbers data', this.updateNumbersData);
-          document.removeEventListener('click', this.onExternalClick);
-        },
+export default {
+  name       : 'editor-test-example',
+  props      : ['template', 'schema', 'step', 'stepId', 'steps', 'readonly'],
+  components : {email, password},
+  created () {
+    eventHub.$on('ungroup', this.handleUngroup);
+    eventHub.$on('add numbers to group', this.handleAddNumbersToGroup);
+    eventHub.$on('put number to general list', this.putNumberToGeneralList);
+    eventHub.$on('remove number from general list', this.removeNumberFromGeneralList);
+    eventHub.$on('update numbers data', this.updateNumbersData);
+    
+  },
+  destroyed () {
+    eventHub.$off('ungroup', this.handleUngroup);
+    eventHub.$off('add numbers to group', this.handleAddNumbersToGroup);
+    eventHub.$off('put number to general list', this.putNumberToGeneralList);
+    eventHub.$off('remove number from general list', this.removeNumberFromGeneralList);
+    eventHub.$off('update numbers data', this.updateNumbersData);
+    document.removeEventListener('click', this.onExternalClick);
+  },
 
 
-        computed: {
+  computed: {
     allLocalCheckedNumbers() {
       return _.concat(this.selectedNumbers, ...this.selectedGroups.map(group => group.numbers));
     },
@@ -830,12 +827,6 @@
 </script>
 
 <style scoped lang="scss" rel="stylesheet/scss">
-    @import '../scss/colors.scss';
-
-</style>
-
-
-<style lang="scss" rel="stylesheet/scss">
     @import '../scss/colors.scss';
 
 </style>
