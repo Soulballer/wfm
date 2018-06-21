@@ -876,4 +876,94 @@ export default {
     }
   }
 
+  .ui-select {
+  &__display {
+    border: 1px solid #dfdfdf;
+    border-radius: 3px;
+    background-color: #f6f6f6;
+    min-height: 36px;
+    align-items: center;
+    color: #0f232e;
+    cursor: pointer;
+    display: flex;
+    font-weight: normal;
+    padding: 2px 10px;
+    transition: border 0.1s ease;
+    user-select: none;
+    width: 100%;
+    transition: background-color 0.5s ease-out;
+    
+    .is-placeholder {
+      position: relative;
+      
+      &:after {
+        content: "Select numbers (groups)";
+        
+        position: absolute;
+        top: -10px;
+        
+        font-size: 14px;
+      }
+    }
+    
+    &:hover {
+      background-color: white;
+    }
+  }
+  
+  &__dropdown {
+    position: relative;
+    
+    width: auto;
+    
+    border: 1px solid #dfdfdf;
+    border-top: 0;
+    box-shadow: 0 3px 16px 0 rgba(0, 0, 0, 0.08);
+    
+    z-index: 10;
+    
+    &-button {
+      font-size: 2.125rem;
+      
+      i {
+        font-size: 35px;
+      }
+    }
+  }
+  
+  &__display-selected {
+    position: relative;
+
+    margin: 2px 4px 2px 0;
+    padding: 5px 20px 5px 4px;
+
+    border: none;
+  }
+
+  &__display-close-button {
+    position: absolute;
+    top: 7px;
+    right: 2px;
+
+    font-size: 15px;
+    color: #8C9492;
+
+    cursor: pointer;
+  }
+}
+.ui-select__empty {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0 60px;
+
+  p {
+    display: inline-block;
+
+    color: rgba(94, 101, 109, 0.55);
+    font-size: 14px;
+
+    vertical-align: center;
+  }
+}
+
 </style>
