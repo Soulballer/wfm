@@ -121,7 +121,6 @@
         :numbers="numbers"
         :groups="groups"
         :readonly="readonly"
-        :event-hub="eventHub"
         ></buy-modal>
     </div>
   </div>
