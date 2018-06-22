@@ -97,7 +97,7 @@
         type: Boolean
       }
     },
-    components: {NumberAvailableToBuy},
+    components: {NumberToBuyItem},
     data () {
       return {
         buyList: [],
