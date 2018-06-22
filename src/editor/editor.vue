@@ -132,6 +132,7 @@
   import {validators} from '_validators';
   import eventHub from './eventHub.js';
 
+  console.log('eventHub', eventHub);
   import BuyModal from './buyModal.vue';
 
   const {required, jsExpressionNonEmptyString, generateValidators} = validators;
