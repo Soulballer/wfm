@@ -98,7 +98,7 @@
       }
     },
     components: {
-      {NumbersAvailableToBuy}
+      {NumberAvailableToBuy}
     },
     data () {
       return {
