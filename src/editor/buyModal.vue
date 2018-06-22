@@ -87,6 +87,8 @@
 </template>
 
 <script>
+  import NumberToBuyItem from './numberToBuyItem.vue'
+
   export default {
     props: {
       groups: Array,
@@ -94,6 +96,9 @@
       readonly: {
         type: Boolean
       }
+    },
+    components: {
+      {NumbersAvailableToBuy}
     },
     data () {
       return {
