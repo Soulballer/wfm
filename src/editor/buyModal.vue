@@ -87,6 +87,7 @@
 </template>
 
 <script>
+  import eventHub from './eventHub.js';
   import NumberToBuyItem from './numberToBuyItem.vue'
 
   export default {

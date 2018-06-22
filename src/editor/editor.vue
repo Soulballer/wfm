@@ -134,7 +134,7 @@
   import BuyModal from './buyModal.vue';
 
   const {required, jsExpressionNonEmptyString, generateValidators} = validators;
-  const eventHub = new Vue();
+  import eventHub from './eventHub.js';
 
 export default {
   name       : 'editor-Wait-for-message',
