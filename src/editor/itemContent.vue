@@ -49,6 +49,8 @@
 </template>
 
 <script>
+import eventHub from './eventHub.js';
+
 export default {
   props: {
     readonly: {
