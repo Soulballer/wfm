@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import DataNumbers from './DataNumbers';
+import DataNumbers from './dataNumbers.vue';
 
 export default {
   name: 'NumbersItem',
