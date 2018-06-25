@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import NumbersItem from './NumbersItem'
+import NumbersItem from './NumbersItem.vue'
 
 export default {
   name: 'NumbersItems',
