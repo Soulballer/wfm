@@ -111,6 +111,8 @@
 <script>
 import GroupDataNumber from './groupDataNumber.vue';
 
+import eventHub from './eventHub.js';
+
 export default {
   props: {
     allFilteredNumbers: {
