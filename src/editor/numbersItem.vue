@@ -26,10 +26,10 @@
       color="primary"
       v-show="isData && !readonly"
     ></ui-progress-circular>
-    <DataNumbers
+    <data-numbers
       :number="number"
       :readonly="readonly"
-    ></DataNumbers>
+    ></data-numbers>
     <div
       class="item-buttons"
       v-if="!isData && !number.usedData.length">
@@ -74,6 +74,8 @@ import DataNumbers from './DataNumbers';
 
 export default {
   name: 'NumbersItem',
+  components : {DataNumbers},
+
   data() {
     return {
       inputDisabled: true,

@@ -133,7 +133,7 @@
 
   import BuyModal from './buyModal.vue';
   import Groups from './groups.vue';
-  import NumbersItems from 'numbersItems.vue'
+  import NumbersItems from './numbersItems.vue'
 
   const {required, jsExpressionNonEmptyString, generateValidators} = validators;
   

@@ -16,6 +16,8 @@ import NumbersItem from './NumbersItem'
 
 export default {
   name: 'NumbersItems',
+  components : {NumbersItem},
+
   props: {
     currentFlowDeployedData: {
       type: Boolean
