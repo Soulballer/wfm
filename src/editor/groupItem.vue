@@ -109,6 +109,8 @@
 </template>
 
 <script>
+import GroupDataNumber from './groupDataNumber.vue';
+
 export default {
   props: {
     allFilteredNumbers: {
@@ -131,7 +133,7 @@ export default {
       type: Array
     }
   },
-  components: {groupDataNumber},
+  components: {GroupDataNumber},
 
   created () {
     eventHub.$on('remove number from group', this.handleNumberRemove)

@@ -13,7 +13,11 @@
 </template>
 
 <script>
+import GroupItem from './groupItem.vue';
+
 export default {
+  components: {GroupItem},
+
   data() {
     return {
       localGroupsNameCollision: [],
