@@ -72,6 +72,8 @@
 <script>
 import DataNumbers from './dataNumbers.vue';
 
+import eventHub from './eventHub.js';
+
 export default {
   name: 'NumbersItem',
   components : {DataNumbers},
