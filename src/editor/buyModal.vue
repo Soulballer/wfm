@@ -91,9 +91,11 @@
   import eventHub from './eventHub.js';
   import NumberToBuyItem from './numberToBuyItem.vue';
 
-  import topojson from 'https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js'
-  import Datamap from './datamaps.usa.js';
+  import topojson from 'https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js';
   import d3 from 'd3';
+  
+  import Datamap from './datamaps.usa.js';
+
   console.log('datamap', Datamap)
 
   export default {
