@@ -112,6 +112,7 @@
 import eventHub from './eventHub.js';
 
 import GroupDataNumber from './groupDataNumber.vue';
+import ItemContent from './itemContent.vue';
 
 export default {
   props: {
@@ -135,7 +136,7 @@ export default {
       type: Array
     }
   },
-  components: {GroupDataNumber},
+  components: {GroupDataNumber, ItemContent},
 
   created () {
     eventHub.$on('remove number from group', this.handleNumberRemove)
