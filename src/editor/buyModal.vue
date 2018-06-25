@@ -96,7 +96,7 @@
 
   import Datamap from './datamaps.usa.js';
 
-  console.log('datamap 11', Datamap)
+  console.log('datamap 22', Datamap)
 
   export default {
     props: {
