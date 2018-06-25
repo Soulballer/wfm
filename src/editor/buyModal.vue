@@ -94,6 +94,7 @@
   import topojson from 'https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js'
   import Datamap from './datamaps.usa.js';
   import d3 from 'd3';
+  console.log('datamap', Datamap)
 
   export default {
     props: {
