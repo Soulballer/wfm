@@ -87,6 +87,9 @@
 </template>
 
 <script>
+  import eventHub from './eventHub.js';
+  import NumberToBuyItem from './numberToBuyItem.vue'
+
   export default {
     props: {
       groups: Array,
@@ -95,6 +98,7 @@
         type: Boolean
       }
     },
+    components: {NumberToBuyItem},
     data () {
       return {
         buyList: [],

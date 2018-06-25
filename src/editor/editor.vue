@@ -126,38 +126,42 @@
   </div>
 </template>
 <script>
-    import * as _ from 'lodash';
-    import {validators} from '_validators';
-    import email from './email.vue';
-    import password from './password.vue';
-    import eventHub from 'eventHub';
-    import Promise from 'bluebird';
+  import Promise from 'bluebird';
+  import * as _ from 'lodash';
+  import {validators} from '_validators';
+  import eventHub from './eventHub.js';
 
-    const {required, jsExpressionNonEmptyString, generateValidators} = validators;
+  import BuyModal from './buyModal.vue';
+  import Groups from './groups.vue';
+  import NumbersItems from 'numbersItems.vue'
 
-    export default {
-        name       : 'editor-test-example',
-        props      : ['template', 'schema', 'step', 'stepId', 'steps', 'readonly'],
-        components : {email, password},
-        created () {
-          eventHub.$on('ungroup', this.handleUngroup);
-          eventHub.$on('add numbers to group', this.handleAddNumbersToGroup);
-          eventHub.$on('put number to general list', this.putNumberToGeneralList);
-          eventHub.$on('remove number from general list', this.removeNumberFromGeneralList);
-          eventHub.$on('update numbers data', this.updateNumbersData);
-          
-        },
-        destroyed () {
-          eventHub.$off('ungroup', this.handleUngroup);
-          eventHub.$off('add numbers to group', this.handleAddNumbersToGroup);
-          eventHub.$off('put number to general list', this.putNumberToGeneralList);
-          eventHub.$off('remove number from general list', this.removeNumberFromGeneralList);
-          eventHub.$off('update numbers data', this.updateNumbersData);
-          document.removeEventListener('click', this.onExternalClick);
-        },
+  const {required, jsExpressionNonEmptyString, generateValidators} = validators;
+  
+
+export default {
+  name       : 'editor-Wait-for-message',
+  props      : ['template', 'schema', 'step', 'stepId', 'steps', 'readonly'],
+  components : {BuyModal, Groups, NumbersItems},
+
+  created () {
+    eventHub.$on('ungroup', this.handleUngroup);
+    eventHub.$on('add numbers to group', this.handleAddNumbersToGroup);
+    eventHub.$on('put number to general list', this.putNumberToGeneralList);
+    eventHub.$on('remove number from general list', this.removeNumberFromGeneralList);
+    eventHub.$on('update numbers data', this.updateNumbersData);
+    
+  },
+  destroyed () {
+    eventHub.$off('ungroup', this.handleUngroup);
+    eventHub.$off('add numbers to group', this.handleAddNumbersToGroup);
+    eventHub.$off('put number to general list', this.putNumberToGeneralList);
+    eventHub.$off('remove number from general list', this.removeNumberFromGeneralList);
+    eventHub.$off('update numbers data', this.updateNumbersData);
+    document.removeEventListener('click', this.onExternalClick);
+  },
 
 
-        computed: {
+  computed: {
     allLocalCheckedNumbers() {
       return _.concat(this.selectedNumbers, ...this.selectedGroups.map(group => group.numbers));
     },
@@ -816,8 +820,8 @@
 
     export const validator = (template) => {
         return {
-            email    : generateValidators(template.validateRequired, {required}),
-            password : generateValidators(template.validateRequired, {required}),
+            // email    : generateValidators(template.validateRequired, {required}),
+            // password : generateValidators(template.validateRequired, {required}),
         };
     };
 
@@ -829,12 +833,327 @@
 </script>
 
 <style scoped lang="scss" rel="stylesheet/scss">
-    @import '../scss/colors.scss';
+  .main {
+    margin-bottom: 30px;
+  }
 
-</style>
+  h3 {
+    margin-bottom: 15px;
+    font-size: 16px;
+  }
 
+  .no-numbers {
+    margin-bottom: 40px;
+    color: #5E656D;
+    font-size: 16px;
+    line-height: 23px;
+    
+    p {
+      color: #0F232E;
+    }
+    a, .add-new-num {
+      color: #65b3da;
+      white-space: nowrap;
+    }
+    .add-new-num {
+      cursor: pointer;
+    }
+  }
 
-<style lang="scss" rel="stylesheet/scss">
-    @import '../scss/colors.scss';
+  .read-only {
+    pointer-events: none;
+    cursor: default;
+    color: rgba(0,0,0,.38) !important;
+  } 
+
+  .data {
+    padding: 0 10px;
+  }
+
+  .container{
+    padding:2px 0 20px;
+    border-radius:4px;
+
+    &_for-modal {
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+  }
+
+  .ui-select {
+  &__display {
+    border: 1px solid #dfdfdf;
+    border-radius: 3px;
+    background-color: #f6f6f6;
+    min-height: 36px;
+    align-items: center;
+    color: #0f232e;
+    cursor: pointer;
+    display: flex;
+    font-weight: normal;
+    padding: 2px 10px;
+    transition: border 0.1s ease;
+    user-select: none;
+    width: 100%;
+    transition: background-color 0.5s ease-out;
+    
+    .is-placeholder {
+      position: relative;
+      
+      &:after {
+        content: "Select numbers (groups)";
+        
+        position: absolute;
+        top: -10px;
+        
+        font-size: 14px;
+      }
+    }
+    
+    &:hover {
+      background-color: white;
+    }
+  }
+  
+  &__dropdown {
+    position: relative;
+    
+    width: auto;
+    
+    border: 1px solid #dfdfdf;
+    border-top: 0;
+    box-shadow: 0 3px 16px 0 rgba(0, 0, 0, 0.08);
+    
+    z-index: 10;
+    
+    &-button {
+      font-size: 2.125rem;
+      
+      i {
+        font-size: 35px;
+      }
+    }
+  }
+  
+  &__display-selected {
+    position: relative;
+
+    margin: 2px 4px 2px 0;
+    padding: 5px 20px 5px 4px;
+
+    border: none;
+  }
+
+  &__display-close-button {
+    position: absolute;
+    top: 7px;
+    right: 2px;
+
+    font-size: 15px;
+    color: #8C9492;
+
+    cursor: pointer;
+  }
+}
+.ui-select__empty {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0 60px;
+
+  p {
+    display: inline-block;
+
+    color: rgba(94, 101, 109, 0.55);
+    font-size: 14px;
+
+    vertical-align: center;
+  }
+}
+
+.container{
+  padding:2px 0 20px;
+  border-radius:4px;
+    &_for-modal {
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+  .search-box {
+    position:relative;
+    .clear-search {
+      position: absolute;
+      right: 5px;
+      top: 17%;
+      z-index: 2;
+      cursor: pointer;
+      font-size: 20px;
+      color:#a7aaaf;
+    }
+    .ui-textbox {
+      position:relative;
+      
+      border-bottom: 1px solid #dfdfdf;
+      
+      &__input {
+        padding-left:25px;
+        padding-right:25px;
+        padding-top: 7px;
+        font-size:14px;
+        border: none;
+        background-color: white;
+      }
+      &__icon {
+        &-wrapper {
+          .ui-icon.search {
+            color: #0594ed !important;
+            font-size: 18px;
+            line-height: 14px;
+          }
+          position:absolute;
+          top: 6px;
+          left: 5px;
+
+          margin: 0;
+          padding: 0;
+          z-index: 10;
+        }
+      }
+    }
+  }
+  .button {
+    padding: 0 10px;
+    color: #0594ed;
+    box-sizing: content-box;
+    font-size: 12px;
+    cursor: pointer;
+
+    &.disabled {
+      cursor:no-drop;
+      color:#e7e7e7;
+    }
+  }
+
+  .line {
+    width:calc(100% + 24px);
+    margin-left:-12px;
+    border-bottom:1px solid #e7e7e7;
+  }
+  .ui-checkbox {
+    align-items:center;
+    
+    &__label {
+      &-text {
+        margin-top:5px;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+    }
+  }
+  .ui-alert {
+    white-space: normal;
+  }
+  .numbers-list {
+    font-size:14px;
+    min-height: 30px;
+    max-height: 180px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    margin:14px 0;
+  }
+  .ui-checkbox {
+    margin-bottom:5px;
+    &__label {
+      &-text {
+        font-size:14px;
+        line-height:normal;
+      }
+    }
+    &.is-disabled {
+      .ui-checkbox__checkmark {
+        display:none;
+      }
+    }
+    &:not(.is-disabled):not(.checked) {
+      .ui-checkbox {
+        &__checkmark {
+          &:before {
+            background-color: #f7f7f7 !important;
+            border: 1px solid #c7c7c7;
+          }
+          &:after {
+            border-right-color: #132530;
+            border-bottom-color: #132530;
+          }
+        }
+      }
+      &.active,
+      &:hover {
+        .ui-checkbox {
+          &__checkmark {
+            &:before {
+              border-color: rgba(0,0,0,.54);
+            }
+          }
+        }
+      }
+      &.checked {
+        .ui-checkbox {
+          &__checked {
+            &:after {
+              border-right-color: #132530;
+              border-bottom-color: #132530;
+            }
+          }
+        }
+      }
+    }
+    &.select-all-button {
+      font-weight:bold;
+      height: 25px;
+      
+      .ui-checkbox__label-text {
+        color: black;
+      }
+
+      &:not(.all-selected) {
+        &.some-selected {
+          .ui-checkbox {
+            &__checkmark {
+              &:after {
+              -webkit-transform: rotate(90deg);
+              opacity:1;
+              transform: rotate(90deg);
+              border-right:2px solid;
+              border-bottom: none;
+              height: 11px;
+              bottom: 6px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .scrollbar {
+    &::-webkit-scrollbar {
+        width: 6px;
+        background:#f6f6f6;
+    }
+    &::-webkit-scrollbar-track {
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+    }
+    &::-webkit-scrollbar-thumb {
+        -webkit-border-radius: 4px;
+        border-radius: 4;
+        background:#d8d8d8;
+    }
+    &::-webkit-scrollbar-thumb:window-inactive {
+    	background: #d8d8d8;
+    }
+  }
+}
 
 </style>
