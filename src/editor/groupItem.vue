@@ -109,9 +109,9 @@
 </template>
 
 <script>
-import GroupDataNumber from './groupDataNumber.vue';
-
 import eventHub from './eventHub.js';
+
+import GroupDataNumber from './groupDataNumber.vue';
 
 export default {
   props: {

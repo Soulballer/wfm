@@ -70,9 +70,9 @@
 </template>
 
 <script>
-import DataNumbers from './dataNumbers.vue';
-
 import eventHub from './eventHub.js';
+
+import DataNumbers from './dataNumbers.vue';
 
 export default {
   name: 'NumbersItem',
