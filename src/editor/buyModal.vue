@@ -88,7 +88,7 @@
 </template>
 
 <script>
-  import d3 from 'd3';
+  import * as d3 from 'd3';
   import eventHub from './eventHub.js';
   import NumberToBuyItem from './numberToBuyItem.vue';
 
