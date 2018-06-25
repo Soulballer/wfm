@@ -132,6 +132,8 @@
   import eventHub from './eventHub.js';
 
   import BuyModal from './buyModal.vue';
+  import Groups from './groups.vue';
+  import NumbersItems from 'numbersItems.vue'
 
   const {required, jsExpressionNonEmptyString, generateValidators} = validators;
   
@@ -139,7 +141,7 @@
 export default {
   name       : 'editor-Wait-for-message',
   props      : ['template', 'schema', 'step', 'stepId', 'steps', 'readonly'],
-  components : {BuyModal},
+  components : {BuyModal, Groups, NumbersItems},
 
   created () {
     eventHub.$on('ungroup', this.handleUngroup);
