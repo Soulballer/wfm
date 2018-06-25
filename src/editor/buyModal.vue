@@ -88,15 +88,15 @@
 </template>
 
 <script>
+  import d3 from 'd3';
   import eventHub from './eventHub.js';
   import NumberToBuyItem from './numberToBuyItem.vue';
 
   import topojson from 'https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js';
-  import d3 from 'd3';
-  
+
   import Datamap from './datamaps.usa.js';
 
-  console.log('datamap', Datamap)
+  console.log('datamap 11', Datamap)
 
   export default {
     props: {
