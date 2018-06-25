@@ -92,7 +92,7 @@
   import NumberToBuyItem from './numberToBuyItem.vue';
 
   import topojson from 'https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js'
-  import DataMap from './datamaps.usa.js';
+  import Datamap from './datamaps.usa.js';
 
   export default {
     props: {
