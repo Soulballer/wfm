@@ -92,12 +92,12 @@
   import eventHub from './eventHub.js';
   import NumberToBuyItem from './numberToBuyItem.vue';
 
-  import topojson from 'topojson';
+  import topojson from 'topojson@1.6.9';
 
   import Datamap from './datamaps.usa.js';
 
   console.log('d3', d3);
-  console.log('topojson', topojson)
+  console.log('topojson@', topojson)
 
   export default {
     props: {
