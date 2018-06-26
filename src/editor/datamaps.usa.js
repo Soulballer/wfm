@@ -1210,7 +1210,7 @@ function Datamap () {
       return this;
     };
   }
-
+  return this;
   //window.Datamap = window.Datamaps = Datamap;
 };
 
