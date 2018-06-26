@@ -92,11 +92,11 @@
   import eventHub from './eventHub.js';
   import NumberToBuyItem from './numberToBuyItem.vue';
 
-  import * as topojson from '../node_modules/topojson/topojson.min.js';
+  import * as topojson from '../../node_modules/topojson/topojson.min.js';
 
   let Datamap = require('./datamaps.usa.js');
 
-  console.log('AAAA data map', Datamap.module.exports);
+  console.log('BBBB data map', Datamap.module.exports);
 
   export default {
     props: {
