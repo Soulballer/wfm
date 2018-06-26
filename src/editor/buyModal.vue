@@ -400,6 +400,7 @@
       }
       });
       //election.labels();
+      console.log('election', election);
     },
     destroyed () {
       eventHub.$off('buyList:update', this.updateBuyList);
