@@ -176,7 +176,7 @@
     created() {
       eventHub.$on('buyList:update', this.updateBuyList);
       console.log('datamap created222', Datamap)
-      var election = new Datamap({
+      var election = new Datamap('hello', {
         scope: 'usa',
         element: document.getElementById('bubbles'),
         geographyConfig: {
@@ -400,7 +400,7 @@
       }
       });
       //election.labels();
-      console.log('election', election);
+      console.log('election111', election);
     },
     destroyed () {
       eventHub.$off('buyList:update', this.updateBuyList);
