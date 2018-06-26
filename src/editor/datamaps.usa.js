@@ -756,6 +756,9 @@
     this.path = pathAndProjection.path;
     this.projection = pathAndProjection.projection;
 
+    console.log('this.path', this.path);
+    console.log('this.projection', this.projection);
+
     // If custom URL for topojson data, retrieve it and render
     if ( options.geographyConfig.dataUrl ) {
       d3.json( options.geographyConfig.dataUrl, function(error, results) {
@@ -765,6 +768,7 @@
       });
     }
     else {
+      console.log('YO')
       draw( this[options.scope + 'Topo'] || options.geographyConfig.dataJson);
     }
 
