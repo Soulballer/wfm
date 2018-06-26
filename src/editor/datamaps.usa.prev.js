@@ -1,4 +1,4 @@
-(function() {
+
   var svg;
 
   // Save off default references
@@ -84,9 +84,10 @@
     Getter for value. If not declared on datumValue, look up the chain into optionsValue
   */
   function val( datumValue, optionsValue, context ) {
+    console.log('--- optionsValue ---', optionsValue)
     if ( typeof context === 'undefined' ) {
       context = optionsValue;
-      optionsValues = undefined;
+      let optionsValues = undefined;
     }
     var value = typeof datumValue !== 'undefined' ? datumValue : optionsValue;
 
@@ -711,6 +712,8 @@
     this.options.arcConfig = defaults(options.arcConfig, defaultOptions.arcConfig);
 
     // Add the SVG container
+    console.log('options', options);
+    console.log('this.options', this.options);
     if ( d3.select( this.options.element ).select('svg')._groups[0] ) {
       addContainer.call(this, this.options.element, this.options.height, this.options.width );
     }
@@ -746,6 +749,7 @@
 
   // Actually draw the features(states & countries)
   Datamap.prototype.draw = function() {
+    console.log("!!!!! draw func");
     // Save off in a closure
     var self = this;
     var options = self.options;
@@ -790,7 +794,7 @@
         handleGeographyConfig.call(self);
 
         if ( self.options.geographyConfig.popupOnHover || self.options.bubblesConfig.popupOnHover) {
-          hoverover = d3.select( self.options.element ).append('div')
+          let hoverover = d3.select( self.options.element ).append('div')
             .attr('class', 'datamaps-hoverover')
             .style('z-index', 10001)
             .style('position', 'absolute');
@@ -1181,7 +1185,7 @@
     }
   };
 
-  // Expose library
+  //Expose library
   if (typeof exports === 'object') {
     d3 = require('d3');
     topojson = require('topojson');
@@ -1210,4 +1214,6 @@
       return this;
     };
   }
-})();
+  //window.Datamap = window.Datamaps = Datamap;
+
+export default Datamap;

@@ -94,7 +94,7 @@
 
   import * as topojson from 'topojson';
 
-  import Datamap from './datamaps.usa.js';
+  let Datamap = require('./datamaps.usa.js');
 
   console.log('d3', d3);
   console.log('topojson555', topojson);
