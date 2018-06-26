@@ -96,7 +96,7 @@
 
   let Datamap = require('./datamaps.usa.js');
 
-  console.log('data map brainfuck11', Datamap.module.exports);
+  console.log('data map -----', Datamap.module.exports);
 
   export default {
     props: {

@@ -86,7 +86,7 @@
   function val( datumValue, optionsValue, context ) {
     if ( typeof context === 'undefined' ) {
       context = optionsValue;
-      optionsValues = undefined;
+      let optionsValues = undefined;
     }
     var value = typeof datumValue !== 'undefined' ? datumValue : optionsValue;
 
