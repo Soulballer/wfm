@@ -88,7 +88,7 @@
 </template>
 
 <script>
-  import * as d3 from '../../node_modules/d3/build/d3.min.js';
+  //import * as d3 from '../../node_modules/d3/build/d3.min.js';
   import eventHub from './eventHub.js';
   import NumberToBuyItem from './numberToBuyItem.vue';
   console.log('BBBB data map', Datamap.module.exports);
@@ -97,7 +97,7 @@
 
   let Datamap = require('./datamaps.usa.js');
 
-  console.log('d3', d3)
+  //console.log('d3', d3)
 
   export default {
     props: {
