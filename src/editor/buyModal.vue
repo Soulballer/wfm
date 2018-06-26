@@ -97,6 +97,8 @@
 
   let Datamap = require('./datamaps.usa.js');
 
+  console.log('d3', d3)
+
   export default {
     props: {
       groups: Array,
