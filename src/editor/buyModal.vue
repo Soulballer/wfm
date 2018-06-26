@@ -99,7 +99,7 @@
   console.log('d3', d3);
   console.log('topojson', topojson);
   console.log('datamap init', Datamap)
-  console.log('new datamap', new Datamap({scope: 'usa'}));
+  console.log('new datamap', new Datamap('a', {scope: 'usa'}));
 
   export default {
     props: {
