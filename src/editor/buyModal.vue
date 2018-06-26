@@ -97,7 +97,9 @@
   import Datamap from './datamaps.usa.js';
 
   console.log('d3', d3);
-  console.log('topojson', topojson)
+  console.log('topojson', topojson);
+  console.log('datamap init', Datamap)
+  console.log('new datamap', new Datamap({scope: 'usa'}));
 
   export default {
     props: {
