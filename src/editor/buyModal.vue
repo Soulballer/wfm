@@ -88,7 +88,7 @@
 </template>
 
 <script>
-  import * as d3 from 'd3';
+  import * as d3 from 'd3v4';
   import eventHub from './eventHub.js';
   import NumberToBuyItem from './numberToBuyItem.vue';
 
@@ -96,7 +96,8 @@
 
   import Datamap from './datamaps.usa.js';
 
-  console.log('datamap 33', Datamap)
+  console.log('d3', d3);
+  console.log('topojson', topojson)
 
   export default {
     props: {
