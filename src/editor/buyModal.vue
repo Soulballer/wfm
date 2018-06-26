@@ -518,7 +518,7 @@
         this.buyList = newBuylist;
       }
     },
-    mounted () {
+    created () {
       this.requestNumbers();
     }
   }
