@@ -91,12 +91,11 @@
   import * as d3 from 'd3';
   import eventHub from './eventHub.js';
   import NumberToBuyItem from './numberToBuyItem.vue';
+  console.log('BBBB data map', Datamap.module.exports);
 
   import * as topojson from '../../node_modules/topojson/topojson.min.js';
 
   let Datamap = require('./datamaps.usa.js');
-
-  console.log('BBBB data map', Datamap.module.exports);
 
   export default {
     props: {
