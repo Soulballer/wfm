@@ -92,7 +92,7 @@
   import eventHub from './eventHub.js';
   import NumberToBuyItem from './numberToBuyItem.vue';
 
-  import * as topojson from 'topojson@1.6.9';
+  import * as topojson from '../node_modules/topojson/topojson.min.js';
 
   let Datamap = require('./datamaps.usa.js');
 
