@@ -183,7 +183,7 @@
         element: document.getElementById('bubbles'),
         geographyConfig: {
           highlightBorderColor: '#bada55',
-        popupTemplate: function(geography, data) {
+          popupTemplate: function(geography, data) {
             return '<div class="hoverinfo">' + geography.properties.name + 'Electoral Votes:' +  data.electoralVotes + ' '
           },
           highlightBorderWidth: 3
@@ -401,7 +401,7 @@
         }
       }
       });
-      election.labels();
+      //election.labels();
     },
     destroyed () {
       eventHub.$off('buyList:update', this.updateBuyList);
