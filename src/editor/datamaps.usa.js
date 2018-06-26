@@ -200,6 +200,7 @@
     }
 
     var geo = subunits.selectAll('path.datamaps-subunit').data( geoData );
+    console.log('geo', geo)
 
     geo.enter()
       .append('path')
