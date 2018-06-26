@@ -84,9 +84,10 @@
     Getter for value. If not declared on datumValue, look up the chain into optionsValue
   */
   function val( datumValue, optionsValue, context ) {
+    console.log('--- optionsValue', optionsValue)
     if ( typeof context === 'undefined' ) {
       context = optionsValue;
-      optionsValues = undefined;
+      let optionsValues = undefined;
     }
     var value = typeof datumValue !== 'undefined' ? datumValue : optionsValue;
 
