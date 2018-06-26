@@ -175,8 +175,8 @@
     },
     created() {
       eventHub.$on('buyList:update', this.updateBuyList);
-      console.log('datamap created', new Datamap({scope: 'usa'}))
-      var election = new Datamap({
+      console.log('datamap created', Datamap)
+      var election = new Datamap('aa', {
   scope: 'usa',
   element: document.getElementById('bubbles'),
   geographyConfig: {
