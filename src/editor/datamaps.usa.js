@@ -1210,6 +1210,8 @@ function Datamap () {
   //     return this;
   //   };
   // }
+
+  window.Datamap = window.Datamaps = Datamap;
 };
 
 export default Datamap;
