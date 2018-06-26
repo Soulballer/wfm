@@ -96,7 +96,7 @@
 
   let Datamap = require('./datamaps.usa.js');
 
-  console.log('---- data map', Datamap.module.exports);
+  console.log('!!!! data map', Datamap.module.exports);
 
   export default {
     props: {
@@ -398,8 +398,7 @@
         }
       }
       });
-      //election.labels();
-      console.log('election111', election);
+      election.labels();
     },
     destroyed () {
       eventHub.$off('buyList:update', this.updateBuyList);
