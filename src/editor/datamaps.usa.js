@@ -1,4 +1,4 @@
-function Datamap () {
+
   var svg;
 
   // Save off default references
@@ -1210,8 +1210,6 @@ function Datamap () {
       return this;
     };
   }
-  return this;
   //window.Datamap = window.Datamaps = Datamap;
-};
 
 export default Datamap;
