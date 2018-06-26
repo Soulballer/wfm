@@ -793,7 +793,7 @@
         handleGeographyConfig.call(self);
 
         if ( self.options.geographyConfig.popupOnHover || self.options.bubblesConfig.popupOnHover) {
-          hoverover = d3.select( self.options.element ).append('div')
+          let hoverover = d3.select( self.options.element ).append('div')
             .attr('class', 'datamaps-hoverover')
             .style('z-index', 10001)
             .style('position', 'absolute');
