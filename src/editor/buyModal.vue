@@ -99,7 +99,7 @@
   console.log('d3', d3);
   console.log('topojson', topojson);
   console.log('datamap init', Datamap)
-  console.log('new datamap', new Datamap('a', {scope: 'usa'}));
+  //console.log('new datamap', new Datamap('a', {scope: 'usa'}));
 
   export default {
     props: {
@@ -177,8 +177,8 @@
     },
     created() {
       eventHub.$on('buyList:update', this.updateBuyList);
-      console.log('datamap created', Datamap)
-      var election = new Datamap('aa', {
+      console.log('datamap created111', Datamap)
+      var election = new Datamap({
   scope: 'usa',
   element: document.getElementById('bubbles'),
   geographyConfig: {
