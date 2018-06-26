@@ -1181,37 +1181,37 @@ function Datamap () {
     }
   };
 
-  // Expose library
-  // if (typeof exports === 'object') {
-  //   d3 = require('d3');
-  //   topojson = require('topojson');
-  //   module.exports = Datamap;
-  // }
-  // else if ( typeof define === "function" && define.amd ) {
-  //   define( "datamaps", ["require", "d3", "topojson"], function(require) {
-  //     d3 = require('d3');
-  //     topojson = require('topojson');
+  Expose library
+  if (typeof exports === 'object') {
+    d3 = require('d3');
+    topojson = require('topojson');
+    module.exports = Datamap;
+  }
+  else if ( typeof define === "function" && define.amd ) {
+    define( "datamaps", ["require", "d3", "topojson"], function(require) {
+      d3 = require('d3');
+      topojson = require('topojson');
 
-  //     return Datamap;
-  //   });
-  // }
-  // else {
-  //   window.Datamap = window.Datamaps = Datamap;
-  // }
+      return Datamap;
+    });
+  }
+  else {
+    window.Datamap = window.Datamaps = Datamap;
+  }
 
-  // if ( window.jQuery ) {
-  //   window.jQuery.fn.datamaps = function(options, callback) {
-  //     options = options || {};
-  //     options.element = this[0];
-  //     var datamap = new Datamap(options);
-  //     if ( typeof callback === "function" ) {
-  //       callback(datamap, options);
-  //     }
-  //     return this;
-  //   };
-  // }
+  if ( window.jQuery ) {
+    window.jQuery.fn.datamaps = function(options, callback) {
+      options = options || {};
+      options.element = this[0];
+      var datamap = new Datamap(options);
+      if ( typeof callback === "function" ) {
+        callback(datamap, options);
+      }
+      return this;
+    };
+  }
 
-  window.Datamap = window.Datamaps = Datamap;
+  //window.Datamap = window.Datamaps = Datamap;
 };
 
 export default Datamap;
