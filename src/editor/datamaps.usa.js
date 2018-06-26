@@ -749,6 +749,7 @@
 
   // Actually draw the features(states & countries)
   Datamap.prototype.draw = function() {
+    console.log("!!!!! draw func");
     // Save off in a closure
     var self = this;
     var options = self.options;
