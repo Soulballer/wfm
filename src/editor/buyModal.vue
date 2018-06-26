@@ -96,8 +96,7 @@
 
   let Datamap = require('./datamaps.usa.js');
 
-  console.log('d3', d3);
-  console.log('topojson555', topojson);
+  console.log('data map init', Datamap);
 
   export default {
     props: {
