@@ -173,9 +173,9 @@
         ]
       }
     },
-    created() {
+    mounted() {
       eventHub.$on('buyList:update', this.updateBuyList);
-      console.log('element', document.getElementById('bubbles'))
+      console.log('element123', document.getElementById('bubbles'))
       var election = new Datamap({
         scope: 'usa',
         element: document.getElementById('bubbles'),
