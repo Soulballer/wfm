@@ -175,7 +175,7 @@
     mounted() {
       eventHub.$on('buyList:update', this.updateBuyList);
       console.log('element123', document.getElementById('bubbles'))
-      var election = new Datamap({
+      var election = new Datamap.module.exports({
         scope: 'usa',
         element: document.getElementById('bubbles'),
         geographyConfig: {
