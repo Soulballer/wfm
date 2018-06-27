@@ -1188,6 +1188,8 @@
 
   //Expose library
   if (typeof exports === 'object') {
+    import * as topojson from '../../node_modules/topojson-client/dist/topojson-client.js';
+    import * as d3 from '../../node_modules/d3/build/d3.js';
     //d3 = require('d3');
     //topojson = require('topojson');
     module.exports = Datamap;
