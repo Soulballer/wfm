@@ -1186,7 +1186,7 @@
     }
   };
 
-  Expose library
+  //Expose library
   if (typeof exports === 'object') {
     //d3 = require('d3');
     //topojson = require('topojson');
