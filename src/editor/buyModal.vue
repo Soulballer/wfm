@@ -91,7 +91,7 @@
   import * as d3 from '../../node_modules/d3/build/d3.js';
   import eventHub from './eventHub.js';
   import NumberToBuyItem from './numberToBuyItem.vue';
-  console.log('DDDDDD', Datamap.module.exports);
+  console.log('AGFDA', Datamap.module.exports);
 
   import * as topojson from '../../node_modules/topojson-client/dist/topojson-client.js';
 
