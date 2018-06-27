@@ -1188,10 +1188,10 @@
 
   //Expose library
   if (typeof exports === 'object') {
-    import * as topojson from '../../node_modules/topojson-client/dist/topojson-client.js';
-    import * as d3 from '../../node_modules/d3/build/d3.js';
-    //d3 = require('d3');
-    //topojson = require('topojson');
+    //import * as topojson from '../../node_modules/topojson-client/dist/topojson-client.js';
+    //import * as d3 from '../../node_modules/d3/build/d3.js';
+    d3 = require('../../node_modules/topojson-client/dist/topojson-client.js');
+    topojson = require('../../node_modules/d3/build/d3.js');
     module.exports = Datamap;
   }
   else if ( typeof define === "function" && define.amd ) {
