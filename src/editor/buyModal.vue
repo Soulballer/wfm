@@ -91,11 +91,11 @@
   import * as d3 from '../../node_modules/d3/build/d3.js';
   import eventHub from './eventHub.js';
   import NumberToBuyItem from './numberToBuyItem.vue';
-  console.log('ABC', Datamap.module.exports);
+  console.log('DDDDDD', Datamap.module.exports);
 
   import * as topojson from '../../node_modules/topojson-client/dist/topojson-client.js';
 
-  let Datamap = require('./datamaps.usa.js');
+  import * as Datamap from './datamaps.usa.js';
 
   //console.log('d3', d3)
 
