@@ -83,21 +83,16 @@
       class="handle-progress"
       v-show="buyProgress"
     ></ui-progress-circular>
-    <div id="bubbles" style="border:1px dotted blue; width: 1000px; height: 550px;"></div>
+    <states-map class="map"></states-map>
   </or-modal> 
 </template>
 
 <script>
-  //import * as d3 from '../../node_modules/d3/build/d3.js';
+  import * as d3 from '../../node_modules/d3/build/d3.js';
+  //import {uStates, clickedState} from './uStates.js';
   import eventHub from './eventHub.js';
   import NumberToBuyItem from './numberToBuyItem.vue';
-  console.log('ARARA', Datamap.module.exports);
-
-  //import * as topojson from '../../node_modules/topojson-client/dist/topojson-client.js';
-
-  import * as Datamap from './datamaps.usa.js';
-
-  //console.log('d3', d3)
+  import StatesMap from './statesMap.vue';
 
   export default {
     props: {
@@ -107,7 +102,7 @@
         type: Boolean
       }
     },
-    components: {NumberToBuyItem},
+    components: {NumberToBuyItem, StatesMap},
     data () {
       return {
         buyList: [],
@@ -172,234 +167,6 @@
           { value: 'WY', name: 'Wyoming' }
         ]
       }
-    },
-    mounted() {
-      eventHub.$on('buyList:update', this.updateBuyList);
-      console.log('element123', document.getElementById('bubbles'))
-      var election = new Datamap.module.exports({
-        scope: 'usa',
-        element: document.getElementById('bubbles'),
-        geographyConfig: {
-          highlightBorderColor: '#bada55',
-          popupTemplate: function(geography, data) {
-            return '<div class="hoverinfo">' + geography.properties.name + 'Electoral Votes:' +  data.electoralVotes + ' '
-          },
-          highlightBorderWidth: 3
-        },
-
-        fills: {
-        'Republican': '#CC4731',
-        'Democrat': '#306596',
-        'Heavy Democrat': '#667FAF',
-        'Light Democrat': '#A9C0DE',
-        'Heavy Republican': '#CA5E5B',
-        'Light Republican': '#EAA9A8',
-        defaultFill: '#EDDC4E'
-      },
-      data:{
-        "AZ": {
-            "fillKey": "Republican",
-            "electoralVotes": 5
-        },
-        "CO": {
-            "fillKey": "Light Democrat",
-            "electoralVotes": 5
-        },
-        "DE": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "FL": {
-            "fillKey": "UNDECIDED",
-            "electoralVotes": 29
-        },
-        "GA": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "HI": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "ID": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "IL": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "IN": {
-            "fillKey": "Republican",
-            "electoralVotes": 11
-        },
-        "IA": {
-            "fillKey": "Light Democrat",
-            "electoralVotes": 11
-        },
-        "KS": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "KY": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "LA": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "MD": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "ME": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "MA": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "MN": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "MI": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "MS": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "MO": {
-            "fillKey": "Republican",
-            "electoralVotes": 13
-        },
-        "MT": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "NC": {
-            "fillKey": "Light Republican",
-            "electoralVotes": 32
-        },
-        "NE": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "NV": {
-            "fillKey": "Heavy Democrat",
-            "electoralVotes": 32
-        },
-        "NH": {
-            "fillKey": "Light Democrat",
-            "electoralVotes": 32
-        },
-        "NJ": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "NY": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "ND": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "NM": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "OH": {
-            "fillKey": "UNDECIDED",
-            "electoralVotes": 32
-        },
-        "OK": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "OR": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "PA": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "RI": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "SC": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "SD": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "TN": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "TX": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "UT": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "WI": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "VA": {
-            "fillKey": "Light Democrat",
-            "electoralVotes": 32
-        },
-        "VT": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "WA": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "WV": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "WY": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "CA": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "CT": {
-            "fillKey": "Democrat",
-            "electoralVotes": 32
-        },
-        "AK": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "AR": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        },
-        "AL": {
-            "fillKey": "Republican",
-            "electoralVotes": 32
-        }
-      }
-      });
-      election.labels();
     },
     destroyed () {
       eventHub.$off('buyList:update', this.updateBuyList);
@@ -490,6 +257,7 @@
         this.$refs.modal.open();
       },
       requestNumbers (selectedState) {
+        console.log('selectedState', selectedState);
         this.isLoading = true;
         this.showSelected = false;
 
@@ -526,6 +294,10 @@
 <style lang="scss" scoped rel="stylesheet/scss">
   .numbers-container {
     flex: 1;
+  }
+
+  .map {
+    transform: scale(0.5, 0.5) translate(-200px, -200px);
   }
 </style>
 

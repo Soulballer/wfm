@@ -204,7 +204,7 @@
 
     geo.enter()
       .append('path')
-      .attr('d', this.path)
+      .attr('d', function() { console.log('args', arguments); return this.path})
       .attr('class', function(d) {
         return 'datamaps-subunit ' + d.id;
       })
@@ -1190,14 +1190,16 @@
   if (typeof exports === 'object') {
     //import * as topojson from '../../node_modules/topojson-client/dist/topojson-client.js';
     //import * as d3 from '../../node_modules/d3/build/d3.js';
-    d3 = require('../../node_modules/topojson-client/dist/topojson-client.js');
-    topojson = require('../../node_modules/d3/build/d3.js');
+    topojson = require('../../node_modules/topojson-client/dist/topojson-client.js');
+    d3 = require('../../node_modules/d3/build/d3.js');
     module.exports = Datamap;
   }
   else if ( typeof define === "function" && define.amd ) {
     define( "datamaps", ["require", "d3", "topojson"], function(require) {
       //d3 = require('d3');
       //topojson = require('topojson');
+      d3 = require('../../node_modules/topojson-client/dist/topojson-client.js');
+      topojson = require('../../node_modules/d3/build/d3.js');
 
       return Datamap;
     });
