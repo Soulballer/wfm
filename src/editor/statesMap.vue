@@ -34,30 +34,41 @@ export default {
       clickedState: '',
       localSelectedState: {},
       localUStates: {},
+      localSelectedState: '',
       uStatePaths: [],
       uStates: {}
     }
   },
   mounted() {
     let self = this;
-    this.uStates.draw = function(id, data, toolTip, self){		
+    this.uStates.draw = function(id, data, toolTip, context){		
       function mouseOver(d){
+        if (d.id !== context.clickedState) {
         d3.select(this).style("fill", 'red');
         d3.select("#tooltip").transition().duration(200).style("opacity", .9);      
         
         d3.select("#tooltip").html(toolTip(d.n, data[d.id]))  
           .style("left", (d3.event.pageX) + "px")  
           .style("top", (d3.event.pageY - 28) + "px");
+        }
       }
       
-      function mouseOut(){
-        d3.select("#tooltip").transition().duration(500).style("opacity", 0);    
-        d3.select(this).style("fill",function(d){ return data[d.id].color; })  
+      function mouseOut(event){
+        if (event.id !== context.clickedState) {
+          d3.select("#tooltip").transition().duration(500).style("opacity", 0);    
+          d3.select(this).style("fill", function(d){ return data[d.id].color; })  
+        }
       }
       
       function mouseClick(event) {
-        console.log('target', event.id)
-        self.clickedState = event.id;
+        if (context.clickedState !== event.id && context.localSelectedState.length !== 0) {
+    
+          d3.select(context.localSelectedState).style("fill", function(d){ return data[d.id].color; }) 
+        }
+
+        context.clickedState = event.id;
+        context.localSelectedState = this
+        d3.select(this).style("fill", 'orange');
       }
       
       d3.select(id).selectAll(".state")
