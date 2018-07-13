@@ -87,4 +87,72 @@ export default {
       }
     }
   }
+
+  .groups {
+  display: flex;
+  flex-direction: column;
+}
+
+.group {
+  position: relative;
+  
+  margin-bottom: 2px;
+  
+  &:not(.unabled) {
+    .or-collapsible {
+      color: black;
+      
+      .body-wrapper {
+        color: black;
+      }
+    }
+  }
+  
+  &__inner-wrapper {
+    display: flex;
+  }
+  
+  .ui-confirm__message {
+    display: flex;
+    flex-direction: column;
+    
+    .ui-checkbox__checkmark {
+      display: inline-block;
+      
+      vertical-align: top;
+    }
+    
+    .ui-checkbox__label-text {
+      display: inline-block;
+      width: auto;
+      
+      vertical-align: middle;
+    }
+  }
+
+  .ui-modal__body {
+    min-height: 0;
+  }
+
+  .ui-textbox__input {
+    border: none;
+    font-size: 16px;
+    color: inherit;
+    font-weight: bold;
+  }
+  
+  .ui-checkbox {
+    display: inline-block;
+    
+    vertical-align: top;
+    
+    .ui-checkbox__label-text {
+      color: black;
+    }
+  }
+
+  .ui-checkbox__label-text {
+    margin-top: 0 !important;
+  }
+}
 </style>

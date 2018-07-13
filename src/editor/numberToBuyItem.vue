@@ -25,9 +25,10 @@ export default {
       return _.find(this.states, s => s.value === region);
     },
     updateBuyList (event) {
-      eventHub.$emit('buyList:update',
+      this.$emit('update:buyList',
       event ? _.concat(this.buyList, this.number)
             : _.reject(this.buyList, this.number))
+            console.log('aaaaaa', this.number)
     }
   },
   props: {

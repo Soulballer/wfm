@@ -6,17 +6,30 @@
   :contain-focus="false"
   @close="isAllowed = true"
   >
+  <div class="left"></div>
+  <div class="right"></div>
+  <div class="map">
+    <span>Select state on the map: <b>{{selectedState.name}}</b></span>
+    <states-map class="map" :available-numbers="numbers" :selected-state.sync="selectedState" ></states-map>
+    <div>
+      <p>Your active numbers</p>
+      <ul class="state-numbers scrollbar">
+        <li v-for="number in numbersFilteredByState">{{number.value}} <span>{{number.state}}</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="list">
     <or-alert @dismiss="isAllowed = true" type="warning" v-show="!isAllowed">
       Only Admin has permissions to manage account numbers. Please contact your admin or OneReach Support.
     </or-alert>
-    <or-select
+    <!-- <or-select
       label="Choose state"
       name="state"
       v-model="selectedStateName"
       :options="statesNames"
       class="statesSelect"
       @change="requestNumbers(selectedState)"
-    ></or-select>
+    ></or-select> -->
     <div 
       class="search-box" 
       v-show="!readonly">
@@ -58,7 +71,7 @@
           <number-to-buy-item
             v-for="number in filteredNumbers"
             :number="number"
-            :buyList="buyList"
+            :buy-list.sync="buyList"
             :key="number.phoneNumber"
             :states="states"
             transition="expand">
@@ -83,7 +96,7 @@
       class="handle-progress"
       v-show="buyProgress"
     ></ui-progress-circular>
-    <states-map class="map"></states-map>
+  </div>
   </or-modal> 
 </template>
 
@@ -93,6 +106,7 @@
   import eventHub from './eventHub.js';
   import NumberToBuyItem from './numberToBuyItem.vue';
   import StatesMap from './statesMap.vue';
+  import {statesCodes} from './statesCodes.js';
 
   export default {
     props: {
@@ -110,6 +124,7 @@
         buyProgress: false,
         isAllowed: true,
         lastRequestedNumbersList: [],
+        selectedState: '',
         searchValue: '',
         selectedStateName: 'All',
         showSelected: false,
@@ -171,7 +186,27 @@
     destroyed () {
       eventHub.$off('buyList:update', this.updateBuyList);
     },
+    watch: {
+      selectedState() {
+        this.requestNumbers(this.selectedState)
+      },
+      numbers() {
+        console.log('aassssssss')
+        this.numbers.forEach((num) => { 
+          statesCodes.forEach((state) => {
+            if (state.code === num.value.slice(2,5)) {
+              num.state = state.state
+            } 
+          })
+        });
+      }
+    },
     computed: {
+      numbersFilteredByState() {
+        console.log('nu vot blya', this.numbers)
+        if (this.selectedState.name === '' || this.selectedState.name === 'All') return this.numbers;
+        return this.numbers.filter((num) => num.state === this.selectedState.name)
+      },
       allFilteredNumbers () {
         return _.filter(this.selectedNumbersToBuy, n => this.avilableBySearch(n)); /*fix orthographic error in avilableBySearch*/
       },
@@ -185,6 +220,7 @@
           : 'all'}`;
       },
       filteredNumbers () {
+        
         return this.showSelected
         ? this.buyList
         : this.allFilteredNumbers
@@ -201,7 +237,8 @@
                 : this.numbersAvailableToBuy;
       },
       selectedState () {
-        return _.find(this.states, x => x.name === this.selectedStateName);
+       
+        //return _.find(this.states, x => x.name === this.selectedStateName);
       },
       statesNames () {
         return _.map(this.states, x => x.name);
@@ -257,7 +294,6 @@
         this.$refs.modal.open();
       },
       requestNumbers (selectedState) {
-        console.log('selectedState', selectedState);
         this.isLoading = true;
         this.showSelected = false;
 
@@ -287,6 +323,10 @@
     },
     created () {
       this.requestNumbers();
+    
+    },
+    mounted() {
+      console.log('buyModal this.numbers', this.numbers)
     }
   }
 </script>
@@ -296,8 +336,18 @@
     flex: 1;
   }
 
-  .map {
-    transform: scale(0.5, 0.5) translate(-200px, -200px);
+  .state-numbers {
+    list-style: none;
+    height: 100px;
+    overflow-y: scroll;
+  }
+
+  .buyModal .ui-modal__container {
+    width: 55rem;
+
+    .ui-modal__body {
+    display: flex;
+  }
   }
 </style>
 

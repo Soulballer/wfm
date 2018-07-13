@@ -118,7 +118,7 @@
     <div class="container container_for-modal">
       <buy-modal
         ref="buyModal"
-        :numbers="numbers"
+        :numbers="localNumbers"
         :groups="groups"
         :readonly="readonly"
         ></buy-modal>
@@ -551,6 +551,7 @@ export default {
         .then(response => response.json())
         .then(function(responseJson) { /*can use arrow function*/
 
+
           const groupsData =
              _.filter(responseJson, x => x.isGroup)
 
@@ -833,6 +834,12 @@ export default {
 </script>
 
 <style scoped lang="scss" rel="stylesheet/scss">
+.ui-modal__container {
+    width: 55rem;
+  }
+  .ui-modal__body {
+    display: flex;
+  }
   .main {
     margin-bottom: 30px;
   }
