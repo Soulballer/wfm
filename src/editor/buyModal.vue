@@ -6,11 +6,10 @@
   :contain-focus="false"
   @close="isAllowed = true"
   >
-  
     <div class="buy-modal-left">
       <div class="map">
         <span class="map__state">Select state on the map: <span>{{selectedState.name}}</span></span>
-        <states-map class="map__svg" :available-numbers="numbers" :selected-state.sync="selectedState"></states-map>
+        <states-map class="map__svg" :selected-state.sync="selectedState"></states-map>
 
         <p>Your active numbers</p>
         <ul class="state-numbers scrollbar" :class="{ 'no-scroll': numbersFilteredByState.length < 6}">
@@ -27,50 +26,28 @@
       <or-alert @dismiss="isAllowed = true" type="warning" v-show="!isAllowed">
         Only Admin has permissions to manage account numbers. Please contact your admin or OneReach Support.
       </or-alert>
-      <!-- <or-select
-        label="Choose state"
-        name="state"
-        v-model="selectedStateName"
-        :options="statesNames"
-        class="statesSelect"
-        @change="requestNumbers(selectedState)"
-      ></or-select> -->
-      <div 
-        class="search-box" 
-        v-show="!readonly">
+
+      <div class="search-box">
         <or-textbox
-          :disabled="readonly" 
           class="search-filter" 
           placeholder="Search by numbers" 
           name="searchInput" 
           v-model="searchValue" 
           icon="search"
         ></or-textbox>
-        <ui-icon 
-          @click.native="clearSearch" 
-          class="clear-search" 
-          icon="close" 
-          v-if="searchValue"
-        ></ui-icon>
+        <ui-icon @click.native="clearSearch" class="clear-search" icon="close" v-if="searchValue"></ui-icon>
       </div>
+
       <div class="numbers-container">
-        <ui-progress-linear
-          color="primary"
-          size="24"
-          v-show="isLoading"
-          style="margin-bottom: 14px;"
-        ></ui-progress-linear>
-        <div v-if="!isLoading">
+        <ui-progress-linear color="primary" size="24" v-if="isLoading"></ui-progress-linear>
+        <div v-else>
           <div
             class="button"
             v-show="hasItemsInBuyList"
             @click="changeBuyFilter"
           >{{buyfilterButtonText}}</div>
           <div class="numbers-list scrollbar">
-            <div 
-              class="ui-select__empty" 
-              v-show="!filteredNumbers.length"
-            >
+            <div class="ui-select__empty" v-show="!filteredNumbers.length">
               <p>No matching phone numbers</p>
             </div>
             <number-to-buy-item
@@ -81,56 +58,64 @@
               transition="expand">
             </number-to-buy-item>
           </div>
+
+          <div class="pagination">
+            <or-button
+              color="deafult"
+              type="secondary"
+              v-for="(list, key) in pagination"
+              :id="`${key + 1}button`"
+              @click="showPagination"
+            >{{key + 1}}
+            </or-button>
+          </div>
         </div>
       </div>
-      <div class="pagination">
-        <or-button
-          color="deafult"
-          type="secondary"
-          v-for="(list, key) in pagination"
-          :id="`${key + 1}button`"
-          @click="showPagination"
-        >{{key + 1}}
-        </or-button>
-      </div>
+
       <div class="footer">
         <or-button
           color="primary"
           @click="buyNumbers"
           :disabled="!hasItemsInBuyList || buyProgress"
-        >Buy {{hasItemsInBuyList ? `(${buyList.length})` : null}}
+        >
+          <span v-if="buyProgress">
+            <ui-progress-circular color="white" size="18" type="indeterminate" v-show="buyProgress"></ui-progress-circular>
+          </span>
+          <span v-else>
+            Buy {{hasItemsInBuyList ? `(${buyList.length})` : null}}
+          </span>
         </or-button>
         <!-- <div class="total">
           Total: USD {{totalPrice}} mothly
         </div> -->
       </div>
-      <ui-progress-circular
-        color="primary"
-        type="indeterminate"
-        class="handle-progress"
-        v-show="buyProgress"
-      ></ui-progress-circular>
     </div>
 
   </or-modal> 
 </template>
 
 <script>
-  //import {uStates, clickedState} from './uStates.js';
   import eventHub from './eventHub.js';
+  import {statesCodes} from './statesCodes.js';
+
   import NumberToBuyItem from './numberToBuyItem.vue';
   import StatesMap from './statesMap.vue';
-  import {statesCodes} from './statesCodes.js';
 
   export default {
     props: {
       groups: Array,
       numbers: Array,
-      readonly: {
-        type: Boolean
-      }
     },
     components: {NumberToBuyItem, StatesMap},
+
+    created () {
+      eventHub.$on('buyList:update', this.updateBuyList);
+      this.requestNumbers();
+    },
+    destroyed () {
+      eventHub.$off('buyList:update', this.updateBuyList);
+    },
+
     data () {
       return {
         buyList: [],
@@ -141,7 +126,6 @@
         lastRequestedNumbersList: [],
         selectedState: '',
         searchValue: '',
-        selectedStateName: 'All',
         showSelected: false,
         states: [
           { value: '',   name: 'All' },
@@ -198,15 +182,11 @@
         ]
       }
     },
-    destroyed () {
-      eventHub.$off('buyList:update', this.updateBuyList);
-    },
     watch: {
       selectedState() {
         this.requestNumbers(this.selectedState)
       },
       numbers() {
-    
         this.numbers.forEach((num) => { 
           statesCodes.forEach((state) => {
             if (state.code === num.value.slice(2,5)) {
@@ -226,7 +206,7 @@
         return this.numbers.filter((num) => num.state === this.selectedState.name)
       },
       allFilteredNumbers () {
-        return _.filter(this.selectedNumbersToBuy, n => this.avilableBySearch(n)); /*fix orthographic error in avilableBySearch*/
+        return _.filter(this.selectedNumbersToBuy, n => this.availableBySearch(n));
       },
       availableNumbers () {
         return _.concat(this.numbers, ...this.groups.map(group => group.numbers));
@@ -238,7 +218,6 @@
           : 'all'}`;
       },
       filteredNumbers () {
-        
         return this.showSelected
         ? this.buyList
         : this.allFilteredNumbers
@@ -250,16 +229,9 @@
         return this.tempArr.length === 0 ? this.lastRequestedNumbersList.filter(num => num.phoneNumber !== _.get(_.find(this.availableNumbers, {value: num.phoneNumber}), 'value', undefined)) : this.tempArr
       },
       selectedNumbersToBuy () {
-        return this.selectedStateName !== 'All'
+        return this.selectedState.name !== 'All'
                 ? _.filter(this.numbersAvailableToBuy, x => x.region === this.selectedState.value)
                 : this.numbersAvailableToBuy;
-      },
-      selectedState () {
-       
-        //return _.find(this.states, x => x.name === this.selectedStateName);
-      },
-      statesNames () {
-        return _.map(this.states, x => x.name);
       },
       totalPrice () {
         return _.reduce(this.buyList, (sum, x) => sum + x.price, 0);
@@ -274,7 +246,7 @@
         console.log('filterednumbers', this.filteredNumbers.slice((num - 1 )*10, num * 10))
         this.lastRequestedNumbersList.slice((num - 1 )*10, num * 10)
       },
-      avilableBySearch (n) {
+      availableBySearch (n) {
         const parts = n.phoneNumber.match(/\+?(\w+)/gi);
         const number = parts.shift();
         const query = this.searchValue.toLowerCase();
@@ -345,11 +317,6 @@
       updateBuyList (newBuylist) {
         this.buyList = newBuylist;
       }
-    },
-    created () {
-      eventHub.$on('buyList:update', this.updateBuyList);
-      this.requestNumbers();
-    
     }
   }
 </script>
@@ -463,6 +430,11 @@
         .search-box {
           margin-bottom: 30px;
 
+          .clear-search {
+            z-index: 10;
+            background-color: #fff;
+          }
+
           .ui-textbox {
             margin-bottom: 0;
             border: none;
@@ -502,6 +474,10 @@
             height: 400px;
             max-height: 400px;
             margin-bottom: 25px;
+
+            .ui-select__empty p {
+              text-align: center;
+            }
           }
         }
 

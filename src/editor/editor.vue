@@ -120,7 +120,6 @@
         ref="buyModal"
         :numbers="localNumbers"
         :groups="groups"
-        :readonly="readonly"
         ></buy-modal>
     </div>
   </div>
@@ -550,7 +549,7 @@ export default {
         })
         .then(response => response.json())
         .then(function(responseJson) { /*can use arrow function*/
-
+          console.log('respo', responseJson)
 
           const groupsData =
              _.filter(responseJson, x => x.isGroup)

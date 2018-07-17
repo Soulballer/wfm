@@ -12,21 +12,12 @@ import {uStatePaths} from './statePaths.js';
 export default {
   name: 'StatesMap',
   props: {
-    availableNumbers: {
-      type: Object
-    },
     selectedState: {
       type: Object,
       default() {
         return {id: ''}
       }
-    },
-    // uStates: {
-    //   type: Object,
-    //   default() {
-    //     return {}
-    //   }
-    // }
+    }
   },
 
   data() {
@@ -166,25 +157,7 @@ export default {
 	d3.select(self.frameElement).style("height", "600px"); 
   },
   watch: {
-    availableNumbers() {
-      let self = this;
-      if (this.availableNumbers) {
-        let stateCounter = this.availableNumbers.reduce((obj, num) => {
-     
-          obj[num.state] ? obj[num.state] += 1 : obj[num.state] = 1;
-          obj.max = obj.max ? obj.max > obj[num.state] ? obj.max : obj[num.state] : obj[num.state];
-          return obj;
-        }, {})
-
-
-
-  
-      }
-      d3.select('#statesvg').selectAll('.states').remove();
-      this.uStates.draw("#statesvg", this.sampleData, null, self);
-    },
     clickedState() {
-      //console.log('clickedState', this.clickedState, ...this.states.filter((state) => state.value == this.clickedState.id));
       this.$emit('update:selectedState', ...this.states.filter((state) => state.value == this.clickedState.id));
     }
   }
