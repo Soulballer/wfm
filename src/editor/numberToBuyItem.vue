@@ -1,54 +1,81 @@
 <template>
   <or-checkbox
+  class="number-to-buy-item number-container"
   :value="isInBuyList"
   @change="updateBuyList">
-    <div class="number-to-buy-item">
+    <div class="number-to-buy-item__number">
       <span>{{number.phoneNumber}}</span>
-      <span>{{getState(number.region) ? getState(number.region).name : null}}</span>
       <!-- <span>$ {{number.price}} monthly</span> -->
     </div>
   </or-checkbox>
 </template>
 
 <script>
-import eventHub from './eventHub.js';
+  import eventHub from './eventHub.js';
 
-export default {
-  name: 'NumbersToBuyItem',
-  computed: {
-    isInBuyList () {
-      return _.find(this.buyList, x => x.phoneNumber === this.number.phoneNumber) !== undefined;
-    }
-  },
-  methods: {
-    getState (region) {
-      return _.find(this.states, s => s.value === region);
+  export default {
+    name: 'NumbersToBuyItem',
+    props: {
+      number: {
+        type: Object
+      },
+      buyList: {
+        type: Array
+      }
     },
-    updateBuyList (event) {
-      this.$emit('update:buyList',
-      event ? _.concat(this.buyList, this.number)
-            : _.reject(this.buyList, this.number))
-            console.log('aaaaaa', this.number)
-    }
-  },
-  props: {
-    number: {
-      type: Object
+
+    computed: {
+      isInBuyList () {
+        return _.find(this.buyList, x => x.phoneNumber === this.number.phoneNumber) !== undefined;
+      }
     },
-    buyList: {
-      type: Array
-    },
-    states: {
-      type: Array
+    methods: {
+      updateBuyList (event) {
+        eventHub.$emit('buyList:update',
+        event ? _.concat(this.buyList, this.number)
+              : _.reject(this.buyList, this.number))
+      }
     }
   }
-}
 </script>
 
 <style lang='scss' scoped>
   .number-to-buy-item {
-    display: flex;
-    justify-content: space-between;
+    &.number-container {
+      &.ui-checkbox {
+        margin-bottom: 13px;
+      }
+
+      .ui-checkbox {
+        &__checkmark {
+          width: 19px;
+          height: 19px;
+
+          &:after {
+            left: 6px;
+            top: 1px;
+
+            width: 7px;
+            height: 13px;
+
+            border-width: 2px !important;
+          }
+        }
+
+        &__label-text {
+          margin-left: 13px;
+          margin-top: 0;
+        }
+      }
+    }
+
+    &__number {
+      span {
+        color: #0F232E;
+        line-height: 21px;
+        font-weight: 400;
+      }
+    }
   }
 </style>
 

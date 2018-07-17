@@ -93,7 +93,7 @@ export default {
     }
   },
   mounted() {
-    console.log('mama', this.availableNumbers)
+
     let self = this;
     this.clickedState = {id: ''}; 
     this.uStates.draw = function(id, data, toolTip, context){		
@@ -170,7 +170,7 @@ export default {
       let self = this;
       if (this.availableNumbers) {
         let stateCounter = this.availableNumbers.reduce((obj, num) => {
-          console.log('!!!', obj, num.state)
+     
           obj[num.state] ? obj[num.state] += 1 : obj[num.state] = 1;
           obj.max = obj.max ? obj.max > obj[num.state] ? obj.max : obj[num.state] : obj[num.state];
           return obj;
@@ -178,7 +178,7 @@ export default {
 
 
 
-        console.log('result', stateCounter)
+  
       }
       d3.select('#statesvg').selectAll('.states').remove();
       this.uStates.draw("#statesvg", this.sampleData, null, self);

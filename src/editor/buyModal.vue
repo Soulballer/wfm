@@ -1,107 +1,121 @@
 <template>
   <or-modal
-  title="Buy numbers"
-  class="buyModal"
+  title=""
+  class="buy-modal"
   ref="modal"
   :contain-focus="false"
   @close="isAllowed = true"
   >
-  <div class="left"></div>
-  <div class="right"></div>
-  <div class="map">
-    <span>Select state on the map: <b>{{selectedState.name}}</b></span>
-    <states-map class="map" :available-numbers="numbers" :selected-state.sync="selectedState" ></states-map>
-    <div>
-      <p>Your active numbers</p>
-      <ul class="state-numbers scrollbar">
-        <li v-for="number in numbersFilteredByState">{{number.value}} <span>{{number.state}}</span></li>
-      </ul>
-    </div>
-  </div>
-  <div class="list">
-    <or-alert @dismiss="isAllowed = true" type="warning" v-show="!isAllowed">
-      Only Admin has permissions to manage account numbers. Please contact your admin or OneReach Support.
-    </or-alert>
-    <!-- <or-select
-      label="Choose state"
-      name="state"
-      v-model="selectedStateName"
-      :options="statesNames"
-      class="statesSelect"
-      @change="requestNumbers(selectedState)"
-    ></or-select> -->
-    <div 
-      class="search-box" 
-      v-show="!readonly">
-      <or-textbox
-        :disabled="readonly" 
-        class="search-filter" 
-        placeholder="Type to search" 
-        name="searchInput" 
-        v-model="searchValue" 
-        icon="search"
-      ></or-textbox>
-      <ui-icon 
-        @click.native="clearSearch" 
-        class="clear-search" 
-        icon="close" 
-        v-if="searchValue"
-      ></ui-icon>
-    </div>
-    <div class="numbers-container">
-      <ui-progress-linear
-        color="primary"
-        size="24"
-        v-show="isLoading"
-        style="margin-bottom: 14px;"
-      ></ui-progress-linear>
-      <div v-if="!isLoading">
-        <div
-          class="button"
-          v-show="hasItemsInBuyList"
-          @click="changeBuyFilter"
-        >{{buyfilterButtonText}}</div>
-        <div class="numbers-list scrollbar">
-          <div 
-            class="ui-select__empty" 
-            v-show="!filteredNumbers.length"
-          >
-            <p>No matching phone numbers</p>
-          </div>
-          <number-to-buy-item
-            v-for="number in filteredNumbers"
-            :number="number"
-            :buy-list.sync="buyList"
-            :key="number.phoneNumber"
-            :states="states"
-            transition="expand">
-          </number-to-buy-item>
-        </div>
+  
+    <div class="buy-modal-left">
+      <div class="map">
+        <span class="map__state">Select state on the map: <span>{{selectedState.name}}</span></span>
+        <states-map class="map__svg" :available-numbers="numbers" :selected-state.sync="selectedState"></states-map>
+
+        <p>Your active numbers</p>
+        <ul class="state-numbers scrollbar" :class="{ 'no-scroll': numbersFilteredByState.length < 6}">
+          <li :key="number.value" v-for="number in numbersFilteredByState">{{number.value}} <span>{{number.state}}</span></li>
+        </ul>
       </div>
     </div>
-    <div class="footer">
-      <or-button
+
+    <div class="buy-modal-right">
+      <div class="buy-modal-right__header">
+        <p>Buy a numbers</p><p>in <b>{{selectedState.name === 'All' ? 'All states' : selectedState.name}}</b></p>
+      </div>
+      
+      <or-alert @dismiss="isAllowed = true" type="warning" v-show="!isAllowed">
+        Only Admin has permissions to manage account numbers. Please contact your admin or OneReach Support.
+      </or-alert>
+      <!-- <or-select
+        label="Choose state"
+        name="state"
+        v-model="selectedStateName"
+        :options="statesNames"
+        class="statesSelect"
+        @change="requestNumbers(selectedState)"
+      ></or-select> -->
+      <div 
+        class="search-box" 
+        v-show="!readonly">
+        <or-textbox
+          :disabled="readonly" 
+          class="search-filter" 
+          placeholder="Search by numbers" 
+          name="searchInput" 
+          v-model="searchValue" 
+          icon="search"
+        ></or-textbox>
+        <ui-icon 
+          @click.native="clearSearch" 
+          class="clear-search" 
+          icon="close" 
+          v-if="searchValue"
+        ></ui-icon>
+      </div>
+      <div class="numbers-container">
+        <ui-progress-linear
+          color="primary"
+          size="24"
+          v-show="isLoading"
+          style="margin-bottom: 14px;"
+        ></ui-progress-linear>
+        <div v-if="!isLoading">
+          <div
+            class="button"
+            v-show="hasItemsInBuyList"
+            @click="changeBuyFilter"
+          >{{buyfilterButtonText}}</div>
+          <div class="numbers-list scrollbar">
+            <div 
+              class="ui-select__empty" 
+              v-show="!filteredNumbers.length"
+            >
+              <p>No matching phone numbers</p>
+            </div>
+            <number-to-buy-item
+              v-for="number in filteredNumbers"
+              :number="number"
+              :buyList="buyList"
+              :key="number.phoneNumber"
+              transition="expand">
+            </number-to-buy-item>
+          </div>
+        </div>
+      </div>
+      <div class="pagination">
+        <or-button
+          color="deafult"
+          type="secondary"
+          v-for="(list, key) in pagination"
+          :id="`${key + 1}button`"
+          @click="showPagination"
+        >{{key + 1}}
+        </or-button>
+      </div>
+      <div class="footer">
+        <or-button
+          color="primary"
+          @click="buyNumbers"
+          :disabled="!hasItemsInBuyList || buyProgress"
+        >Buy {{hasItemsInBuyList ? `(${buyList.length})` : null}}
+        </or-button>
+        <!-- <div class="total">
+          Total: USD {{totalPrice}} mothly
+        </div> -->
+      </div>
+      <ui-progress-circular
         color="primary"
-        @click="buyNumbers"
-        :disabled="!hasItemsInBuyList || buyProgress"
-      >Buy {{hasItemsInBuyList ? buyList.length : null}}
-      </or-button>
-      <!-- <div class="total">
-        Total: USD {{totalPrice}} mothly
-      </div> -->
+        type="indeterminate"
+        class="handle-progress"
+        v-show="buyProgress"
+      ></ui-progress-circular>
     </div>
-    <ui-progress-circular
-      color="primary"
-      type="indeterminate"
-      class="handle-progress"
-      v-show="buyProgress"
-    ></ui-progress-circular>
-  </div>
+
   </or-modal> 
 </template>
 
 <script>
-  import * as d3 from '../../node_modules/d3/build/d3.js';
   //import {uStates, clickedState} from './uStates.js';
   import eventHub from './eventHub.js';
   import NumberToBuyItem from './numberToBuyItem.vue';
@@ -123,6 +137,7 @@
         isLoading: false,
         buyProgress: false,
         isAllowed: true,
+        tempArr: [],
         lastRequestedNumbersList: [],
         selectedState: '',
         searchValue: '',
@@ -191,7 +206,7 @@
         this.requestNumbers(this.selectedState)
       },
       numbers() {
-        console.log('aassssssss')
+    
         this.numbers.forEach((num) => { 
           statesCodes.forEach((state) => {
             if (state.code === num.value.slice(2,5)) {
@@ -202,8 +217,11 @@
       }
     },
     computed: {
+      pagination() {
+        return Math.ceil(this.lastRequestedNumbersList.length/10)
+      },
       numbersFilteredByState() {
-        console.log('nu vot blya', this.numbers)
+
         if (this.selectedState.name === '' || this.selectedState.name === 'All') return this.numbers;
         return this.numbers.filter((num) => num.state === this.selectedState.name)
       },
@@ -229,7 +247,7 @@
         return this.buyList.length !== 0;
       },
       numbersAvailableToBuy () {
-        return this.lastRequestedNumbersList.filter(num => num.phoneNumber !== _.get(_.find(this.availableNumbers, {value: num.phoneNumber}), 'value', undefined))
+        return this.tempArr.length === 0 ? this.lastRequestedNumbersList.filter(num => num.phoneNumber !== _.get(_.find(this.availableNumbers, {value: num.phoneNumber}), 'value', undefined)) : this.tempArr
       },
       selectedNumbersToBuy () {
         return this.selectedStateName !== 'All'
@@ -248,6 +266,14 @@
       }
     },
     methods: {
+      showPagination(event) {
+        let num = parseInt(event.target.offsetParent.id)
+        console.log('aaa', parseInt(event.target.offsetParent.id));
+        this.tempArr = this.lastRequestedNumbersList.slice((num - 1 )*10, num * 10)
+       
+        console.log('filterednumbers', this.filteredNumbers.slice((num - 1 )*10, num * 10))
+        this.lastRequestedNumbersList.slice((num - 1 )*10, num * 10)
+      },
       avilableBySearch (n) {
         const parts = n.phoneNumber.match(/\+?(\w+)/gi);
         const number = parts.shift();
@@ -287,7 +313,6 @@
         this.searchValue = '';
       },
       changeBuyFilter () {
-        //this.selectedStateName = 'All';
         this.showSelected = !this.showSelected;
       },
       openModal() {
@@ -322,32 +347,175 @@
       }
     },
     created () {
+      eventHub.$on('buyList:update', this.updateBuyList);
       this.requestNumbers();
     
-    },
-    mounted() {
-      console.log('buyModal this.numbers', this.numbers)
     }
   }
 </script>
 
 <style lang="scss" scoped rel="stylesheet/scss">
-  .numbers-container {
-    flex: 1;
-  }
+  .buy-modal .ui-modal__container {
+    position: relative;
 
-  .state-numbers {
-    list-style: none;
-    height: 100px;
-    overflow-y: scroll;
-  }
+    width: 65rem;
 
-  .buyModal .ui-modal__container {
-    width: 55rem;
+    .ui-modal__header {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
 
     .ui-modal__body {
-    display: flex;
-  }
+      display: flex;
+      padding: 0;
+
+      .buy-modal-left {
+        flex-flow: 3;
+        padding: 72px;
+
+        .map {
+          &__state {
+            display: block;
+            padding-left: 14px;
+            margin-bottom: 15px;
+
+            color: #868B93;
+            font-size: 16px;
+            line-height: 21px;
+
+            span {
+              color: #0F232E;
+            }
+          }
+
+          &__svg {
+            margin-bottom: 50px;
+          }
+
+          p {
+            margin-bottom: 0;
+            padding-left: 14px;
+            padding-bottom: 14px;
+
+            color: #0F232E;
+            font-size: 22px;
+            font-weight: 100;
+            line-height: 26px;
+          }
+
+          .state-numbers {
+            height: 150px;
+            padding: 0 0 0 14px;
+            margin: 0;
+
+            list-style: none;
+            overflow-y: scroll;
+
+            li {
+              margin-bottom: 10px;
+
+              color: #0F232E;
+              line-height: 21px;
+
+              span {
+                display: inline-block;
+                margin-left: 20px;
+
+                color: #868B93;
+              }
+            }
+
+            &.no-scroll {
+              overflow-y: visible;
+            }
+          }
+        }
+      }
+
+      .buy-modal-right {
+        position: relative;
+
+        flex-grow: 2;
+        padding: 40px 50px 20px;
+
+        background-color: #F6F6F6;
+
+        &__header {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 23px;
+          margin-top: 15px;
+
+          color: #0F232E;
+          font-size: 14px;
+          line-height: 26px;
+
+          p {
+            margin: 0;
+          }
+
+          p:first-child {
+            font-size: 22px;
+          }
+        }
+
+        .search-box {
+          margin-bottom: 30px;
+
+          .ui-textbox {
+            margin-bottom: 0;
+            border: none;
+          }
+
+          .ui-textbox__icon-wrapper {
+            top: 10px;
+            left: inherit;
+            right: 5px;
+
+            .ui-icon {
+              font-size: 21px;
+              color: #91969D !important;
+            }
+          }
+
+          .ui-textbox__input {
+            padding-left: 15px;
+          }
+        }
+
+        .numbers-container {
+          position: relative; 
+          padding-top: 22px;
+          
+          .button {
+            position: absolute;
+            top: 0;
+
+            padding: 0;
+
+            font-size: 14px;
+            line-height: 21px;
+          }
+
+          .numbers-list {
+            height: 400px;
+            max-height: 400px;
+            margin-bottom: 25px;
+          }
+        }
+
+        .footer {
+          position: absolute;
+          bottom: 50px;
+          left: 0;
+          right: 0;
+
+          display: flex;
+          justify-content: center;
+        }
+      }
+    }
   }
 </style>
 

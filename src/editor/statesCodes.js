@@ -400,6 +400,10 @@ export const statesCodes = [
   "state": "Tennessee"
   },
   {
+  "code": "424",
+  "state": "California"
+  },
+  {
   "code": "425",
   "state": "Washington"
   },
@@ -426,6 +430,10 @@ export const statesCodes = [
   {
   "code": "441",
   "state": "Bermuda"
+  },
+  {
+  "code": "442",
+  "state": "California"
   },
   {
   "code": "443",
@@ -688,6 +696,10 @@ export const statesCodes = [
   "state": "California"
   },
   {
+  "code": "628",
+  "state": "California"
+  },
+  {
   "code": "630",
   "state": "Illinois"
   },
@@ -742,6 +754,10 @@ export const statesCodes = [
   {
   "code": "664",
   "state": "Montserrat"
+  },
+  {
+  "code": "669",
+  "state": "California"
   },
   {
   "code": "670",
@@ -858,6 +874,10 @@ export const statesCodes = [
   {
   "code": "740",
   "state": "Ohio"
+  },
+  {
+  "code": "747",
+  "state": "California"
   },
   {
   "code": "754",
@@ -1229,6 +1249,10 @@ export const statesCodes = [
   },
   {
   "code": "949",
+  "state": "California"
+  },
+  {
+  "code": "951",
   "state": "California"
   },
   {
