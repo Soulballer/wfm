@@ -118,9 +118,8 @@
     <div class="container container_for-modal">
       <buy-modal
         ref="buyModal"
-        :numbers="localNumbers"
-        :groups="groups"
-        ></buy-modal>
+        :numbers="allAvailableNumbers"
+      ></buy-modal>
     </div>
   </div>
 </template>
@@ -243,6 +242,7 @@ export default {
   },
   data() {
     return {
+      allAvailableNumbers: [],
       anyNumbersAvilable: true,
       currentFlowDeployedData: {},
       currentShowState: this.readonly ? false : this.showAll,
@@ -550,7 +550,7 @@ export default {
         .then(response => response.json())
         .then(function(responseJson) { /*can use arrow function*/
           console.log('respo', responseJson)
-
+          this.allAvailableNumbers = responseJson
           const groupsData =
              _.filter(responseJson, x => x.isGroup)
 

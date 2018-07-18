@@ -61,7 +61,7 @@
         </div>
         <item-content
           v-for="number in group.numbers"
-          key="number.value"
+          :key="number.value"
           :number="number"
           :group="group"
           :readonly="readonly"

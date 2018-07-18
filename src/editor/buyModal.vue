@@ -14,7 +14,7 @@
 
         <p>Your active numbers</p>
         <ul class="state-numbers scrollbar" :class="{ 'no-scroll': numbersFilteredByState.length < 6}">
-          <li :key="number.value" v-for="number in numbersFilteredByState">{{number.value}} <span>{{number.state}}</span></li>
+          <li :key="number.id" v-for="number in numbersFilteredByState">{{number.value}} <span>{{number.state}}</span></li>
         </ul>
       </div>
     </div>
@@ -97,141 +97,83 @@
 
 <script>
   import eventHub from './eventHub.js';
-  import {statesCodes} from './statesCodes.js';
+  import {usCodes} from './usAreaCodes.js';
 
   import NumberToBuyItem from './numberToBuyItem.vue';
   import StatesMap from './statesMap.vue';
 
   export default {
     props: {
-      groups: Array,
-      numbers: Array,
+      numbers: Array
     },
     components: {NumberToBuyItem, StatesMap},
 
     created () {
       eventHub.$on('buyList:update', this.updateBuyList);
+      eventHub.$on('update state', this.requestNumbers);
     },
     destroyed () {
       eventHub.$off('buyList:update', this.updateBuyList);
+      eventHub.$off('update state', this.requestNumbers);
     },
 
+    computed: {
+      pagination() {
+        return Math.ceil(this.numbersAvailableToBuy.length/10)
+      },
+      numbersFilteredByState() {
+        if (this.selectedState.name === 'All') return this.mappedNumbers;
+
+        return this.mappedNumbers.filter((num) => num.state === this.selectedState.name)
+      },
+      allFilteredNumbers () {
+        return _.filter(this.selectedNumbersToBuy, n => this.availableBySearch(n));
+      },
+      buyfilterButtonText () {
+        return `Show  ${
+          this.hasItemsInBuyList && !this.showSelected
+            ? `selected (${this.buyList.length})`
+            : 'all'}`;
+      },
+      filteredNumbers () {
+        return this.showSelected
+          ? this.buyList
+          : this.allFilteredNumbers
+      },
+      hasItemsInBuyList () {
+        return this.buyList.length !== 0;
+      },
+      mappedNumbers() {
+        return this.numbers
+          .filter((num) => !num.isGroup)
+          .reduce((arr, num) => {
+            arr.push({id: num.id, value: num.phoneNumber, state: this.getState(num.phoneNumber)});
+            return arr
+          }, []);
+      },
+      selectedNumbersToBuy () {
+        return this.selectedState.name !== 'All'
+                ? _.filter(this.tempArr, x => x.region === this.selectedState.value)
+                : this.tempArr;
+      },
+      totalPrice () {
+        return _.reduce(this.buyList, (sum, x) => sum + x.price, 0);
+      }
+    },
     data () {
       return {
         buyList: [],
         buyProgress: false,
         isAllowed: true,
         isLoading: false,
-        tempArr: [],
-        lastRequestedNumbersList: [],
+        numbersAvailableToBuy: [],
         selectedState: '',
         searchValue: '',
         showSelected: false,
-        states: [
-          { value: '',   name: 'All' },
-          { value: 'AL', name: 'Alabama' },
-          { value: 'AK', name: 'Alaska' },
-          { value: 'AZ', name: 'Arizona' },
-          { value: 'AR', name: 'Arkansas' },
-          { value: 'CA', name: 'California' },
-          { value: 'CO', name: 'Colorado' },
-          { value: 'CT', name: 'Connecticut' },
-          { value: 'DE', name: 'Delaware' },
-          { value: 'FL', name: 'Florida' },
-          { value: 'GA', name: 'Georgia' },
-          { value: 'HI', name: 'Hawaii' },
-          { value: 'ID', name: 'Idaho' },
-          { value: 'IL', name: 'Illinois' },
-          { value: 'IN', name: 'Indiana' },
-          { value: 'IA', name: 'Iowa' },
-          { value: 'KS', name: 'Kansas' },
-          { value: 'KY', name: 'Kentucky' },
-          { value: 'LA', name: 'Louisiana' },
-          { value: 'ME', name: 'Maine' },
-          { value: 'MD', name: 'Maryland' },
-          { value: 'MA', name: 'Massachusetts' },
-          { value: 'MI', name: 'Michigan' },
-          { value: 'MN', name: 'Minnesota' },
-          { value: 'MS', name: 'Mississippi' },
-          { value: 'MO', name: 'Missouri' },
-          { value: 'MT', name: 'Montana' },
-          { value: 'NE', name: 'Nebraska' },
-          { value: 'NV', name: 'Nevada' },
-          { value: 'NH', name: 'New Hampshire' },
-          { value: 'NJ', name: 'New Jersey' },
-          { value: 'NM', name: 'New Mexico' },
-          { value: 'NY', name: 'New York' },
-          { value: 'NC', name: 'North Carolina' },
-          { value: 'ND', name: 'North Dakota' },
-          { value: 'OH', name: 'Ohio' },
-          { value: 'OK', name: 'Oklahoma' },
-          { value: 'OR', name: 'Oregon' },
-          { value: 'PA', name: 'Pennsylvania' },
-          { value: 'RI', name: 'Rhode Island' },
-          { value: 'SC', name: 'South Carolina' },
-          { value: 'SD', name: 'South Dakota' },
-          { value: 'TN', name: 'Tennessee' },
-          { value: 'TX', name: 'Texas' },
-          { value: 'UT', name: 'Utah' },
-          { value: 'VT', name: 'Vermont' },
-          { value: 'VA', name: 'Virginia' },
-          { value: 'WA', name: 'Washington' },
-          { value: 'WV', name: 'West Virginia' },
-          { value: 'WI', name: 'Wisconsin' },
-          { value: 'WY', name: 'Wyoming' }
-        ]
-      }
-    },
-    computed: {
-      pagination() {
-        return Math.ceil(this.lastRequestedNumbersList.length/10)
-      },
-      numbersFilteredByState() {
-
-        if (this.selectedState.name === '' || this.selectedState.name === 'All') return this.numbers;
-        return this.numbers.filter((num) => num.state === this.selectedState.name)
-      },
-      allFilteredNumbers () {
-        return _.filter(this.selectedNumbersToBuy, n => this.availableBySearch(n));
-      },
-      availableNumbers () {
-        return _.concat(this.numbers, ...this.groups.map(group => group.numbers));
-      },
-      buyfilterButtonText () {
-        return `Show  ${
-          this.hasItemsInBuyList && !this.showSelected
-          ? `selected (${this.buyList.length})`
-          : 'all'}`;
-      },
-      filteredNumbers () {
-        return this.showSelected
-        ? this.buyList
-        : this.allFilteredNumbers
-      },
-      hasItemsInBuyList () {
-        return this.buyList.length !== 0;
-      },
-      numbersAvailableToBuy () {
-        return this.tempArr.length === 0 ? this.lastRequestedNumbersList.filter(num => num.phoneNumber !== _.get(_.find(this.availableNumbers, {value: num.phoneNumber}), 'value', undefined)) : this.tempArr
-      },
-      selectedNumbersToBuy () {
-        return this.selectedState.name !== 'All'
-                ? _.filter(this.numbersAvailableToBuy, x => x.region === this.selectedState.value)
-                : this.numbersAvailableToBuy;
-      },
-      totalPrice () {
-        return _.reduce(this.buyList, (sum, x) => sum + x.price, 0);
+        tempArr: []
       }
     },
     methods: {
-      showPagination(event) {
-        let num = parseInt(event.target.offsetParent.id)
-        console.log('aaa', parseInt(event.target.offsetParent.id));
-        this.tempArr = this.lastRequestedNumbersList.slice((num - 1 )*10, num * 10)
-       
-        console.log('filterednumbers', this.filteredNumbers.slice((num - 1 )*10, num * 10))
-        this.lastRequestedNumbersList.slice((num - 1 )*10, num * 10)
-      },
       availableBySearch (n) {
         const parts = n.phoneNumber.match(/\+?(\w+)/gi);
         const number = parts.shift();
@@ -255,7 +197,7 @@
           }
         )
         .then(() => {
-          eventHub.$emit('update numbers data')
+          eventHub.$emit('update numbers data');
           this.buyList = [];
           this.buyProgress = false;
           this.$refs.modal.close();
@@ -273,13 +215,16 @@
       changeBuyFilter () {
         this.showSelected = !this.showSelected;
       },
+      getState(num) {
+        return usCodes[num.slice(2,5)].state;
+      },
       openModal() {
         this.$refs.modal.open();
       },
       requestNumbers (selectedState) {
         this.isLoading = true;
         this.showSelected = false;
-
+      
         this.$http.get(
           this.$flow.gatewayUrl('obtainable-identifiers', this.$flow.providersAccountId()),
           {
@@ -287,36 +232,23 @@
               Authorization: `USER ${this.$settings.token}`
             },
             params: {
-              region: selectedState ? selectedState.value : ''
+              region: this.selectedState ? this.selectedState.value : ''
             }
           }
         )
         .then(response => response.json())
-        .then(d => {
-          this.lastRequestedNumbersList = d;
-        
-          this.availableNumbers = _.concat(this.numbers, ...this.groups.map(group => group.numbers));
-          this.numbersAvailableToBuy = d.filter(num => num.phoneNumber !== _.get(_.find(this.availableNumbers, {value: num.phoneNumber}), undefined));
+        .then(num => {
+          this.numbersAvailableToBuy = num
           this.isLoading = false;
         });
-
+      },
+      showPagination(event) {
+        let num = parseInt(event.target.offsetParent.id)
+        this.tempArr = this.numbersAvailableToBuy.slice((num - 1 )*10, num * 10)
+        this.numbersAvailableToBuy = this.tempArr;
       },
       updateBuyList (newBuylist) {
         this.buyList = newBuylist;
-      }
-    },
-    watch: {
-      selectedState() {
-        this.requestNumbers(this.selectedState)
-      },
-      numbers() {
-        this.numbers.forEach((num) => { 
-          statesCodes.forEach((state) => {
-            if (state.code === num.value.slice(2,5)) {
-              num.state = state.state
-            } 
-          })
-        });
       }
     }
   }

@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import eventHub from './eventHub.js';
 import * as d3 from '../../node_modules/d3/build/d3.js';
 import {uStatePaths} from './statePaths.js';
 
@@ -159,6 +160,7 @@ export default {
   watch: {
     clickedState() {
       this.$emit('update:selectedState', ...this.states.filter((state) => state.value == this.clickedState.id));
+      eventHub.$emit('update state');
     }
   }
 
