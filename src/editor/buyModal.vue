@@ -1,10 +1,11 @@
 <template>
   <or-modal
-  title=""
-  class="buy-modal"
-  ref="modal"
-  :contain-focus="false"
-  @close="isAllowed = true"
+    title=""
+    class="buy-modal"
+    ref="modal"
+    :contain-focus="false"
+    @open="requestNumbers"
+    @close="isAllowed = true"
   >
     <div class="buy-modal-left">
       <div class="map">
@@ -110,7 +111,6 @@
 
     created () {
       eventHub.$on('buyList:update', this.updateBuyList);
-      this.requestNumbers();
     },
     destroyed () {
       eventHub.$off('buyList:update', this.updateBuyList);
@@ -119,9 +119,9 @@
     data () {
       return {
         buyList: [],
-        isLoading: false,
         buyProgress: false,
         isAllowed: true,
+        isLoading: false,
         tempArr: [],
         lastRequestedNumbersList: [],
         selectedState: '',
@@ -180,20 +180,6 @@
           { value: 'WI', name: 'Wisconsin' },
           { value: 'WY', name: 'Wyoming' }
         ]
-      }
-    },
-    watch: {
-      selectedState() {
-        this.requestNumbers(this.selectedState)
-      },
-      numbers() {
-        this.numbers.forEach((num) => { 
-          statesCodes.forEach((state) => {
-            if (state.code === num.value.slice(2,5)) {
-              num.state = state.state
-            } 
-          })
-        });
       }
     },
     computed: {
@@ -308,6 +294,7 @@
         .then(response => response.json())
         .then(d => {
           this.lastRequestedNumbersList = d;
+        
           this.availableNumbers = _.concat(this.numbers, ...this.groups.map(group => group.numbers));
           this.numbersAvailableToBuy = d.filter(num => num.phoneNumber !== _.get(_.find(this.availableNumbers, {value: num.phoneNumber}), undefined));
           this.isLoading = false;
@@ -316,6 +303,20 @@
       },
       updateBuyList (newBuylist) {
         this.buyList = newBuylist;
+      }
+    },
+    watch: {
+      selectedState() {
+        this.requestNumbers(this.selectedState)
+      },
+      numbers() {
+        this.numbers.forEach((num) => { 
+          statesCodes.forEach((state) => {
+            if (state.code === num.value.slice(2,5)) {
+              num.state = state.state
+            } 
+          })
+        });
       }
     }
   }
