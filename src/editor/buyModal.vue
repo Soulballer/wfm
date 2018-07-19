@@ -52,7 +52,7 @@
               <p>No matching phone numbers</p>
             </div>
             <number-to-buy-item
-              v-for="number in selectedNumbersToBuy"
+              v-for="number in splitToPagesNumbers"
               :number="number"
               :buyList="buyList"
               :key="number.phoneNumber"
@@ -63,12 +63,12 @@
           <div class="pagination">
             <or-button
               :key="key"
-              :class="{selected: num  === key + 1}"
+              :class="{selected: pageNumber  === key + 1}"
               color="deafult"
               type="secondary"
-              v-for="(list, key) in pagination"
+              v-for="(list, key) in paginationButtons"
               :id="`${key + 1}button`"
-              @click="showPagination"
+              @click="changePageNumber"
             >{{key + 1}}
             </or-button>
           </div>
@@ -120,9 +120,6 @@
     },
 
     computed: {
-      pagination() {
-        return Math.ceil(this.filteredNumbers.length/10)
-      },
       allFilteredNumbers () {
         return _.filter(this.numbersAvailableToBuy, n => this.availableBySearch(n));
       },
@@ -153,8 +150,14 @@
 
         return this.mappedNumbers.filter((num) => num.state === this.selectedState.name)
       },
-      selectedNumbersToBuy () {
-        return this.tempArr = this.filteredNumbers.slice((this.num - 1 )*10, this.num * 10);
+      paginationButtons() {
+        let pagesLength = Math.ceil(this.filteredNumbers.length / this.numbersToShow);
+        if (this.pageNumber > pagesLength) this.pageNumber = pagesLength || 1 ;
+        
+        return pagesLength;
+      },
+      splitToPagesNumbers () {
+        return this.filteredNumbers.slice((this.pageNumber - 1 ) * this.numbersToShow, this.pageNumber * this.numbersToShow);
       },
       totalPrice () {
         return _.reduce(this.buyList, (sum, x) => sum + x.price, 0);
@@ -166,12 +169,12 @@
         buyProgress: false,
         isAllowed: true,
         isLoading: false,
-        num: 1,
+        pageNumber: 1,
+        numbersToShow: 10,
         numbersAvailableToBuy: [],
         selectedState: '',
         searchValue: '',
-        showSelected: false,
-        tempArr: []
+        showSelected: false
       }
     },
     methods: {
@@ -216,6 +219,11 @@
       changeBuyFilter () {
         this.showSelected = !this.showSelected;
       },
+      changePageNumber(event) {
+        if (!event) return;
+
+        this.pageNumber = parseInt(event.target.offsetParent.id)
+      },
       getState(num) {
         return usCodes[num.slice(2,5)].state;
       },
@@ -242,11 +250,6 @@
           this.numbersAvailableToBuy = num
           this.isLoading = false;
         });
-      },
-      showPagination(event) {
-        if (!event) return;
-
-        this.num = parseInt(event.target.offsetParent.id)
       },
       updateBuyList (newBuylist) {
         this.buyList = newBuylist;
