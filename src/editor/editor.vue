@@ -549,7 +549,7 @@ export default {
         })
         .then(response => response.json())
         .then(function(responseJson) { /*can use arrow function*/
-          console.log('respo', responseJson)
+          
           this.allAvailableNumbers = responseJson
           const groupsData =
              _.filter(responseJson, x => x.isGroup)

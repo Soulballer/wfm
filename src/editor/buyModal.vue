@@ -52,7 +52,7 @@
               <p>No matching phone numbers</p>
             </div>
             <number-to-buy-item
-              v-for="number in filteredNumbers"
+              v-for="number in selectedNumbersToBuy"
               :number="number"
               :buyList="buyList"
               :key="number.phoneNumber"
@@ -62,6 +62,8 @@
 
           <div class="pagination">
             <or-button
+              :key="key"
+              :class="{selected: num  === key + 1}"
               color="deafult"
               type="secondary"
               v-for="(list, key) in pagination"
@@ -106,7 +108,7 @@
     props: {
       numbers: Array
     },
-    components: {NumberToBuyItem, StatesMap},
+    components: { NumberToBuyItem, StatesMap },
 
     created () {
       eventHub.$on('buyList:update', this.updateBuyList);
@@ -119,15 +121,10 @@
 
     computed: {
       pagination() {
-        return Math.ceil(this.numbersAvailableToBuy.length/10)
-      },
-      numbersFilteredByState() {
-        if (this.selectedState.name === 'All') return this.mappedNumbers;
-
-        return this.mappedNumbers.filter((num) => num.state === this.selectedState.name)
+        return Math.ceil(this.filteredNumbers.length/10)
       },
       allFilteredNumbers () {
-        return _.filter(this.selectedNumbersToBuy, n => this.availableBySearch(n));
+        return _.filter(this.numbersAvailableToBuy, n => this.availableBySearch(n));
       },
       buyfilterButtonText () {
         return `Show  ${
@@ -151,10 +148,13 @@
             return arr
           }, []);
       },
+      numbersFilteredByState() {
+        if (this.selectedState.name === 'All') return this.mappedNumbers;
+
+        return this.mappedNumbers.filter((num) => num.state === this.selectedState.name)
+      },
       selectedNumbersToBuy () {
-        return this.selectedState.name !== 'All'
-                ? _.filter(this.tempArr, x => x.region === this.selectedState.value)
-                : this.tempArr;
+        return this.tempArr = this.filteredNumbers.slice((this.num - 1 )*10, this.num * 10);
       },
       totalPrice () {
         return _.reduce(this.buyList, (sum, x) => sum + x.price, 0);
@@ -166,6 +166,7 @@
         buyProgress: false,
         isAllowed: true,
         isLoading: false,
+        num: 1,
         numbersAvailableToBuy: [],
         selectedState: '',
         searchValue: '',
@@ -243,9 +244,9 @@
         });
       },
       showPagination(event) {
-        let num = parseInt(event.target.offsetParent.id)
-        this.tempArr = this.numbersAvailableToBuy.slice((num - 1 )*10, num * 10)
-        this.numbersAvailableToBuy = this.tempArr;
+        if (!event) return;
+
+        this.num = parseInt(event.target.offsetParent.id)
       },
       updateBuyList (newBuylist) {
         this.buyList = newBuylist;
@@ -404,25 +405,52 @@
           }
 
           .numbers-list {
-            height: 400px;
-            max-height: 400px;
-            margin-bottom: 25px;
+            height: 340px;
+            max-height: 340px;
+            margin-bottom: 10px;
 
             .ui-select__empty p {
               text-align: center;
             }
           }
-        }
 
-        .footer {
-          position: absolute;
-          bottom: 50px;
-          left: 0;
-          right: 0;
+          .pagination {
+            display: flex;
+            justify-content: center;
 
-          display: flex;
-          justify-content: center;
+            .ui-button {
+              width: 32px;
+              min-width: auto;
+              height: 32px;
+              padding: 16px;
+
+              line-height: 0;
+
+              border: none;
+              border-radius: 50%;
+
+              &.selected {
+                .ui-button__content {
+                  color: #64B2DA;
+                }
+              }
+
+              &__content {
+                color: #6D6D6D;
+              }
+            }
+          }
         }
+      }
+
+      .footer {
+        position: absolute;
+        bottom: 50px;
+        left: 0;
+        right: 0;
+
+        display: flex;
+        justify-content: center;
       }
     }
   }
