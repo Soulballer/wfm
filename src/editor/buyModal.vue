@@ -13,7 +13,7 @@
         <states-map class="map__svg" :selected-state.sync="selectedState"></states-map>
 
         <p>Your active numbers</p>
-        <ul class="state-numbers scrollbar" :class="{ 'no-scroll': numbersFilteredByState.length < 6}">
+        <ul class="state-numbers scrollbar" :class="{ 'no-scroll': numbersFilteredByState.length < numbersAvailableToShow}">
           <li :key="number.id" v-for="number in numbersFilteredByState">{{number.value}} <span>{{number.state}}</span></li>
         </ul>
       </div>
@@ -106,7 +106,12 @@
 
   export default {
     props: {
-      numbers: Array
+      numbers: {
+        type: Array,
+        default() {
+          return []
+        }
+      }
     },
     components: { NumberToBuyItem, StatesMap },
 
@@ -153,7 +158,7 @@
       paginationButtons() {
         let pagesLength = Math.ceil(this.filteredNumbers.length / this.numbersToShow);
         if (this.pageNumber > pagesLength) this.pageNumber = pagesLength || 1 ;
-        
+
         return pagesLength;
       },
       splitToPagesNumbers () {
@@ -171,6 +176,7 @@
         isLoading: false,
         pageNumber: 1,
         numbersToShow: 10,
+        numbersAvailableToShow: 6,
         numbersAvailableToBuy: [],
         selectedState: '',
         searchValue: '',
@@ -232,6 +238,7 @@
       },
       requestNumbers (selectedState) {
         this.isLoading = true;
+        this.pageNumber = 1;
         this.showSelected = false;
       
         this.$http.get(
