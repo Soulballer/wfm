@@ -1,11 +1,11 @@
 <template>
   <div class="map">
-    <div id="map__legend">
+    <div class="map__legend">
       <div v-for="color in colorPalette">
-        <div class="color-box" :style="{'background-color': color.color}">
-        </div>
-        <span>{{color.min}} - {{color.max == Infinity ? '' : color.max}}</span>
+        <div class="color-box" :style="{'background-color': color.color}"></div>
+        <span>{{color.min}} {{color.max == Infinity ? '+' : `- ${color.max}`}}</span>
       </div>
+      <p>Population per square<br> mile by state.<br> 2015 census figures.</p>
     </div>
     <svg width="500" height="350" viewBox="0 0 960 600" id="statesvg"></svg>
   </div>
@@ -23,13 +23,14 @@
       selectedState: {
         type: Object,
         default() {
-          return {id: ''}
+          return {id: '', name: 'All'}
         }
       }
     },
 
     data() {
       return {
+        colorData: {},
         colorPalette: [
           { color: '#0C280B', min: 1000, max: Infinity },
           { color: '#174F15', min: 500,  max: 1000 },
@@ -40,10 +41,6 @@
           { color: '#D6EBD4', min: 0,    max: 20 }
         ],
         clickedState: {id: ''},
-        localSelectedState: {},
-        uStatePaths: [],
-        uStates: {},
-        sampleData: {},
         states: [
           { value: '',   name: 'All', population: 0 },
           { value: 'AL', name: 'Alabama', population: 95 },
@@ -101,54 +98,78 @@
       }
     },
     methods: {
+      draw(id, data) {
+        
+      },
       getColor(state) {
         return [...this.colorPalette.filter((data) => data.max > state.population && data.min <= state.population)][0];
+      },
+      mouseClick(event) {
+        if (this.clickedState.id !== event.id && !_.isEmpty(this.clickedState.id)) {
+          d3.select(`#${this.clickedState.id}`).style("fill", this.colorData[event.id].color) ;
+        } else {
+          console.log('sssss')
+          d3.select(`#${event.id}`).style("fill", this.colorData[event.id].color) 
+          this.clickedState = {id: ''};
+          return
+        }
+
+        this.clickedState = {id: event.id};
+        d3.select(`#${event.id}`).style("fill", 'orange');
+      },
+      mouseOver(event) {
+        return event.id !== this.clickedState.id ? d3.select(`#${event.id}`).style("fill", 'orange') : '';
+      },
+      mouseOut(event) {
+        return event.id !== this.clickedState.id ? d3.select(`#${event.id}`).style("fill", this.colorData[event.id].color) : ''; 
       }
     },
     mounted() {
 
       let self = this;
+      let uStates = {};
 
-      this.uStates.draw = function(id, data){
+      uStates.draw = function(id, data){
+        
             
-        function mouseOver(d){
-          if (d.id !== self.clickedState) {
-            d3.select(this).style("fill", 'orange');
-          }
-        }
+        // function mouseOver(d){
+        //   if (d.id !== self.clickedState) {
+        //     d3.select(this).style("fill", 'orange');
+        //   }
+        // }
         
-        function mouseOut(event){
-          if (event.id !== self.clickedState.id) {   
-            d3.select(this).style("fill", function(d){ return data[d.id].color; }) 
-          }
-        }
+        // function mouseOut(event){
+
+        //   if (event.id !== self.clickedState.id) {   
+        //     d3.select(this).style("fill", function(d){ return data[d.id].color; }) 
+        //   }
+        // }
         
-        function mouseClick(event) {
-          if (self.clickedState.id !== event.id && Object.keys(self.localSelectedState).length !== 0) {
-            d3.select(self.localSelectedState).style("fill", function(d){ return data[d.id].color; }) 
-          } else if (self.clickedState.id === event.id) {
-            d3.select(this).style("fill", function(d){ return data[d.id].color; }) 
-            self.localSelectedState = '';
-            self.clickedState = {id: ''};
-            return
-          }
-          self.clickedState = {id: event.id};
-          self.localSelectedState = this
-          d3.select(this).style("fill", 'orange');
-        }
+        // function mouseClick(event) {
+        //   if (self.clickedState.id !== event.id && Object.keys(self.localSelectedState).length !== 0) {
+        //     d3.select(self.localSelectedState).style("fill", function(d){ return data[d.id].color; }) 
+        //   } else if (self.clickedState.id === event.id) {
+        //     d3.select(this).style("fill", function(d){ return data[d.id].color; }) 
+        //     self.localSelectedState = '';
+        //     self.clickedState = {id: ''};
+        //     return
+        //   }
+        //   self.clickedState = {id: event.id};
+        //   self.localSelectedState = this
+        //   d3.select(this).style("fill", 'orange');
+        // }
         
         d3.select(id).selectAll(".state")
-          .data(uStatePaths).enter().append("path").attr("class","state").attr("d",function(d){ return d.d;})
+          .data(uStatePaths).enter().append("path").attr("class","state").attr("id", function(d){ return d.id;}).attr("d",function(d){ return d.d;})
           .style("fill",function(d){ return data[d.id].color; })
           .style("stroke", "black")
-          .on("mouseover", mouseOver).on("mouseout", mouseOut).on('click', mouseClick);
+          .on("mouseover", self.mouseOver).on("mouseout", self.mouseOut).on('click', self.mouseClick);
       }
 
-      let colorData = {};
-      this.states.forEach((d) => { colorData[d.value] = {color: self.getColor(d).color} });
-      
+      //this.colorData = {};
+      this.states.forEach((state) => { this.colorData[state.value] = {color: self.getColor(state).color} });
       /* draw states on id #statesvg */	
-      this.uStates.draw("#statesvg", colorData);
+      uStates.draw("#statesvg", this.colorData);
     },
     watch: {
       clickedState() {
@@ -164,19 +185,41 @@
     position: relative;
   }
 
-  #map__legend {
+  .map__legend {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: 45px;
+    right: -25px;
 
-    font-size: 9px;
+    font-size: 0px;
 
     .color-box {
       display: inline-block;
       width: 15px;
       height: 10px;
+      margin-right: 3px;
 
       border: 1px solid black;
+      border-top: 0px;
+
+      vertical-align: top;
+    }
+
+    span {
+      display: inline-block;
+
+      font-size: 9px;
+      line-height: 10px;
+
+      vertical-align: top;
+    }
+
+    p {
+      margin-top: 5px;
+      margin-bottom: 0;
+      padding: 0;
+
+      font-size: 9px;
+      line-height: normal;
     }
   }
 </style>

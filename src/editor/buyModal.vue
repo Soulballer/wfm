@@ -178,7 +178,7 @@
         numbersToShow: 10,
         numbersAvailableToShow: 6,
         numbersAvailableToBuy: [],
-        selectedState: '',
+        selectedState: {id: '', name: 'All'},
         searchValue: '',
         showSelected: false
       }
@@ -265,7 +265,7 @@
   }
 </script>
 
-<style lang="scss" scoped rel="stylesheet/scss">
+<style lang="scss" scoped>
   .buy-modal .ui-modal__container {
     position: relative;
 
@@ -304,7 +304,7 @@
             margin-bottom: 50px;
           }
 
-          p {
+          & > p {
             margin-bottom: 0;
             padding-left: 14px;
             padding-bottom: 14px;
