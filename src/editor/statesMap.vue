@@ -1,7 +1,7 @@
 <template>
   <div class="map">
     <div class="map__legend">
-      <div v-for="color in colorPalette">
+      <div :key="color.color" v-for="color in colorPalette">
         <div class="color-box" :style="{'background-color': color.color}"></div>
         <span>{{color.min}} {{color.max == Infinity ? '+' : `- ${color.max}`}}</span>
       </div>
@@ -28,9 +28,17 @@
       }
     },
 
+    computed: {
+      colorData() {
+        let tempData = {};
+        _.forEach(this.states, (state) => { tempData[state.value] = {color: this.getColor(state).color} });
+
+        return tempData;
+      }
+    },
     data() {
       return {
-        colorData: {},
+        clickedState: {id: ''},
         colorPalette: [
           { color: '#0C280B', min: 1000, max: Infinity },
           { color: '#174F15', min: 500,  max: 1000 },
@@ -40,7 +48,6 @@
           { color: '#B1DAAB', min: 20,   max: 50 },
           { color: '#D6EBD4', min: 0,    max: 20 }
         ],
-        clickedState: {id: ''},
         states: [
           { value: '',   name: 'All', population: 0 },
           { value: 'AL', name: 'Alabama', population: 95 },
@@ -99,16 +106,18 @@
     },
     methods: {
       draw(id, data) {
-        
+        d3.select(id).selectAll(".state")
+          .data(uStatePaths).enter().append("path").attr("id", d => d.id).attr("d", d => d.d)
+          .style("fill", d => data[d.id].color).style("stroke", "black")
+          .on("mouseover", this.mouseOver).on("mouseout", this.mouseOut).on('click', this.mouseClick);
       },
       getColor(state) {
-        return [...this.colorPalette.filter((data) => data.max > state.population && data.min <= state.population)][0];
+        return [..._.filter(this.colorPalette, (data) => data.max > state.population && data.min <= state.population)][0];
       },
       mouseClick(event) {
         if (this.clickedState.id !== event.id && !_.isEmpty(this.clickedState.id)) {
           d3.select(`#${this.clickedState.id}`).style("fill", this.colorData[event.id].color) ;
-        } else {
-          console.log('sssss')
+        } else if (this.clickedState.id === event.id){
           d3.select(`#${event.id}`).style("fill", this.colorData[event.id].color) 
           this.clickedState = {id: ''};
           return
@@ -125,55 +134,11 @@
       }
     },
     mounted() {
-
-      let self = this;
-      let uStates = {};
-
-      uStates.draw = function(id, data){
-        
-            
-        // function mouseOver(d){
-        //   if (d.id !== self.clickedState) {
-        //     d3.select(this).style("fill", 'orange');
-        //   }
-        // }
-        
-        // function mouseOut(event){
-
-        //   if (event.id !== self.clickedState.id) {   
-        //     d3.select(this).style("fill", function(d){ return data[d.id].color; }) 
-        //   }
-        // }
-        
-        // function mouseClick(event) {
-        //   if (self.clickedState.id !== event.id && Object.keys(self.localSelectedState).length !== 0) {
-        //     d3.select(self.localSelectedState).style("fill", function(d){ return data[d.id].color; }) 
-        //   } else if (self.clickedState.id === event.id) {
-        //     d3.select(this).style("fill", function(d){ return data[d.id].color; }) 
-        //     self.localSelectedState = '';
-        //     self.clickedState = {id: ''};
-        //     return
-        //   }
-        //   self.clickedState = {id: event.id};
-        //   self.localSelectedState = this
-        //   d3.select(this).style("fill", 'orange');
-        // }
-        
-        d3.select(id).selectAll(".state")
-          .data(uStatePaths).enter().append("path").attr("class","state").attr("id", function(d){ return d.id;}).attr("d",function(d){ return d.d;})
-          .style("fill",function(d){ return data[d.id].color; })
-          .style("stroke", "black")
-          .on("mouseover", self.mouseOver).on("mouseout", self.mouseOut).on('click', self.mouseClick);
-      }
-
-      //this.colorData = {};
-      this.states.forEach((state) => { this.colorData[state.value] = {color: self.getColor(state).color} });
-      /* draw states on id #statesvg */	
-      uStates.draw("#statesvg", this.colorData);
+      this.draw("#statesvg", this.colorData);
     },
     watch: {
       clickedState() {
-        this.$emit('update:selectedState', ...this.states.filter((state) => state.value == this.clickedState.id));
+        this.$emit('update:selectedState', ..._.filter(this.states, (state) => state.value === this.clickedState.id));
         eventHub.$emit('update state');
       }
     }
