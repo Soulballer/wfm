@@ -725,6 +725,9 @@ export default {
         return true;
       },
     },
+    template: {
+      type: Object
+    },
     keywords: {
       type: Array,
       default () {
@@ -758,6 +761,8 @@ export default {
         this.localSelectedNumbers = selectedNumbers;
         
         if( JSON.stringify(selectedNumbers) !==  JSON.stringify(this.selectedNumbers) ) {
+          console.log('template!!!!!!', this.template)
+          this.template.selectedNumbers = selectedNumbers
           this.$emit('update:selectedNumbers', selectedNumbers);
         }
       },
@@ -801,22 +806,28 @@ export default {
     }
   },
 
-        validations () {
-            return {
-                schema : validator(this.template)
-            };
-        }
+    validations () {
+        return {
+            schema : validator(this.template)
+        };
+    }
 
     };
 
-    export const data = (template) => ({
-        email               : '',
-        emailPlaceholder    : template.emailPlaceholder,
-        emailLabel          : template.emailLabel,
-        password            : '',
-        passwordPlaceholder : template.passwordPlaceholder,
-        passwordLabel       : template.passwordLabel,
-    });
+
+    export const data = (template) => {
+      console.log('template', template)
+      return({
+        allCheckedNumbers  : template.allCheckedNumbers,
+        selectedNumbers    : template.selectedNumbers,
+        numbers            : template.numbers,
+        groups             : template.groups,
+        selectedGroups     : template.selectedGroups,
+        showAll            : template.showAll,
+        isKeywords         : template.isKeywords,
+        keywords           : template.keywords,
+        selectedElemLength : template.selectedElemLength
+    })};
 
     export const validator = (template) => {
         return {

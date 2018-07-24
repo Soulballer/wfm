@@ -1,4 +1,5 @@
 <template>
+<div class="numbers-item">
   <or-checkbox
   @change="numberSelect"
   :disabled="readonly"
@@ -67,6 +68,7 @@
         </or-confirm>
       </div>
     </or-checkbox>
+    </div>
 </template>
 
 <script>
@@ -186,6 +188,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.numbers-item {
+  .ui-checkbox {
+     .ui-checkbox__label-text {
+      margin-top: 0;
+      width: 100%;
+
+      color: black;
+  }
+
+  }
   .unabled {
     .ui-checkbox__label-text {
       color: #91969d;
@@ -207,6 +219,7 @@ export default {
       display: none;
     }
   }
+
 
   .item-content {
     position: relative;
@@ -253,6 +266,7 @@ export default {
     height: 25px !important;
     width: 25px !important;
   }
+}
 }
 </style>
 

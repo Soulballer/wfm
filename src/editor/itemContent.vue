@@ -116,5 +116,54 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .item-content {
+  position: relative;
+  height: 25px;
+  display: flex;
+  align-items: center;
 
+  &:hover .item-buttons {
+    visibility: visible;
+  }
+
+  .input-element {
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-size: 14px;
+    color: inherit;
+    padding: 0;
+    
+    &:not(:disabled) {
+      border: 1px solid #64b2da;
+    }
+  }
+
+  .item-value {
+    margin-right: 0.5em;
+  }
+}
+
+.item-data {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.item-buttons {
+  position: absolute;
+  right: 0;
+  top: 0;
+  visibility: hidden;
+  background-color: white;
+
+  .ui-icon-button {
+    height: 25px !important;
+    width: 25px !important;
+  }
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
 </style>

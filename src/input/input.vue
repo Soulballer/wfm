@@ -1,7 +1,7 @@
 <template>
     <div class="example-input-component-wrapper">
         <div class="wrapper" @click="$refs.configModal.open()">
-            <editor :template="input.data"
+            <editor 
                     :schema="defaultStep.data"
                     :step="defaultStep"
                     :steps="[defaultStep]"
@@ -13,7 +13,7 @@
                   title="Configure component"
                   class="input-message-settings"
                   :contain-focus="false">
-            <or-textbox name="label" label="Email Label" placeholder="label text"
+            <!-- <or-textbox name="label" label="Email Label" placeholder="label text"
                         v-model="input.data.emailLabel"
                         help="input label text">
             </or-textbox>
@@ -31,7 +31,7 @@
             <or-textbox name="label" label="Password placeholder" placeholder="placeholder text"
                         v-model="input.data.passwordPlaceholder"
                         help="input label text">
-            </or-textbox>
+            </or-textbox> -->
 
             <div slot="footer">
                 <or-button color="primary"
@@ -61,13 +61,22 @@
 
     export const label = 'Test example';
     export const data = {
-        email               : '',
-        emailPlaceholder    : 'Test email placeholder',
-        emailLabel          : '',
-        password            : '',
-        passwordPlaceholder : 'Test password placeholder',
-        passwordLabel       : '',
-        validateRequired    : true
+        // allCheckedNumbers  : template.allCheckedNumbers,
+        // selectedNumbers    : template.selectedNumbers,
+        // numbers            : template.numbers,
+        // groups             : template.groups,
+        // selectedGroups     : template.selectedGroups,
+        // showAll            : template.showAll,
+        // isKeywords         : template.isKeywords,
+        // keywords           : template.keywords,
+        // selectedElemLength : template.selectedElemLength
+        // email               : '',
+        // emailPlaceholder    : 'Test email placeholder',
+        // emailLabel          : '',
+        // password            : '',
+        // passwordPlaceholder : 'Test password placeholder',
+        // passwordLabel       : '',
+        // validateRequired    : true
     };
 
     export const meta = {

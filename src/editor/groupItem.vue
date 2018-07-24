@@ -403,6 +403,88 @@ export default {
   position: relative;
   
   margin-bottom: 2px;
+
+.or-collapsible {
+  display: inline-block;
+  
+  color: #91969d;
+  
+  border-bottom: none;
+    
+  vertical-align: top; 
+  .body-wrapper {
+    color: #91969d;
+  }
+}
+.or-collapsible .body {
+  padding: 0px 20px;
+}
+
+.or-collapsible > .header {
+  min-height: 0 !important;
+  padding-top: 0;
+  border-bottom: none;
+  font-weight: bold;
+
+  .group-buttons {
+    visibility: hidden;
+    display: flex;
+    position: relative;
+    z-index: 100;
+
+    .ui-icon-button {
+      height: 25px !important;
+      width: 25px !important;
+
+      &__icon .ui-icon,
+      svg {
+        margin: 0 auto;
+      }
+    }
+  }
+
+  &:hover .group-buttons {
+    visibility: visible;
+  }
+
+  .header-icon {
+    margin: 0;
+    color: inherit;
+  }
+}
+
+.or-collapsible .header-content {
+  width: 100%;
+  height: auto;
+  padding-left: 8px;
+
+  .collapsible-header {
+    align-items: center;
+
+    .input-element {
+      border: none;
+      outline: none;
+      font-size: 16px;
+      line-height: normal;
+      color: inherit;
+      font-weight: bold;
+      background: none;
+      
+      &:not(:disabled) {
+        border: 1px solid #64b2da;
+      }
+    }
+  }
+
+  .ui-textbox {
+    margin-bottom: 0;
+  }
+
+  div {
+    display: flex;
+    /*justify-content: space-between;*/
+  }
+}
   
   &:not(.unabled) {
     .or-collapsible {
