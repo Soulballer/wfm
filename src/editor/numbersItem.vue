@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import eventHub from './eventHub.js';
+import eventHub from './helpers/eventHub.js';
 
 import DataNumbers from './dataNumbers.vue';
 

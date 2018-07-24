@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import eventHub from './eventHub.js';
+import eventHub from './helpers/eventHub.js';
 
 export default {
   props: {

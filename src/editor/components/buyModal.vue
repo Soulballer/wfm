@@ -98,8 +98,8 @@
 </template>
 
 <script>
-  import eventHub from './eventHub.js';
-  import {usCodes} from './usAreaCodes.js';
+  import eventHub from '../helpers/eventHub.js';
+  import {usCodes} from './mapData/usAreaCodes.js';
 
   import NumberToBuyItem from './numberToBuyItem.vue';
   import StatesMap from './statesMap.vue';
@@ -143,17 +143,19 @@
         return this.buyList.length !== 0;
       },
       mappedNumbers() {
-        return this.numbers
-          .filter((num) => !num.isGroup)
+        return _
+          .chain(this.numbers)
+          .filter(num => !num.isGroup)
           .reduce((arr, num) => {
             arr.push({id: num.id, value: num.phoneNumber, state: this.getState(num.phoneNumber)});
             return arr
-          }, []);
+          }, [])
+          .value();
       },
       numbersFilteredByState() {
         if (this.selectedState.name === 'All') return this.mappedNumbers;
 
-        return this.mappedNumbers.filter((num) => num.state === this.selectedState.name)
+        return _.filter(this.mappedNumbers, num => num.state === this.selectedState.name)
       },
       paginationButtons() {
         let pagesLength = Math.ceil(this.filteredNumbers.length / this.numbersToShow);
@@ -162,7 +164,7 @@
         return pagesLength;
       },
       splitToPagesNumbers () {
-        return this.filteredNumbers.slice((this.pageNumber - 1 ) * this.numbersToShow, this.pageNumber * this.numbersToShow);
+        return _.slice(this.filteredNumbers, (this.pageNumber - 1 ) * this.numbersToShow, this.pageNumber * this.numbersToShow);
       },
       totalPrice () {
         return _.reduce(this.buyList, (sum, x) => sum + x.price, 0);
@@ -187,10 +189,10 @@
       availableBySearch (n) {
         const parts = n.phoneNumber.match(/\+?(\w+)/gi);
         const number = parts.shift();
-        const query = this.searchValue.toLowerCase();
+        const query = _.toLower(this.searchValue);
         return number.indexOf(query) > -1
-                || _.some(parts, a => a.toLowerCase().indexOf(query) === 0)
-                || parts.join(' ').toLowerCase().indexOf(query) === 0;
+                || _.some(parts, a => _.toLower(a).indexOf(query) === 0)
+                || _.toLower(parts.join(' ')).indexOf(query) === 0;
       },
       buyNumbers () {
         // todo: real buy
@@ -228,7 +230,7 @@
       changePageNumber(event) {
         if (!event) return;
 
-        this.pageNumber = parseInt(event.target.offsetParent.id)
+        this.pageNumber = _.parseInt(event.target.offsetParent.id)
       },
       getState(num) {
         return usCodes[num.slice(2,5)].state;

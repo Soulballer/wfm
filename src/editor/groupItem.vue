@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import eventHub from './eventHub.js';
+import eventHub from './helpers/eventHub.js';
 
 import GroupDataNumber from './groupDataNumber.vue';
 import ItemContent from './itemContent.vue';

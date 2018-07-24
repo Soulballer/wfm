@@ -127,9 +127,9 @@
   import Promise from 'bluebird';
   import * as _ from 'lodash';
   import {validators} from '_validators';
-  import eventHub from './eventHub.js';
+  import eventHub from './helpers/eventHub.js';
 
-  import BuyModal from './buyModal.vue';
+  import BuyModal from './components/buyModal.vue';
   import Groups from './groups.vue';
   import NumbersItems from './numbersItems.vue'
 
