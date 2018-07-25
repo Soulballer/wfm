@@ -1,8 +1,8 @@
 <template>
   <or-checkbox
-  class="number-to-buy-item number-container"
   :value="isInBuyList"
-  @change="updateBuyList">
+  @change="updateBuyList"
+  class="number-to-buy-item number-container">
     <div class="number-to-buy-item__number">
       <span>{{number.phoneNumber}}</span>
       <!-- <span>$ {{number.price}} monthly</span> -->
@@ -16,21 +16,23 @@
   export default {
     name: 'NumbersToBuyItem',
     props: {
-      number: {
-        type: Object
-      },
       buyList: {
-        type: Array
+        type: Array,
+        default: []
+      },
+      number: {
+        type: Object,
+        default: {}
       }
     },
 
     computed: {
-      isInBuyList () {
+      isInBuyList() {
         return _.find(this.buyList, x => x.phoneNumber === this.number.phoneNumber) !== undefined;
       }
     },
     methods: {
-      updateBuyList (event) {
+      updateBuyList(event) {
         eventHub.$emit('buyList:update',
         event ? _.concat(this.buyList, this.number)
               : _.reject(this.buyList, this.number))

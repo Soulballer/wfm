@@ -1,8 +1,8 @@
 <template>
   <div class="map">
     <div class="map__legend">
-      <div :key="color.color" v-for="color in document.colorPalette">
-        <div class="color-box" :style="{'background-color': color.color}"></div>
+      <div v-for="color in document.colorPalette" :key="color.color">
+        <div :style="{'background-color': color.color}" class="color-box"></div>
         <span>{{color.min}} {{color.max == Infinity ? '+' : `- ${color.max}`}}</span>
       </div>
       <p>Population per square<br> mile by state.<br> 2015 census figures.</p>

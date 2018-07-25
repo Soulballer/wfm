@@ -108,38 +108,36 @@
     props: {
       numbers: {
         type: Array,
-        default() {
-          return []
-        }
+        default: []
       }
     },
     components: { NumberToBuyItem, StatesMap },
 
-    created () {
+    created() {
       eventHub.$on('buyList:update', this.updateBuyList);
       eventHub.$on('update state', this.requestNumbers);
     },
-    destroyed () {
+    destroyed() {
       eventHub.$off('buyList:update', this.updateBuyList);
       eventHub.$off('update state', this.requestNumbers);
     },
 
     computed: {
-      allFilteredNumbers () {
+      allFilteredNumbers() {
         return _.filter(this.numbersAvailableToBuy, n => this.availableBySearch(n));
       },
-      buyfilterButtonText () {
+      buyfilterButtonText() {
         return `Show  ${
           this.hasItemsInBuyList && !this.showSelected
             ? `selected (${this.buyList.length})`
             : 'all'}`;
       },
-      filteredNumbers () {
+      filteredNumbers() {
         return this.showSelected
           ? this.buyList
           : this.allFilteredNumbers
       },
-      hasItemsInBuyList () {
+      hasItemsInBuyList() {
         return this.buyList.length !== 0;
       },
       mappedNumbers() {
@@ -163,30 +161,30 @@
 
         return pagesLength;
       },
-      splitToPagesNumbers () {
+      splitToPagesNumbers() {
         return _.slice(this.filteredNumbers, (this.pageNumber - 1 ) * this.numbersToShow, this.pageNumber * this.numbersToShow);
       },
-      totalPrice () {
+      totalPrice() {
         return _.reduce(this.buyList, (sum, x) => sum + x.price, 0);
       }
     },
-    data () {
+    data() {
       return {
         buyList: [],
         buyProgress: false,
         isAllowed: true,
         isLoading: false,
-        pageNumber: 1,
-        numbersToShow: 10,
-        numbersAvailableToShow: 6,
         numbersAvailableToBuy: [],
-        selectedState: {id: '', name: 'All'},
+        numbersAvailableToShow: 6,
+        numbersToShow: 10,
+        pageNumber: 1,
         searchValue: '',
+        selectedState: {id: '', name: 'All'},
         showSelected: false
       }
     },
     methods: {
-      availableBySearch (n) {
+      availableBySearch(n) {
         const parts = n.phoneNumber.match(/\+?(\w+)/gi);
         const number = parts.shift();
         const query = _.toLower(this.searchValue);
@@ -194,7 +192,7 @@
                 || _.some(parts, a => _.toLower(a).indexOf(query) === 0)
                 || _.toLower(parts.join(' ')).indexOf(query) === 0;
       },
-      buyNumbers () {
+      buyNumbers() {
         // todo: real buy
         this.buyProgress = true;
         this.$http.post(
@@ -221,10 +219,10 @@
           this.buyProgress = false;
         });
       },
-      clearSearch () {
+      clearSearch() {
         this.searchValue = '';
       },
-      changeBuyFilter () {
+      changeBuyFilter() {
         this.showSelected = !this.showSelected;
       },
       changePageNumber(event) {
@@ -238,7 +236,7 @@
       openModal() {
         this.$refs.modal.open();
       },
-      requestNumbers (selectedState) {
+      requestNumbers(selectedState) {
         this.isLoading = true;
         this.pageNumber = 1;
         this.showSelected = false;
@@ -260,7 +258,7 @@
           this.isLoading = false;
         });
       },
-      updateBuyList (newBuylist) {
+      updateBuyList(newBuylist) {
         this.buyList = newBuylist;
       }
     }

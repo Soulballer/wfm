@@ -32,26 +32,26 @@
           <div class="group-buttons">
             <or-icon-button
               v-if="!readonly && !group.usedData.length"
-              class="edit-button"
+             
               type="flat"
               icon="edit"
               :tooltip="group.editable ? '' : 'Group is in use, not allowed to edit'"
-              @click="editGroup"
+              @click.stop="editGroup"
               ></or-icon-button>
             <or-icon-button
               v-if="!readonly && !group.usedData.length"
-              class="edit-button"
+            
               type="flat"
               icon="add"
               :tooltip="group.editable ? '' : 'Group is in use, not allowed to edit'"
-              @click="addToGroup"
+              @click.stop="addToGroup"
               ></or-icon-button>
             <or-icon-button
               v-if="!readonly && !group.usedData.length"
-              class="edit-button"
+
               type="flat"
               :tooltip="group.editable ? '' : 'Group is in use, not allowed to edit'"
-              @click="openUngroupConfirm"
+              @click.stop="openUngroupConfirm"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 0h2.53v.84h6.73V0h2.53v2.53h-.85V5.9h2.52v-.85H16v2.53h-.84v5.9H16V16h-2.53v-.84h-5.9V16H5.06v-2.53h.84v-2.52H2.52v.84H0V9.25h.84V2.53H0V0zm13.47 7.58v-.84h-2.52v2.52h.84v2.53H9.25v-.85H6.74v2.52h.84v.85h5.9v-.85h.84v-5.9h-.85zm-4.2-5.05v-.85H2.52v.85h-.85v6.73h.85v.85H5.9V7.6h-.85V5.05h2.53v.84h2.53V2.52h-.84zm-1.7 5.05h-.83v2.53h2.52v-.84h.85V6.74H7.6v.84zM.85 1.68h.84V.84H.84v.84zm9.27 0h.85V.84h-.84v.84zM5.9 6.74h.84V5.9H5.9v.84zm8.42 0h.84V5.9h-.84v.84zM5.9 15.16h.84v-.84H5.9v.84zm8.42 0h.84v-.84h-.84v.84zM.84 10.96h.84v-.85H.84v.85zm9.27 0h.85v-.85h-.84v.85z" fill-rule="nonzero" fill="currentColor"/>
@@ -72,6 +72,7 @@
         :readonly="readonly"
       ></group-data-number>
       </div>
+      
   <or-confirm
     title="Ungroup"
     ref="confirmUngroup"
@@ -81,6 +82,7 @@
   >
     Ungroup {{group.name}} (move {{group.numbers.length}} phone numbers to the global list)?
   </or-confirm>
+
   <or-confirm
     title="Add numbers"
     ref="confirmAddNumber"
@@ -90,13 +92,13 @@
   >
     <or-checkbox
       @change="selectAll"
-      v-if="numbers.length > 0"
+      v-if="copyNumbers.length > 0"
       class="select-all-button"
       :value="allNumbersSelected"
     >{{selectAllButtonText}}
     </or-checkbox>
     <or-checkbox
-      v-for="number in allNumbersUnselected"
+      v-for="number in copyNumbers"
       :key="number.value"
       :value="number.checked"
       @change="handleCheckboxChange(number)"
@@ -105,38 +107,36 @@
         <span class="item-value">{{number.name}}</span>
       </or-checkbox>
   </or-confirm>
+
 </div>  
 </template>
 
 <script>
 import eventHub from './helpers/eventHub.js';
 
-import GroupDataNumber from './groupDataNumber.vue';
 import ItemContent from './itemContent.vue';
+import GroupDataNumber from './groupDataNumber.vue';
 
 export default {
   props: {
     allFilteredNumbers: {
-      type: Array
-    },
-    readonly: {
-      type : Boolean
-    },
-    isData: {
-      type : Boolean
-    },
-    group: {
-      type: Object
+      type: Array,
+      default: []
     },
     invalid: {
       type: Boolean,
       default: false
     },
-    numbers: {
-      type: Array
+    group: {
+      type: Object,
+      default: {}
+    },
+    readonly: {
+      type : Boolean,
+      default: false
     }
   },
-  components: {GroupDataNumber, ItemContent},
+  components: { GroupDataNumber, ItemContent },
 
   created () {
     eventHub.$on('remove number from group', this.handleNumberRemove)
@@ -145,16 +145,15 @@ export default {
   },
   destroyed () {
     eventHub.$off('remove number from group', this.handleNumberRemove);
+    eventHub.$off('add numbers to group', this.clearSelected);
     this.$off('open modal add to group', this.handleNumbersList);
   },
+
   computed: {
-    allNumbersSelected () {
+    allNumbersSelected() {
       return _.every(this.copyNumbers, n => n.checked);
     },
-    allNumbersUnselected () {
-      return _.filter(this.copyNumbers, n => !n.usedData.length);
-    },
-    currentIcon () {
+    currentIcon() {
       return this.open
               ? 'keyboard_arrow_down'
               : 'keyboard_arrow_right'
@@ -162,33 +161,33 @@ export default {
     getWidthOfInput() {
       return this.group.name.length * 10;
     },
-    numbersSelectedToAdd () {
-      return this.numbers.filter(num => num.checked = _.get(_.find(this.allNumbersUnselected, {value: num.value}), 'checked', false))
+    numbersSelectedToAdd() {
+      return _.filter(this.copyNumbers, num => num.checked)
     },
     selectAllButtonText () {
-      return `${this.allNumbersSelected ? 'Uns' : 'S'}elect all (${this.allNumbersUnselected.length})`
+      return `${this.allNumbersSelected ? 'Uns' : 'S'}elect all (${this.copyNumbers.length})`
     },
   },
-  data () {
+  data() {
     return {
       copyNumbers: [],
       errorClass: false,
-      open: false,
-      inputDisabled: true
+      inputDisabled: true,
+      open: false
     }
   },
   methods: {
-    addToGroup (e) {
+    addToGroup(e) {
       if (this.group.editable) {
-        e.stopPropagation();
+        //e.stopPropagation();
         this.$refs.confirmAddNumber.open();
         this.$emit('open modal add to group');
       }
     },
-    clearSelected () {
-      _.forEach(this.allNumbersUnselected, n => n.checked = false);
+    clearSelected() {
+      _.forEach(this.copyNumbers, n => n.checked = false);
     },
-    changeOpenState () {
+    changeOpenState() {
       this.open = !this.open
     },
     checkName(e) {
@@ -197,14 +196,14 @@ export default {
         this.errorClass = true;
       }
     },
-    editGroup (e) {
+    editGroup(e) {
       if (this.group.editable) {
-        if (e) e.stopPropagation();
+        //if (e) e.stopPropagation();
         this.inputDisabled = false;
         this.$nextTick(() => this.$refs.name.focus());
       }
     },
-    handleAddNumber () {
+    handleAddNumber() {
       const {id} = this.group;
 
       // set group id to selected numbers
@@ -237,13 +236,17 @@ export default {
         // remove selected numbers from general number list
         .then(() => eventHub.$emit('add numbers to group', this.numbersSelectedToAdd));
     },
-    handleCheckboxChange (number) {
+    handleCheckboxChange(number) {
       number.checked = !number.checked;
     },
-    handleNumbersList () {
-      this.copyNumbers = _.forEach(_.cloneDeep(this.allFilteredNumbers), n => {n.checked = false});
+    handleNumbersList() {
+      this.copyNumbers = _
+        .chain(_.cloneDeep(this.allFilteredNumbers))
+        .filter(n => !n.usedData.length)
+        .map(n => ({...n, checked: false}) )
+        .value()
     },
-    handleNumberRemove (number) {
+    handleNumberRemove(number) {
       // remove number from group numbers
       this.group.numbers = _.reject(this.group.numbers, number);
 
@@ -276,7 +279,7 @@ export default {
           }
         });
     },
-    handleUngroup () {
+    handleUngroup() {
       const {numbers} = this.group
 
       // remove group ID from numbers
@@ -299,19 +302,18 @@ export default {
       .then(() => eventHub.$emit('ungroup', this.group))
 
     },
-    openUngroupConfirm (e) {
+    openUngroupConfirm(e) {
       if (this.group.editable) {
-        e.stopPropagation(); /*can use modifier .stop*/
+        //e.stopPropagation(); /*can use modifier .stop*/
         this.$refs.confirmUngroup.open();
       }
     },
-    selectAll () {
+    selectAll() {
       const condition = _.every(this.copyNumbers, n => n.checked);
-      _.forEach(this.copyNumbers, n => {
-        n.checked = !condition;
-      })
+
+      _.forEach(this.copyNumbers, n => { n.checked = !condition })
     },
-    toggleGroupSelection (event) {
+    toggleGroupSelection(event) {
 
       if (this.group.usedData.length) {
         this.group.isSelected = false;
@@ -327,7 +329,7 @@ export default {
         _.forEach(this.group.numbers, number => number.checked = false);
       }
     },
-    updateName () {
+    updateName() {
       this.inputDisabled = true;
       this.open = false;
       
@@ -364,6 +366,10 @@ export default {
     position: relative;
     
     margin-bottom: 2px;
+
+    .error-class-same-name {
+    color: #f95d5d !important;
+  }
     
     &:not(.unabled) {
       .or-collapsible {

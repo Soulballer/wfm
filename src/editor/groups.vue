@@ -2,11 +2,11 @@
   <div class="groups">
     <group-item
       v-for="(group, index) in groups"
-      :group="group"
-      :numbers="numbers"
+      :key="group.id"
+
       :allFilteredNumbers="allFilteredNumbers"
-      :key="group.name"
-      :invalid="localGroupsNameCollision[index] && groups.length > 1"
+      :invalid="localGroupsNameCollision[index]"
+      :group="group"
       :readonly="readonly"
     ></group-item>
   </div>  
@@ -16,7 +16,27 @@
   import GroupItem from './groupItem.vue';
 
   export default {
-    components: {GroupItem},
+    props: {
+      allFilteredNumbers: {
+        type: Array,
+        default() {
+          return []
+        }
+      },
+      groups: {
+        type: Array,
+        default() {
+          return []
+        }
+      },
+      readonly: {
+        type : Boolean,
+        default() {
+          return false;
+        }
+      }
+    },
+    components: { GroupItem },
 
     data() {
       return {
@@ -24,68 +44,31 @@
       }
     },
     methods: {
-      checkCollision() {
-        let invalidFlag = false;
+      checkNameCollision() {
         _.forEach(this.groups, (step1, index1) => {
-          Vue.set(this.localGroupsNameCollision, index1, false);
-          let invalidFlag = false;
+          this.localGroupsNameCollision.splice(index1, 1, false);
+
           _.forEach(this.groups, (step2, index2) => {
             if (index1 !== index2 && step1.name === step2.name) {
-              invalidFlag = true;
+              this.localGroupsNameCollision.splice(index1, 1, true);
+              return false;
             }
           });
-            if (invalidFlag) {
-              Vue.set(this.localGroupsNameCollision, index1, true);
-            }
         });
       }
-    },
-    mounted() {
-      this.checkCollision();
     },
     watch: {
       groups: {
         handler() {
-          console.log('this.groups', this.groups)
-          this.checkCollision();
+          this.checkNameCollision();
         },
-        deep: true
-      }
-    },
-    props: {
-      allFilteredNumbers: {
-        type: Array
-      },
-      readonly: {
-        type : Boolean
-      },
-      isData: {
-        type : Boolean
-      },
-      groups: {
-        type: Array
-      },
-      numbers: {
-        type: Array
+        deep: true,
+        immediate: true
       }
     }
   }
 </script>
 
 <style lang="scss" scoped>
-  .groups {
-    display: flex;
-    flex-direction: column;
 
-    .ui-checkbox {
-      align-items: flex-start !important;
-      margin-bottom: 0 !important;
-    
-      &.is-disabled {
-        .ui-checkbox__checkmark {
-          display:none;
-        }
-      }
-    }
-  }
 </style>

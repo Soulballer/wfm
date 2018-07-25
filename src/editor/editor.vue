@@ -89,8 +89,6 @@
                     <groups
                       :groups="allFilteredGroups"
                       :readonly="readonly"
-                      :isData="isData"
-                      :numbers="availableNumbers"
                       :allFilteredNumbers="allFilteredNumbers"
                     ></groups>
                     <numbers-items
