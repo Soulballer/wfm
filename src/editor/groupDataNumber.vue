@@ -1,10 +1,8 @@
 <template>
   <div class="group-numbers">
   <a ref="trigger3" v-show="group.usedData.length && !readonly" class="group-numbers--link">
-    <span class="slash"> -</span>
-    <span v-show="!group.anyKeywords">
-      in use by 
-    </span>
+    <span class="slash">  -  </span>
+    <span v-show="!group.anyKeywords"> in use by </span>
     <span v-for="(key, index) in group.keywordsСollision" v-if="index < 2">
       <span v-show="!group.anyKeywords">#</span>{{key}}
       <span v-if="index !== 1 && group.keywordsСollision.length !== 1">, </span>

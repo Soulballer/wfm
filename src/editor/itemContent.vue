@@ -1,51 +1,51 @@
 <template>
   <div class="item-content">
-  <span class="item-value">{{number.value}}</span>
-  <div>
-    <input
-      class="input-element"
-      type="text"
-      v-model="number.name"
-      ref="name"
-      :disabled="inputDisabled"
-      @blur="updateName"
-      :style="{ width: getWidthOfInput + 'px' }"
-    ></input>
+    <span class="item-value">{{number.value}}</span>
+    <div>
+      <input
+        class="input-element"
+        type="text"
+        v-model="number.name"
+        ref="name"
+        :disabled="inputDisabled"
+        @blur="updateName"
+        :style="{ width: getWidthOfInput + 'px' }"
+      />
+    </div>
+    <ui-progress-circular
+      :size="20"
+      color="primary"
+      v-show="isData && !readonly"
+    ></ui-progress-circular>
+    <div
+      class="item-buttons"
+      v-if="!isData && !group.usedData.length">
+      <or-icon-button
+        v-if="!readonly"
+        class="edit-button"
+        type="flat"
+        icon="edit"
+        :tooltip="group.editable ? '' : 'Group is in use, not allowed to edit'"
+        @click="editNumberItem"
+      ></or-icon-button>
+      <or-icon-button
+        v-if="!readonly"
+        class="remove-button"
+        type="flat"
+        icon="delete_forever"
+        :tooltip="group.editable ? '' : 'Group is in use, not allowed to edit'"
+        @click="removeNumberItem"
+      ></or-icon-button>
+    </div>
+    <or-confirm
+      title="Move"
+      ref="confirmRemove"
+      confirmButtonText="Move"
+      @confirm="handleRemove"
+      :contain-focus="false"
+    >Move {{number.value}} from {{group.name}} to the global list?
+    </or-confirm>
   </div>
-  <ui-progress-circular
-    :size="20"
-    color="primary"
-    v-show="isData && !readonly"
-  ></ui-progress-circular>
-  <div
-    class="item-buttons"
-    v-if="!isData && !group.usedData.length">
-    <or-icon-button
-      v-if="!readonly"
-      class="edit-button"
-      type="flat"
-      icon="edit"
-      :tooltip="group.editable ? '' : 'Group is in use, not allowed to edit'"
-      @click="editNumberItem"
-    ></or-icon-button>
-    <or-icon-button
-      v-if="!readonly"
-      class="remove-button"
-      type="flat"
-      icon="delete_forever"
-      :tooltip="group.editable ? '' : 'Group is in use, not allowed to edit'"
-      @click="removeNumberItem"
-    ></or-icon-button>
-  </div>
-  <or-confirm
-    title="Move"
-    ref="confirmRemove"
-    confirmButtonText="Move"
-    @confirm="handleRemove"
-    :contain-focus="false"
-  >Move {{number.value}} from {{group.name}} to the global list?
-  </or-confirm>
-</div>
 </template>
 
 <script>

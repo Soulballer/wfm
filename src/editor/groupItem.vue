@@ -5,7 +5,6 @@
         v-model="group.isSelected"
 
         :disabled="readonly || group.usedData.length"
-        :key="group.id"
         @change="toggleGroupSelection"
         transition="expand"
       ></or-checkbox>
@@ -17,7 +16,7 @@
         @open="changeOpenState"
       >
         <div slot="header" class="collapsible-header">
-          <div>
+          
             <input
               :class="{'error-class-same-name': invalid}"
               :disabled="inputDisabled"
@@ -30,7 +29,7 @@
               type="text"
             />
             <span class="visible ui-icon header-icon material-icons {currentIcon}">{{currentIcon}}</span>
-          </div>
+          
           <div v-if="!readonly && !group.usedData.length" class="group-buttons">
             <or-icon-button
               :tooltip="!group.editable ? 'Group is in use, not allowed to edit' : ''"
@@ -89,7 +88,7 @@
       title="Add numbers"
     >
       <or-checkbox
-        v-if="copyNumbers.length > 0"
+        v-if="copyNumbers.length"
 
         :value="allNumbersSelected"
         @change="selectAll"
@@ -98,13 +97,11 @@
       </or-checkbox>
       <or-checkbox
         v-for="number in copyNumbers"
+        v-model="number.checked"
 
         :key="number.id"
-        :value="number.checked"
-        @change="handleCheckboxChange(number)"
       >
-        <span class="item-value">{{number.value}}</span>
-        <span class="item-value">{{number.name}}</span>
+        <span class="item-value">{{number.value}} {{number.name}}</span>
       </or-checkbox>
     </or-confirm>
 
@@ -227,9 +224,9 @@ export default {
       // remove selected numbers from general number list
       .then(() => eventHub.$emit('add numbers to group', this.numbersSelectedToAdd));
     },
-    handleCheckboxChange(number) {
-      number.checked = !number.checked;
-    },
+    // handleCheckboxChange(number) {
+    //   number.checked = !number.checked;
+    // },
     handleNumbersList() {
       this.copyNumbers = _
         .chain(_.cloneDeep(this.allFilteredNumbers))
@@ -310,11 +307,11 @@ export default {
 
       this.group.isSelected = event;
       
-    //   if (this.group.isSelected) {
-    //     _.forEach(this.group.numbers, number => number.checked = true);
-    //   } else {
-    //     _.forEach(this.group.numbers, number => number.checked = false);
-    //   }
+      if (this.group.isSelected) {
+        _.forEach(this.group.numbers, number => number.checked = true);
+      } else {
+        _.forEach(this.group.numbers, number => number.checked = false);
+      }
     },
     updateName() {
       this.inputDisabled = true;
@@ -351,17 +348,79 @@ export default {
 
 <style lang="scss" scoped>
   .group {
-    position: relative;
-    
-    margin-bottom: 2px;
+    &__inner-wrapper {
+      display: flex;
+      align-items: center;
+    }
 
-    .ui-checkbox.is-disabled .ui-checkbox__checkmark {
+    &.unabled .ui-checkbox.is-disabled .ui-checkbox__checkmark {
       display: block;
     }
 
+    .ui-checkbox {
+      align-self: flex-start;
+      margin-top: 3px;
+      margin-bottom: 0;
+    }
+
+    .or-collapsible {
+      padding-left: 8px;
+      
+      border: 0;
+
+      & > .header {
+        min-height: 0 !important;
+        padding: 0;
+
+        font-weight: bold;
+
+        border-bottom: none;
+
+        .collapsible-header {
+          display: flex;
+          align-items: center;
+
+          .input-element {
+            font-size: 16px;
+            line-height: 22px;
+            color: inherit;
+            font-weight: bold;
+
+            border: none;
+            outline: none;
+            background: none;
+            
+            &:not(:disabled) {
+              border: 1px solid #64b2da;
+            }
+          }
+
+          .group-buttons {
+            visibility: hidden;
+            display: flex;
+            position: relative;
+            z-index: 100;
+
+            .ui-icon-button {
+              height: 25px !important;
+              width: 25px !important;
+
+              &__icon .ui-icon,
+              svg {
+                margin: 0 auto;
+              }
+            }
+          }
+
+          &:hover .group-buttons {
+            visibility: visible;
+          }
+        }
+      }
+
     .error-class-same-name {
-    color: #f95d5d !important;
-  }
+      color: #f95d5d !important;
+    }
     
     &:not(.unabled) {
       .or-collapsible {
@@ -394,151 +453,6 @@ export default {
         vertical-align: middle;
       }
     }
-  }
-
-
-.group {
-  position: relative;
-  
-  margin-bottom: 2px;
-
-.or-collapsible {
-  display: inline-block;
-  
-  color: #91969d;
-  
-  border-bottom: none;
-    
-  vertical-align: top; 
-  .body-wrapper {
-    color: #91969d;
-  }
-}
-.or-collapsible .body {
-  padding: 0px 20px;
-}
-
-.or-collapsible > .header {
-  min-height: 0 !important;
-  padding-top: 0;
-  border-bottom: none;
-  font-weight: bold;
-
-  .group-buttons {
-    visibility: hidden;
-    display: flex;
-    position: relative;
-    z-index: 100;
-
-    .ui-icon-button {
-      height: 25px !important;
-      width: 25px !important;
-
-      &__icon .ui-icon,
-      svg {
-        margin: 0 auto;
-      }
-    }
-  }
-
-  &:hover .group-buttons {
-    visibility: visible;
-  }
-
-  .header-icon {
-    margin: 0;
-    color: inherit;
-  }
-}
-
-.or-collapsible .header-content {
-  width: 100%;
-  height: auto;
-  padding-left: 8px;
-
-  .collapsible-header {
-    align-items: center;
-
-    .input-element {
-      border: none;
-      outline: none;
-      font-size: 16px;
-      line-height: normal;
-      color: inherit;
-      font-weight: bold;
-      background: none;
-      
-      &:not(:disabled) {
-        border: 1px solid #64b2da;
-      }
-    }
-  }
-
-  .ui-textbox {
-    margin-bottom: 0;
-  }
-
-  div {
-    display: flex;
-    /*justify-content: space-between;*/
-  }
-}
-  
-  &:not(.unabled) {
-    .or-collapsible {
-      color: black;
-      
-      .body-wrapper {
-        color: black;
-      }
-    }
-  }
-  
-  &__inner-wrapper {
-    display: flex;
-  }
-  
-  .ui-confirm__message {
-    display: flex;
-    flex-direction: column;
-    
-    .ui-checkbox__checkmark {
-      display: inline-block;
-      
-      vertical-align: top;
-    }
-    
-    .ui-checkbox__label-text {
-      display: inline-block;
-      width: auto;
-      
-      vertical-align: middle;
-    }
-  }
-
-  .ui-modal__body {
-    min-height: 0;
-  }
-
-  .ui-textbox__input {
-    border: none;
-    font-size: 16px;
-    color: inherit;
-    font-weight: bold;
-  }
-  
-  .ui-checkbox {
-    display: inline-block;
-    
-    vertical-align: top;
-    
-    .ui-checkbox__label-text {
-      color: black;
-    }
-  }
-
-  .ui-checkbox__label-text {
-    margin-top: 0 !important;
   }
 }
 </style>
