@@ -2,11 +2,11 @@
   <div class="groups">
     <group-item
       v-for="(group, index) in groups"
-      :key="group.id"
 
       :allFilteredNumbers="allFilteredNumbers"
       :invalid="localGroupsNameCollision[index]"
       :group="group"
+      :key="group.id"
       :readonly="readonly"
     ></group-item>
   </div>  
@@ -60,6 +60,7 @@
     watch: {
       groups: {
         handler() {
+          console.log('groups', this.groups)
           this.checkNameCollision();
         },
         deep: true,

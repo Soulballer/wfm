@@ -726,6 +726,18 @@ export default {
     template: {
       type: Object
     },
+    schema: {
+      type: Object
+    },
+    step: {
+      type: Object
+    },
+    steps: {
+      type: Array
+    },
+    stepId: {
+      type: String
+    },
     keywords: {
       type: Array,
       default () {
@@ -759,8 +771,7 @@ export default {
         this.localSelectedNumbers = selectedNumbers;
         
         if( JSON.stringify(selectedNumbers) !==  JSON.stringify(this.selectedNumbers) ) {
-          console.log('template!!!!!!', this.template)
-          this.template.selectedNumbers = selectedNumbers
+          this.schema.selectedNumbers = selectedNumbers
           this.$emit('update:selectedNumbers', selectedNumbers);
         }
       },

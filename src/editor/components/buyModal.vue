@@ -142,7 +142,7 @@
       },
       mappedNumbers() {
         return _
-          .chain(this.numbers)
+          .chain(_.cloneDeep(this.numbers))
           .filter(num => !num.isGroup)
           .reduce((arr, num) => {
             arr.push({id: num.id, value: num.phoneNumber, state: this.getState(num.phoneNumber)});

@@ -1,7 +1,7 @@
 <template>
   <div class="map">
     <div class="map__legend">
-      <div v-for="color in document.colorPalette" :key="color.color">
+      <div v-for="color in colorPalette" :key="color.color">
         <div :style="{'background-color': color.color}" class="color-box"></div>
         <span>{{color.min}} {{color.max == Infinity ? '+' : `- ${color.max}`}}</span>
       </div>
@@ -40,7 +40,8 @@
     },
     data() {
       return {
-        clickedState: {id: ''}
+        clickedState: {id: ''},
+        colorPalette
       }
     },
     methods: {
