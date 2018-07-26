@@ -73,6 +73,7 @@
     <or-confirm
       :contain-focus="false"
       @confirm="handleUngroup"
+      class="ungroup-modal"
       confirmButtonText="Save"
       ref="confirmUngroup"
       title="Ungroup"
@@ -83,6 +84,7 @@
     <or-confirm
       :contain-focus="false"
       @confirm="handleAddNumber"
+      class="addnumber-modal"
       confirmButtonText="Add"
       ref="confirmAddNumber"
       title="Add numbers"
@@ -93,7 +95,8 @@
         :value="allNumbersSelected"
         @change="selectAll"
         class="select-all-button"
-      >{{selectAllButtonText}}
+      >
+        {{selectAllButtonText}}
       </or-checkbox>
       <or-checkbox
         v-for="number in copyNumbers"
@@ -305,13 +308,13 @@ export default {
     //     return;
     //   }
 
-      this.group.isSelected = event;
+      // this.group.isSelected = event;
       
-      if (this.group.isSelected) {
-        _.forEach(this.group.numbers, number => number.checked = true);
-      } else {
-        _.forEach(this.group.numbers, number => number.checked = false);
-      }
+      // if (this.group.isSelected) {
+      //   _.forEach(this.group.numbers, number => number.checked = true);
+      // } else {
+      //   _.forEach(this.group.numbers, number => number.checked = false);
+      // }
     },
     updateName() {
       this.inputDisabled = true;
@@ -350,31 +353,22 @@ export default {
   .group {
     &__inner-wrapper {
       display: flex;
-      align-items: center;
-    }
 
-    &.unabled .ui-checkbox.is-disabled .ui-checkbox__checkmark {
-      display: block;
-    }
+      .ui-checkbox {
+        align-self: flex-start;
+        margin-top: 3px;
+        margin-bottom: 0;
+      }
 
-    .ui-checkbox {
-      align-self: flex-start;
-      margin-top: 3px;
-      margin-bottom: 0;
-    }
+      .or-collapsible {
+        padding-left: 8px;
+        
+        border: 0;
 
-    .or-collapsible {
-      padding-left: 8px;
-      
-      border: 0;
-
-      & > .header {
-        min-height: 0 !important;
-        padding: 0;
-
-        font-weight: bold;
-
-        border-bottom: none;
+        & > .header {
+          min-height: 0 !important;
+          padding: 0;
+        }
 
         .collapsible-header {
           display: flex;
@@ -386,7 +380,7 @@ export default {
             color: inherit;
             font-weight: bold;
 
-            border: none;
+            border: 1px solid white;
             outline: none;
             background: none;
             
@@ -404,57 +398,27 @@ export default {
             .ui-icon-button {
               height: 25px !important;
               width: 25px !important;
-
-              &__icon .ui-icon,
-              svg {
-                margin: 0 auto;
-              }
             }
-          }
-
-          &:hover .group-buttons {
-            visibility: visible;
           }
         }
       }
+    }
+
+    &.unabled .ui-checkbox.is-disabled .ui-checkbox__checkmark {
+      display: block;
+    }
+
+    .addnumber-modal {
+      .item-value {
+        color: black;
+      }
+    }
+  }
 
     .error-class-same-name {
       color: #f95d5d !important;
     }
-    
-    &:not(.unabled) {
-      .or-collapsible {
-        color: black;
-        
-        .body-wrapper {
-          color: black;
-        }
-      }
-    }
-    
-    &__inner-wrapper {
-      display: flex;
-    }
-    
-    .ui-confirm__message {
-      display: flex;
-      flex-direction: column;
-      
-      .ui-checkbox__checkmark {
-        display: inline-block;
-        
-        vertical-align: top;
-      }
-      
-      .ui-checkbox__label-text {
-        display: inline-block;
-        width: auto;
-        
-        vertical-align: middle;
-      }
-    }
-  }
-}
+
 </style>
 
 

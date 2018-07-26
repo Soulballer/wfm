@@ -117,32 +117,32 @@ export default {
 
 <style lang="scss" scoped>
   .item-content {
-  position: relative;
-  height: 25px;
-  display: flex;
-  align-items: center;
+    position: relative;
+    height: 25px;
+    display: flex;
+    align-items: center;
 
-  &:hover .item-buttons {
-    visibility: visible;
-  }
+    &:hover .item-buttons {
+      visibility: visible;
+    }
 
-  .input-element {
-    border: none;
-    outline: none;
-    font-family: inherit;
-    font-size: 14px;
-    color: inherit;
-    padding: 0;
-    
-    &:not(:disabled) {
-      border: 1px solid #64b2da;
+    .input-element {
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: 14px;
+      color: inherit;
+      padding: 0;
+      
+      &:not(:disabled) {
+        border: 1px solid #64b2da;
+      }
+    }
+
+    .item-value {
+      margin-right: 0.5em;
     }
   }
-
-  .item-value {
-    margin-right: 0.5em;
-  }
-}
 
 .item-data {
   display: flex;

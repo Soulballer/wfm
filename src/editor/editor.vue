@@ -266,8 +266,10 @@ export default {
     keywordsСollisionData () {
       if (!this.isKeywords) {
         this.localNumbers.map(number => {
+          console.log('flowlist', this.flowsList)
           this.flowsList.forEach(step => {
-            for (stepNumber in step.flowNumberKeywords) {
+            for (let stepNumber in step.flowNumberKeywords) {
+              console.log('stepNumber', stepNumber)
               if (stepNumber == number.value && !step.isKeywords) {
                 number.usedData.push(step);
                 //number.checked = false;
@@ -283,7 +285,7 @@ export default {
         
         this.localGroups.map(group => {
           this.flowsList.forEach(step => {
-            for (stepNumber in step.flowNumberKeywords) {
+            for (let stepNumber in step.flowNumberKeywords) {
               if (stepNumber == group.id && !step.isKeywords) {
                 if (!group.hasOwnProperty('usedData')) {
                   group.usedData = []
@@ -303,7 +305,7 @@ export default {
       } else {
         this.localNumbers.map(number => {
           this.flowsList.forEach(step => {
-            for (stepNumber in step.flowNumberKeywords) {
+            for (let stepNumber in step.flowNumberKeywords) {
               if (stepNumber == number.value) {
                 let flagKeyword = false;
                 this.keywords.forEach((keywordItem) => {
@@ -336,7 +338,7 @@ export default {
         
         this.localGroups.map(group => {
           this.flowsList.forEach(step => {
-            for (stepNumber in step.flowNumberKeywords) {
+            for (let stepNumber in step.flowNumberKeywords) {
               if (stepNumber == group.id) {
                 let flagKeyword = false;
                 this.keywords.forEach((keywordItem) => {
