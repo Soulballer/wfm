@@ -20,7 +20,7 @@
             :class="{ 'is-placeholder': !hasDisplayText }"
           >
             <div>
-              <button class="ui-select__display-selected" v-for="text in displayText.split(',')" v-if="text.length">
+              <button class="ui-select__display-selected" v-for="text in displayText.split(',')" :key="text" v-if="text.length">
                 {{text}}
                 <i @click.stop="!readonly ? removeSelection(text) : ''" class="material-icons ui-select__display-close-button">close</i>
               </button>
@@ -122,7 +122,6 @@
 </template>
 <script>
   import Promise from 'bluebird';
-  import * as _ from 'lodash';
   import {validators} from '_validators';
   import eventHub from './helpers/eventHub.js';
 
@@ -136,7 +135,7 @@
 export default {
   name       : 'editor-Wait-for-message',
   props      : ['template', 'schema', 'step', 'stepId', 'steps', 'readonly'],
-  components : {BuyModal, Groups, NumbersItems},
+  components : { BuyModal, Groups, NumbersItems },
 
   created () {
     eventHub.$on('ungroup', this.handleUngroup);
