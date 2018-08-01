@@ -60,7 +60,6 @@
     watch: {
       groups: {
         handler() {
-          console.log('groups', this.groups)
           this.checkNameCollision();
         },
         deep: true,

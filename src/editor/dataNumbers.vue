@@ -1,44 +1,54 @@
 <template>
   <div class="data-numbers">
-    <a ref="flowlist-popover" v-show="number.usedData.length && !readonly" class="data-numbers--link">
-      <span class="slash">-</span>
-      <span v-show="!number.anyKeywords">
-        in use by 
-      </span>
-      <span v-for="(key, index) in number.keywordsСollision" v-if="index < 2">
-        <span v-show="!number.anyKeywords"> # </span>{{key}}
-        <span v-if="index !== 1 && number.keywordsСollision.length !== 1">, </span>
+    <a ref="trigger3" v-show="data.usedData.length && !readonly" class="data-numbers--link">
+      <span class="slash">  -  </span>
+      <span v-show="!data.anyKeywords"> in use by </span>
+      <span v-for="(key, index) in data.keywordsСollision" :key="key" v-if="index < 2">
+        <span v-show="!data.anyKeywords">#</span>{{key}}
+        <span v-if="index !== 1 && data.keywordsСollision.length !== 1">, </span>
       </span> 
-      <span v-if="number.keywordsСollision.length > 2">and {{number.keywordsСollision.length - 2}} other</span>
+      <span v-if="data.keywordsСollision.length > 2">and {{data.keywordsСollision.length - 2}} other</span>
     </a>
-    <or-popover open-on="click" trigger="flowlist-popover" class="data-numbers--popover">
-      <div class="data-numbers--popover__container">
-        <p v-for="num in number.usedData" class="data-numbers--popover__data">
-          <a :href="'/#/bots/' + num.botId" target="_blank">{{num.botName}}</a> /
-          <a :href="'/#/flows/' +num.botId + '/' + num.flowId" target="_blank">{{num.flowName}}</a>
-        </p>
-      </div>
+
+    <or-popover open-on="click" trigger="trigger3" class="data-numbers--popover">
+      <p v-for="d in data.usedData" :key="d.botId" class="data-numbers--popover__container">
+        <a :href="'/#/bots/' + d.botId" target="_blank">{{d.botName}}</a> /
+        <a :href="'/#/flows/' +d.botId + '/' + d.flowId" target="_blank">{{d.flowName}}</a>
+      </p>
     </or-popover>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'DataNumbers',
   props: {
-    readonly: {
-      type : Boolean
+    data: {
+      type: Object,
+      default() {
+        return {}
+      }
     },
-    number: {
-      type: Object
+    readonly: {
+      type : Boolean,
+      default() {
+        return false
+      }
     }
   }
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
   .data-numbers {
     display: inline-block;
+    margin-right: 5px;
+
+    color: #91969d;
+
+    .slash {
+      font-size: 16px;
+      white-space: pre;
+    }
 
     &--link {
       display: inline-block;
@@ -61,12 +71,8 @@ export default {
 
     &--popover {
       &__container {
-        padding: 20px; 
-        margin-top: -10px;
-      }
-
-      &__data {
         margin: 10px 0 0 0;
+        padding: 10px 20px 20px; 
       }
     } 
   }

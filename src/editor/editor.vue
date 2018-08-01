@@ -266,10 +266,8 @@ export default {
     keywordsСollisionData () {
       if (!this.isKeywords) {
         this.localNumbers.map(number => {
-          console.log('flowlist', this.flowsList)
           this.flowsList.forEach(step => {
             for (let stepNumber in step.flowNumberKeywords) {
-              console.log('stepNumber', stepNumber)
               if (stepNumber == number.value && !step.isKeywords) {
                 number.usedData.push(step);
                 //number.checked = false;
@@ -827,7 +825,6 @@ export default {
 
 
     export const data = (template) => {
-      console.log('template', template)
       return({
         allCheckedNumbers  : template.allCheckedNumbers,
         selectedNumbers    : template.selectedNumbers,

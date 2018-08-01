@@ -5,7 +5,6 @@
         v-model="group.isSelected"
 
         :disabled="readonly || group.usedData.length"
-        @change="toggleGroupSelection"
         transition="expand"
       ></or-checkbox>
 
@@ -64,10 +63,10 @@
         ></item-content>
       </or-collapsible>
 
-      <group-data-number
-        :group="group"
+      <data-numbers
+        :data="group"
         :readonly="readonly"
-      ></group-data-number>
+      ></data-numbers>
     </div>
 
     <or-confirm
@@ -115,7 +114,7 @@
 import eventHub from './helpers/eventHub.js';
 
 import ItemContent from './itemContent.vue';
-import GroupDataNumber from './groupDataNumber.vue';
+import DataNumbers from './dataNumbers.vue';
 
 export default {
   props: {
@@ -136,7 +135,7 @@ export default {
       default: false
     }
   },
-  components: { GroupDataNumber, ItemContent },
+  components: { DataNumbers, ItemContent },
 
   created () {
     eventHub.$on('remove number from group', this.handleNumberRemove)
@@ -227,9 +226,6 @@ export default {
       // remove selected numbers from general number list
       .then(() => eventHub.$emit('add numbers to group', this.numbersSelectedToAdd));
     },
-    // handleCheckboxChange(number) {
-    //   number.checked = !number.checked;
-    // },
     handleNumbersList() {
       this.copyNumbers = _
         .chain(_.cloneDeep(this.allFilteredNumbers))
@@ -301,21 +297,6 @@ export default {
 
       _.forEach(this.copyNumbers, n => { n.checked = !condition })
     },
-    toggleGroupSelection(event) {
-    //   if (this.group.usedData.length) {
-    //     this.group.isSelected = false;
-        
-    //     return;
-    //   }
-
-      // this.group.isSelected = event;
-      
-      // if (this.group.isSelected) {
-      //   _.forEach(this.group.numbers, number => number.checked = true);
-      // } else {
-      //   _.forEach(this.group.numbers, number => number.checked = false);
-      // }
-    },
     updateName() {
       this.inputDisabled = true;
       this.open = false;
@@ -368,6 +349,10 @@ export default {
         & > .header {
           min-height: 0 !important;
           padding: 0;
+
+          .header-icon {
+            margin: 0;
+          }
         }
 
         .collapsible-header {

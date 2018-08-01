@@ -19,7 +19,7 @@
         v-show="!inputDisabled"
         @blur="updateName"
         :style="{ width: getWidthOfInput + 'px' }"
-      ></input>
+      />
       <span class="number-disabled" v-show="inputDisabled">{{number.name}}</span>
     </div>
     <ui-progress-circular
@@ -28,7 +28,7 @@
       v-show="isData && !readonly"
     ></ui-progress-circular>
     <data-numbers
-      :number="number"
+      :data="number"
       :readonly="readonly"
     ></data-numbers>
     <div
@@ -78,7 +78,7 @@ import DataNumbers from './dataNumbers.vue';
 
 export default {
   name: 'NumbersItem',
-  components : {DataNumbers},
+  components : { DataNumbers },
 
   data() {
     return {

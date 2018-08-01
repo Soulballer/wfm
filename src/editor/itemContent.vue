@@ -3,46 +3,44 @@
     <span class="item-value">{{number.value}}</span>
     <div>
       <input
-        class="input-element"
-        type="text"
         v-model="number.name"
-        ref="name"
+
         :disabled="inputDisabled"
+        :size="number.name.length * 0.88"
         @blur="updateName"
-        :style="{ width: getWidthOfInput + 'px' }"
+        class="input-element"
+        ref="name"
+        type="text"
       />
     </div>
     <ui-progress-circular
+      v-show="isData && !readonly"
+
       :size="20"
       color="primary"
-      v-show="isData && !readonly"
     ></ui-progress-circular>
-    <div
-      class="item-buttons"
-      v-if="!isData && !group.usedData.length">
+
+    <div v-if="!readonly && !group.usedData.length" class="item-buttons">
       <or-icon-button
-        v-if="!readonly"
-        class="edit-button"
-        type="flat"
-        icon="edit"
-        :tooltip="group.editable ? '' : 'Group is in use, not allowed to edit'"
+        :tooltip="!group.editable ? 'Group is in use, not allowed to edit' : ''"
         @click="editNumberItem"
+        icon="edit"
+        type="flat"
       ></or-icon-button>
       <or-icon-button
-        v-if="!readonly"
-        class="remove-button"
-        type="flat"
-        icon="delete_forever"
-        :tooltip="group.editable ? '' : 'Group is in use, not allowed to edit'"
+        :tooltip="!group.editable ? 'Group is in use, not allowed to edit' : ''"
         @click="removeNumberItem"
+        icon="delete_forever"
+        type="flat"
       ></or-icon-button>
     </div>
+
     <or-confirm
-      title="Move"
-      ref="confirmRemove"
-      confirmButtonText="Move"
-      @confirm="handleRemove"
       :contain-focus="false"
+      @confirm="handleRemove"
+      confirmButtonText="Move"
+      ref="confirmRemove"
+      title="Move"
     >Move {{number.value}} from {{group.name}} to the global list?
     </or-confirm>
   </div>
@@ -66,30 +64,26 @@ export default {
       type: Object
     }
   },
-  computed: {
-    getWidthOfInput() {
-      return this.number.name.length * 10;
-    }
-  },
+
   data() {
     return {
       inputDisabled: true
     }
   },
   methods: {
-    editNumberItem () {
+    editNumberItem() {
       if (this.group.editable) {
         this.inputDisabled = false;
         this.$nextTick(() => this.$refs.name.focus());
       }
     },
-    handleRemove () {
+    handleRemove() {
       eventHub.$emit('remove number from group', this.number);
     },
-    removeNumberItem () {
+    removeNumberItem() {
       if (this.group.editable) this.$refs.confirmRemove.open();
     },
-    updateName () {
+    updateName() {
       this.number.name = this.$refs.name.value;
 
       this.$http.put(
