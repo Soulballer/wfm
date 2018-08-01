@@ -1,8 +1,9 @@
 <template>
   <or-checkbox
-  :value="isInBuyList"
-  @change="updateBuyList"
-  class="number-to-buy-item number-container">
+    :value="isInBuyList"
+    @change="updateBuyList"
+    class="number-to-buy-item number-container"
+  >
     <div class="number-to-buy-item__number">
       <span>{{number.phoneNumber}}</span>
       <!-- <span>$ {{number.price}} monthly</span> -->
@@ -61,6 +62,7 @@
             height: 13px;
 
             border-width: 2px !important;
+            border-color: #132530 !important;
           }
         }
 

@@ -413,12 +413,11 @@ export default {
         color: black;
       }
     }
-  }
 
     .error-class-same-name {
       color: #f95d5d !important;
     }
-
+  }
 </style>
 
 

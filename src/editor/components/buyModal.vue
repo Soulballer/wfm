@@ -352,6 +352,19 @@
 
         background-color: #F6F6F6;
 
+        .button {
+          padding: 0 10px;
+          color: #0594ed;
+          box-sizing: content-box;
+          font-size: 12px;
+          cursor: pointer;
+
+          &.disabled {
+            cursor:no-drop;
+            color:#e7e7e7;
+          }
+        }
+
         &__header {
           display: flex;
           justify-content: space-between;
@@ -372,9 +385,19 @@
         }
 
         .search-box {
+          position: relative;
+          
           margin-bottom: 30px;
 
           .clear-search {
+            position: absolute;
+            right: 5px;
+            top: 17%;
+
+            font-size: 20px;
+            color: #a7aaaf;
+
+            cursor: pointer;
             z-index: 10;
             background-color: #fff;
           }
@@ -385,18 +408,28 @@
           }
 
           .ui-textbox__icon-wrapper {
+            position: absolute;
             top: 10px;
             left: inherit;
             right: 5px;
 
+            margin: 0;
+            padding-top: 0;
+
             .ui-icon {
               font-size: 21px;
+              line-height: 14px;
               color: #91969D !important;
             }
           }
 
           .ui-textbox__input {
-            padding-left: 15px;
+            padding: 7px 25px 10px 15px;
+   
+            font-size: 14px;
+
+            border: none;
+            background-color: white;
           }
         }
 
@@ -417,7 +450,7 @@
           .numbers-list {
             height: 340px;
             max-height: 340px;
-            margin-bottom: 10px;
+            margin: 14px 0;
 
             .ui-select__empty p {
               text-align: center;
@@ -461,6 +494,25 @@
 
         display: flex;
         justify-content: center;
+      }
+
+      .scrollbar {
+        &::-webkit-scrollbar {
+          width: 6px;
+          background:#f6f6f6;
+        }
+        &::-webkit-scrollbar-track {
+          -webkit-border-radius: 10px;
+          border-radius: 10px;
+        }
+        &::-webkit-scrollbar-thumb {
+          -webkit-border-radius: 4px;
+          border-radius: 4;
+          background:#d8d8d8;
+        }
+        &::-webkit-scrollbar-thumb:window-inactive {
+          background: #d8d8d8;
+        }
       }
     }
   }
