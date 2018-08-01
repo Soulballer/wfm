@@ -51,17 +51,17 @@ import eventHub from './helpers/eventHub.js';
 
 export default {
   props: {
-    readonly: {
-      type : Boolean
-    },
-    number: {
-      type: Object
-    },
     isData: {
       type : Boolean
     },
     group: {
       type: Object
+    },
+    number: {
+      type: Object
+    },
+    readonly: {
+      type : Boolean
     }
   },
 

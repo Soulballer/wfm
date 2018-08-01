@@ -2,10 +2,11 @@
   <div>
     <numbers-item
       v-for="number in numbers"
-      key="number.name"
+
       :currentFlowDeployedData="currentFlowDeployedData"
-      :number="number"
       :isData="isData"
+      :key="number.name"
+      :number="number"
       :readonly="readonly"
     ></numbers-item>
   </div>
@@ -15,9 +16,6 @@
 import NumbersItem from './numbersItem.vue'
 
 export default {
-  name: 'NumbersItems',
-  components : {NumbersItem},
-
   props: {
     currentFlowDeployedData: {
       type: Boolean
@@ -32,6 +30,7 @@ export default {
       type : Boolean
     },
   },
+  components : { NumbersItem }
 }
 </script>
 
