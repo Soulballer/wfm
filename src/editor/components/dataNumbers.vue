@@ -20,27 +20,26 @@
 </template>
 
 <script>
-export default {
-  props: {
-    data: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    readonly: {
-      type : Boolean,
-      default() {
-        return false
+  export default {
+    props: {
+      data: {
+        type: Object,
+        default() {
+          return {}
+        }
+      },
+      readonly: {
+        type : Boolean,
+        default() {
+          return false
+        }
       }
     }
   }
-}
 </script>
 
 <style lang="scss" scoped>
   .data-numbers {
-    display: inline-block;
     margin-right: 5px;
 
     color: #91969d;
@@ -71,8 +70,8 @@ export default {
 
     &--popover {
       &__container {
-        margin: 10px 0 0 0;
-        padding: 10px 20px 20px; 
+        margin: 0;
+        padding: 10px; 
       }
     } 
   }

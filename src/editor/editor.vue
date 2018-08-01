@@ -87,15 +87,14 @@
                       :value="allNumbersSelected">{{selectAllButtonText}}
                     </or-checkbox>
                     <groups
+                      :allFilteredNumbers="allFilteredNumbers"
                       :groups="allFilteredGroups"
                       :readonly="readonly"
-                      :allFilteredNumbers="allFilteredNumbers"
                     ></groups>
                     <numbers-items
                       :currentFlowDeployedData="currentFlowDeployedData"
                       :numbers="allFilteredNumbers"
                       :readonly="readonly"
-                      :isData="isData"
                     ></numbers-items>
                   </div>
                 </div>
@@ -128,8 +127,8 @@
   import eventHub from './helpers/eventHub.js';
 
   import BuyModal from './components/buyModal.vue';
-  import Groups from './groups.vue';
-  import NumbersItems from './numbersItems.vue'
+  import Groups from './components/groups.vue';
+  import NumbersItems from './components/numbersItems.vue';
 
   const {required, jsExpressionNonEmptyString, generateValidators} = validators;
   
@@ -623,6 +622,7 @@ export default {
           .filter(deployment => {
             if (deployment.flowId === currentFlowId) {
               this.currentFlowDeployedData = deployment;
+              console.log('delp data', this.currentFlowDeployedData);
               return false;
             }
 

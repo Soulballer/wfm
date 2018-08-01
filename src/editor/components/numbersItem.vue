@@ -1,12 +1,13 @@
 <template>
 <div class="numbers-item">
   <or-checkbox
-  @change="numberSelect"
-  :disabled="readonly"
-  :class="{'unabled': number.usedData.length}"
-  :key="number.value"
-  transition="expand"
-  v-model="number.checked">
+    @change="numberSelect"
+    :disabled="readonly"
+    :class="{'unabled': number.usedData.length}"
+    :key="number.value"
+    transition="expand"
+    v-model="number.checked"
+  >
   <div class="item-content">
     <div class="item-data">
       <span class="item-value">{{number.value}}</span>
@@ -22,18 +23,13 @@
       />
       <span class="number-disabled" v-show="inputDisabled">{{number.name}}</span>
     </div>
-    <ui-progress-circular
-      :size="20"
-      color="primary"
-      v-show="isData && !readonly"
-    ></ui-progress-circular>
     <data-numbers
       :data="number"
       :readonly="readonly"
     ></data-numbers>
     <div
       class="item-buttons"
-      v-if="!isData && !number.usedData.length">
+      v-if="!number.usedData.length">
       <or-icon-button
         v-if="!readonly"
         class="edit-button"
@@ -72,52 +68,105 @@
 </template>
 
 <script>
-import eventHub from './helpers/eventHub.js';
+  import eventHub from '../helpers/eventHub.js';
 
-import DataNumbers from './dataNumbers.vue';
+  import DataNumbers from './dataNumbers.vue';
 
-export default {
-  name: 'NumbersItem',
-  components : { DataNumbers },
-
-  data() {
-    return {
-      inputDisabled: true,
-      isAllowed: true,
-      isDeactivatingThisFlow: false,
-      isDeployed: false,
-      removeProgress: false,
-      showWarn: false
-    }
-  },
-  computed: {
-    getWidthOfInput() {
-      return this.number.name.length * 10;
-    }
-  },
-  methods: {
-    numberSelect() {
-      if (this.number.usedData.length) {
-        this.number.checked = false;
+  export default {
+    props: {
+      currentFlowDeployedData: {
+        type: Object,
+        default() {
+          return {}
+        }
+      },
+      number: {
+        type: Object
+      },
+      readonly: {
+        type: Boolean
       }
     },
-    editNumberItem () {
-      this.inputDisabled = false;
-      this.$nextTick(() => this.$refs.name.focus());
-    },
-    handleRemove () {
-      // remove group id
-      _.set(this.number, 'group', undefined);
-      
-      if (!_.isEmpty(this.currentFlowDeployedData)) {
-        this.isDeactivatingThisFlow = this.currentFlowDeployedData.data.triggers[0].params.name.split('/')[2] == this.number.value; 
-      }
+    components : { DataNumbers },
 
-      if (!this.number.usedData.length && !this.isDeactivatingThisFlow) {
-        this.removeProgress = true;
-        this.$http.delete(
+    data() {
+      return {
+        inputDisabled: true,
+        isAllowed: true,
+        isDeactivatingThisFlow: false,
+        isDeployed: false,
+        removeProgress: false,
+        showWarn: false
+      }
+    },
+    computed: {
+      getWidthOfInput() {
+        return this.number.name.length * 10;
+      }
+    },
+    methods: {
+      numberSelect() {
+        if (this.number.usedData.length) {
+          this.number.checked = false;
+        }
+      },
+      editNumberItem () {
+        this.inputDisabled = false;
+        this.$nextTick(() => this.$refs.name.focus());
+      },
+      handleRemove () {
+        // remove group id
+        _.set(this.number, 'group', undefined);
+        
+        if (!_.isEmpty(this.currentFlowDeployedData)) {
+          this.isDeactivatingThisFlow = this.currentFlowDeployedData.data.triggers[0].params.name.split('/')[2] == this.number.value; 
+        }
+
+        if (!this.number.usedData.length && !this.isDeactivatingThisFlow) {
+          this.removeProgress = true;
+          this.$http.delete(
+            this.$flow.gatewayUrl('identifiers',
+            this.$flow.providersAccountId()),
+            {
+              headers: {
+                Authorization: `USER ${this.$settings.token}`
+              },
+              params: {
+                identifier: this.number.value
+              }
+            }
+          )
+          .then(() => eventHub.$emit('update numbers data'))
+          .then(() => {
+            this.removeProgress = false;
+            return eventHub.$emit('remove number from general list', this.number)
+          })
+          .catch((e) => {
+            if (e.status == '403') {
+              this.isAllowed = false;
+            }
+            this.removeProgress = false;
+          });
+        } else if(this.isDeactivatingThisFlow) {
+          this.showWarn = true;
+        } else {
+          this.isDeployed = true;
+        }
+      },
+      removeNumberItem () {
+        this.$refs.confirmRemove.open();
+      },
+      updateName () {
+        _.set(this.number, 'name', this.$refs.name.value);
+          
+        this.$http.put(
           this.$flow.gatewayUrl('identifiers',
           this.$flow.providersAccountId()),
+          {
+            identifier: {
+              name: this.$refs.name.value
+            }
+          },
           {
             headers: {
               Authorization: `USER ${this.$settings.token}`
@@ -125,66 +174,12 @@ export default {
             params: {
               identifier: this.number.value
             }
-          }
-        )
-        .then(() => eventHub.$emit('update numbers data'))
-        .then(() => {
-          this.removeProgress = false;
-          return eventHub.$emit('remove number from general list', this.number)
-        })
-        .catch((e) => {
-          if (e.status == '403') {
-            this.isAllowed = false;
-          }
-          this.removeProgress = false;
-        });
-      } else if(this.isDeactivatingThisFlow) {
-        this.showWarn = true;
-      } else {
-        this.isDeployed = true;
-      }
-    },
-    removeNumberItem () {
-      this.$refs.confirmRemove.open();
-    },
-    updateName () {
-      _.set(this.number, 'name', this.$refs.name.value);
-        
-      this.$http.put(
-        this.$flow.gatewayUrl('identifiers',
-        this.$flow.providersAccountId()),
-        {
-          identifier: {
-            name: this.$refs.name.value
-          }
-        },
-        {
-          headers: {
-            Authorization: `USER ${this.$settings.token}`
-          },
-          params: {
-            identifier: this.number.value
-          }
-        })
+          })
 
-      this.inputDisabled = true;
-    }
-  },
-  props: {
-    currentFlowDeployedData: {
-      type: Boolean
-    },
-    number: {
-      type: Object
-    },
-    isData: {
-      type: Boolean
-    },
-    readonly: {
-      type: Boolean
+        this.inputDisabled = true;
+      }
     }
   }
-}
 </script>
 
 <style lang="scss" scoped>
