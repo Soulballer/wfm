@@ -29,6 +29,12 @@
         }
       }
     },
+    created() {
+      eventHub.$on('reset state', this.mouseClick);
+    },
+    destroyed() {
+      eventHub.$off('reset state', this.mouseClick);
+    },
 
     computed: {
       colorData() {
@@ -55,6 +61,7 @@
         return [..._.filter(colorPalette, data => data.max > state.population && data.min <= state.population)][0];
       },
       mouseClick(event) {
+        if (!event.id) return
         if (this.clickedState.id !== event.id && !_.isEmpty(this.clickedState.id)) {
           d3.select(`#${this.clickedState.id}`).style("fill", this.colorData[event.id].color) ;
         } else if (this.clickedState.id === event.id){

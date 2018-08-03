@@ -26,6 +26,12 @@
         default: {}
       }
     },
+     created() {
+      eventHub.$on('reset state', this.clearBuyList);
+    },
+    destroyed() {
+      eventHub.$off('reset state', this.clearBuyList);
+    },
 
     computed: {
       isInBuyList() {
@@ -33,6 +39,9 @@
       }
     },
     methods: {
+      clearBuyList() {
+        eventHub.$emit('buyList:update', []);
+      },
       updateBuyList(event) {
         eventHub.$emit('buyList:update',
         event ? _.concat(this.buyList, this.number)

@@ -245,6 +245,8 @@ export default {
       flowsList: [],
       isData: false,
       isLoading: false,
+      isKeywords: this.schema.isKeywords,
+      keywords: this.schema.keywords,
       localGroups: this.groups,
       localSelectedGroups: this.selectedGroups,
       localNumbers: _.clone(this.numbers),
@@ -262,7 +264,7 @@ export default {
       }
     },
     keywordsСollisionData () {
-      if (!this.isKeywords) {
+      if (!this.schema.isKeywords) {
         this.localNumbers.map(number => {
           this.flowsList.forEach(step => {
             for (let stepNumber in step.flowNumberKeywords) {
@@ -621,7 +623,6 @@ export default {
           .filter(deployment => {
             if (deployment.flowId === currentFlowId) {
               this.currentFlowDeployedData = deployment;
-              console.log('delp data', this.currentFlowDeployedData);
               return false;
             }
 
@@ -669,12 +670,14 @@ export default {
     },
     updateSelectedElemLength () {
       this.selectedElemLength = this.selectedNumbers.length + this.selectedGroups.length;
-      this.$emit('update:selectedElemLength', this.selectedElemLength);
+      this.schema.selectedElemLength = this.selectedElemLength;
+      //this.$emit('update:selectedElemLength', this.selectedElemLength);
     }
   },
   mounted() {
     this.updateNumbersData();
     document.addEventListener('click', this.onExternalClick);
+    //setInterval(() => {console.log('schema', this.schema)}, 5000)
   },
   props: {
     allCheckedNumbers: {
@@ -737,18 +740,6 @@ export default {
     stepId: {
       type: String
     },
-    keywords: {
-      type: Array,
-      default () {
-        return [];
-      }
-    },
-    isKeywords: {
-      type: Boolean,
-      default () {
-        return false;
-      }
-    },
     v: {
       type: Object,
       default() {
@@ -762,6 +753,8 @@ export default {
   },
   watch: {
     allLocalCheckedNumbers() {
+      this.schema.allCheckedNumbers = this.allLocalCheckedNumbers;
+      this.allCheckedNumbers = this.allLocalCheckedNumbers;
       this.$emit('update:allCheckedNumbers', this.allLocalCheckedNumbers);
     },
     localNumbers: {
@@ -770,7 +763,8 @@ export default {
         this.localSelectedNumbers = selectedNumbers;
         
         if( JSON.stringify(selectedNumbers) !==  JSON.stringify(this.selectedNumbers) ) {
-          this.schema.selectedNumbers = selectedNumbers
+          this.schema.selectedNumbers = selectedNumbers;
+          this.selectedNumbers = selectedNumbers;
           this.$emit('update:selectedNumbers', selectedNumbers);
         }
       },
@@ -790,6 +784,8 @@ export default {
       handler() {
         let selectedGroups = _.filter(this.localGroups, n => n.isSelected);
         this.localSelectedGroups = selectedGroups;
+        this.schema.selectedGroups = selectedGroups;
+        this.selectedGroups = selectedGroups;
         this.$emit('update:selectedGroups', selectedGroups);
       },
       deep: true,
@@ -803,12 +799,14 @@ export default {
     },
     keywords: {
       handler() {
+      console.log('keywords added', this.isKeywords, this.schema.isKeywords)
         this.updataKeywordsСollisionData();
       },
       deep: true,
     },
     isKeywords: {
       handler() {
+        console.log('keyword handler')
         this.updataKeywordsСollisionData();
       }
     }
@@ -831,7 +829,7 @@ export default {
         groups             : template.groups,
         selectedGroups     : template.selectedGroups,
         showAll            : template.showAll,
-        isKeywords         : template.isKeywords,
+  
         keywords           : template.keywords,
         selectedElemLength : template.selectedElemLength
     })};

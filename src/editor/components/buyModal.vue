@@ -1,20 +1,29 @@
 <template>
   <or-modal
-    title=""
-    class="buy-modal"
-    ref="modal"
     :contain-focus="false"
+    @close="clearData"
     @open="requestNumbers"
-    @close="isAllowed = true"
+    class="buy-modal"
+    title=""
+    ref="modal"
   >
     <div class="buy-modal-left">
       <div class="map">
         <span class="map__state">Select state on the map: <span>{{selectedState.name}}</span></span>
-        <states-map class="map__svg" :selected-state.sync="selectedState"></states-map>
+        <states-map
+          :selected-state.sync="selectedState"
+          class="map__svg"
+        ></states-map>
 
         <p>Your active numbers</p>
-        <ul class="state-numbers scrollbar" :class="{ 'no-scroll': numbersFilteredByState.length < numbersAvailableToShow}">
-          <li :key="number.id" v-for="number in numbersFilteredByState">{{number.value}} <span>{{number.state}}</span></li>
+        <ul :class="{ 'no-scroll': numbersFilteredByState.length < numbersAvailableToShow}" class="state-numbers scrollbar">
+          <li 
+            v-for="number in numbersFilteredByState"
+
+            :key="number.id"
+          >
+            {{number.value}} <span>{{number.state}}</span>
+          </li>
         </ul>
       </div>
     </div>
@@ -24,51 +33,75 @@
         <p>Buy a numbers</p><p>in <b>{{selectedState.name === 'All' ? 'All states' : selectedState.name}}</b></p>
       </div>
       
-      <or-alert @dismiss="isAllowed = true" type="warning" v-show="!isAllowed">
+      <or-alert 
+        v-show="!isAllowed" 
+        
+        @dismiss="isAllowed = true" 
+        type="warning"
+      >
         Only Admin has permissions to manage account numbers. Please contact your admin or OneReach Support.
       </or-alert>
 
       <div class="search-box">
         <or-textbox
+          v-model="searchValue"
+
           class="search-filter" 
-          placeholder="Search by numbers" 
-          name="searchInput" 
-          v-model="searchValue" 
           icon="search"
+          name="searchInput" 
+          placeholder="Search by numbers" 
         ></or-textbox>
-        <ui-icon @click.native="clearSearch" class="clear-search" icon="close" v-if="searchValue"></ui-icon>
+        <ui-icon 
+          v-if="searchValue"
+
+          @click.native="clearSearch"
+          class="clear-search" 
+          icon="close"
+        ></ui-icon>
       </div>
 
       <div class="numbers-container">
-        <ui-progress-linear color="primary" size="24" v-if="isLoading"></ui-progress-linear>
+        <ui-progress-linear 
+          v-if="isLoading"
+          
+          color="primary" 
+          size="24"
+        ></ui-progress-linear>
         <div v-else>
           <div
-            class="button"
             v-show="hasItemsInBuyList"
+
             @click="changeBuyFilter"
+            class="button"
           >{{buyfilterButtonText}}</div>
           <div class="numbers-list scrollbar">
-            <div class="ui-select__empty" v-show="!filteredNumbers.length">
+            <div
+              v-show="!filteredNumbers.length"
+
+              class="ui-select__empty"
+            >
               <p>No matching phone numbers</p>
             </div>
             <number-to-buy-item
               v-for="number in splitToPagesNumbers"
-              :number="number"
+
               :buyList="buyList"
               :key="number.phoneNumber"
+              :number="number"
               transition="expand">
             </number-to-buy-item>
           </div>
 
           <div class="pagination">
             <or-button
-              :key="key"
+              v-for="(list, key) in paginationButtons"
+
               :class="{selected: pageNumber  === key + 1}"
+              :id="`${key + 1}button`"
+              :key="key"
+              @click="changePageNumber"
               color="deafult"
               type="secondary"
-              v-for="(list, key) in paginationButtons"
-              :id="`${key + 1}button`"
-              @click="changePageNumber"
             >{{key + 1}}
             </or-button>
           </div>
@@ -77,12 +110,18 @@
 
       <div class="footer">
         <or-button
-          color="primary"
-          @click="buyNumbers"
           :disabled="!hasItemsInBuyList || buyProgress"
+          @click="buyNumbers"
+          color="primary"
         >
           <span v-if="buyProgress">
-            <ui-progress-circular color="white" size="18" type="indeterminate" v-show="buyProgress"></ui-progress-circular>
+            <ui-progress-circular 
+              v-show="buyProgress"
+              
+              color="white" 
+              size="18" 
+              type="indeterminate"
+            ></ui-progress-circular>
           </span>
           <span v-else>
             Buy {{hasItemsInBuyList ? `(${buyList.length})` : null}}
@@ -219,6 +258,11 @@
           this.buyProgress = false;
         });
       },
+      clearData() {
+        eventHub.$emit('reset state', {...this.selectedState, id: this.selectedState.value});
+        this.isAllowed = true;
+        this.clearSearch();
+      },
       clearSearch() {
         this.searchValue = '';
       },
@@ -231,7 +275,10 @@
         this.pageNumber = _.parseInt(event.target.offsetParent.id)
       },
       getState(num) {
-        return usCodes[num.slice(2,5)].state;
+        if (_.startsWith(num, '+')) return usCodes[num.slice(2,5)].state;
+        else {
+          return 'State unrecognized';
+        }
       },
       openModal() {
         this.$refs.modal.open();
@@ -258,6 +305,7 @@
           this.isLoading = false;
         });
       },
+     
       updateBuyList(newBuylist) {
         this.buyList = newBuylist;
       }
