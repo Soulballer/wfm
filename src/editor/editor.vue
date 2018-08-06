@@ -677,7 +677,6 @@ export default {
   mounted() {
     this.updateNumbersData();
     document.addEventListener('click', this.onExternalClick);
-    //setInterval(() => {console.log('schema', this.schema)}, 5000)
   },
   props: {
     allCheckedNumbers: {

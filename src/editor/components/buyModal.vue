@@ -309,6 +309,11 @@
       updateBuyList(newBuylist) {
         this.buyList = newBuylist;
       }
+    },
+    watch: {
+      buyList() {
+        if (!this.buyList.length) this.showSelected = false;
+      }
     }
   }
 </script>
