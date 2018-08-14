@@ -197,6 +197,9 @@ export default {
     
       return '';
     },
+    isKeywords() {
+      return this.schema.isKeywords
+    },
     filteredNumbers () {
       let availableNumbers =  _.concat(this.localNumbers, ...this.groups.map(group => group.numbers));
       return _.filter(availableNumbers, n => 
@@ -245,7 +248,6 @@ export default {
       flowsList: [],
       isData: false,
       isLoading: false,
-      isKeywords: this.schema.isKeywords,
       keywords: this.schema.keywords,
       localGroups: this.groups,
       localSelectedGroups: this.selectedGroups,

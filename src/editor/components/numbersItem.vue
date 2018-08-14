@@ -15,14 +15,15 @@
           <!-- can rework logic. show span with label and hide span and show input when we click on edit button. and move input inside span. and we will can delete widht calculator -->
           <span ref="span" class="number-disabled" v-show="inputDisabled">{{number.name}}</span>
           <input
-            class="input-element"
-            type="text"
-            v-model.trim="number.name"
-            ref="name"
+            v-model.trim="localNumber.name"
             v-show="!inputDisabled"
+
+            :style="{width: inputWidth + 'px'}"
             @blur="updateName"
-            :style="{width: getWidth + 'px'}"
-          />
+            class="input-element"
+            ref="name"
+            type="text"
+          />  
         </div>
 
         <data-numbers
@@ -46,37 +47,36 @@
             type="flat"
           ></or-icon-button>
         </div>
-
-        <or-confirm
-          :close-on-confirm="!isAllowed"
-          :loading="removeProgress"
-          @confirm="handleRemove"
-          @deny="isAllowed = true; showWarn = false"
-          confirmButtonText="Remove"
-          ref="confirmRemove"
-          title="Remove"
-        >
-          <or-alert 
-            v-show="!isAllowed"
-            
-            @dismiss="isAllowed = true" 
-            type="warning"
-          >
-            Only Admin has permissions to manage account numbers. Please contact your admin or OneReach Support.
-          </or-alert>
-          <or-alert 
-            v-show="showWarn"
-
-            @dismiss="showWarn = false" 
-            type="warning"
-          >
-            The number cannot be removed as there is a flow activated on it.
-          </or-alert>
-            Remove {{number.value}} from the global list?
-        </or-confirm>
-
       </div>
     </or-checkbox>
+
+    <or-confirm
+      :close-on-confirm="!isAllowed"
+      :loading="removeProgress"
+      @confirm="handleRemove"
+      @deny="isAllowed = true; showWarn = false"
+      confirmButtonText="Remove"
+      ref="confirmRemove"
+      title="Remove"
+    >
+      <or-alert 
+        v-show="!isAllowed"
+        
+        @dismiss="isAllowed = true" 
+        type="warning"
+      >
+        Only Admin has permissions to manage account numbers. Please contact your admin or OneReach Support.
+      </or-alert>
+      <or-alert 
+        v-show="showWarn"
+
+        @dismiss="showWarn = false" 
+        type="warning"
+      >
+        The number cannot be removed as there is a flow activated on it.
+      </or-alert>
+        Remove {{number.value}} from the global list?
+    </or-confirm>
 
   </div>
 </template>
@@ -109,8 +109,14 @@
     },
     components : { DataNumbers },
 
+    computed: {
+      localNumber() {
+        return _.cloneDeep(this.number);
+      }
+    },
     data() {
       return {
+        inputWidth: 0,
         inputDisabled: true,
         isAllowed: true,
         isDeactivatingThisFlow: false,
@@ -120,15 +126,15 @@
       }
     },
     methods: {
-      getWidth() {
-        return this.$refs.span.offsetWidth
-      },
-      editNumberItem () {
+      editNumberItem() {
         this.inputDisabled = false;
         this.$nextTick(() => this.$refs.name.focus());
-        console.log('aaaaa', this.getWidth(), this.$refs);
+        this.getWidth();
       },
-      handleRemove () {
+      getWidth() {
+        this.inputWidth = _.get(this.$refs, 'span.offsetWidth', 0);
+      },
+      handleRemove() {
         // remove group id
         _.set(this.number, 'group', undefined);
         
@@ -167,10 +173,10 @@
           this.isDeployed = true;
         }
       },
-      removeNumberItem () {
+      removeNumberItem() {
         this.$refs.confirmRemove.open();
       },
-      updateName () {
+      updateName() {
         _.set(this.number, 'name', this.$refs.name.value);
           
         this.$http.put(
@@ -204,9 +210,9 @@
         width: 100%;
 
         color: black;
+      }
     }
 
-    }
     .unabled {
       .ui-checkbox__label-text {
         color: #91969d;
@@ -226,6 +232,26 @@
       
       .ui-ripple-ink {
         display: none;
+      }
+    }
+
+    .item-content {
+      position: relative;
+
+      display: flex;
+
+      line-height: 24px;
+
+      .item-element {
+        padding: 0;
+
+        line-height: 22px;
+
+        border: 1px solid #64b2da;
+      }
+
+      &:hover .item-buttons {
+        visibility: visible;
       }
     }
 

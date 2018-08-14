@@ -52,7 +52,7 @@
     &--link {
       display: inline-block;
       
-      font-size: 14px;
+      font-size: 0;
       font-weight: normal;
     
       cursor: pointer;
@@ -63,6 +63,7 @@
         display: inline-block;
         
         line-height: normal;
+        font-size: 14px;
         
         vertical-align: middle;
       }
