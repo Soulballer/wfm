@@ -569,7 +569,7 @@ export default {
                   name: number.name,
                   value: number.phoneNumber,
                   usedData: [],
-                  checked: _.get(_.find(self.numbers, {
+                  checked: _.get(_.find(self.selectedNumbers, {
                     id: number.id
                   }), 'checked', false),
                   keywordsСollision: [],
