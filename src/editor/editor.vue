@@ -73,7 +73,7 @@
                 </transition>
                 <div class="numbers-list scrollbar">
                   <div class="ui-select__empty" v-if="!allFilteredNumbers.length && !allFilteredGroups.length && !isLoading && !readonly">
-                    <p>No matching phone numbers</p>
+                    <p>No matching numbers or groups found</p>
                   </div>
                   <div v-else>
                     <or-checkbox
@@ -535,7 +535,7 @@ export default {
     },
     updateNumbersData () {
       //this.isData = true;
-      if (!this.localNumbers.length) this.isLoading = true;
+      //if (!this.localNumbers.length) this.isLoading = true;
       let self = this;
 
       this.$http.get(this.$flow.gatewayUrl('identifiers', this.$flow.providersAccountId()), {
@@ -982,10 +982,11 @@ export default {
 .ui-select__empty {
   display: flex;
   justify-content: center;
-  margin: 40px 0 60px;
+  margin: 40px 0;
 
   p {
     display: inline-block;
+    margin-bottom: 0;
 
     color: rgba(94, 101, 109, 0.55);
     font-size: 14px;
