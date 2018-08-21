@@ -133,6 +133,7 @@
 
 <script>
   import Promise from 'bluebird';
+  import uuid from 'uuid';
   import eventHub from '../helpers/eventHub.js';
 
   import BuyModal from './buyModal.vue';
