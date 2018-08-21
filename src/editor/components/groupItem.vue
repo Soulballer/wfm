@@ -186,7 +186,7 @@
         this.open = !this.open
       },
       checkName(e) {
-        if(_.isEmpty(e.target.value.trim())) this.errorClass = true;
+        this.errorClass = _.isEmpty(e.target.value.trim()) ? true : false;
       },
       editGroup() {
         if (!this.group.editable) return
