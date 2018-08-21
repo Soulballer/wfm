@@ -675,9 +675,9 @@ export default {
       });
     },
     updateSelectedElemLength () {
-      this.selectedElemLength = this.selectedNumbers.length + this.selectedGroups.length;
+      let selectedLength = this.selectedNumbers.length + this.selectedGroups.length;
       //this.schema.selectedElemLength = this.selectedElemLength;
-      this.$emit('update:selectedElemLength', this.selectedElemLength);
+      this.$emit('update:selectedElemLength', selectedLength);
     }
   },
   mounted() {

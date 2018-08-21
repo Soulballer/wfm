@@ -59,17 +59,17 @@
         }
     };
 
-    export const label = 'Test example';
+    export const label = 'WFM external';
     export const data = {
         // allCheckedNumbers  : template.allCheckedNumbers,
-        // selectedNumbers    : template.selectedNumbers,
+         selectedNumbers    : [],
         // numbers            : template.numbers,
         // groups             : template.groups,
-        // selectedGroups     : template.selectedGroups,
+         selectedGroups     : [],
         // showAll            : template.showAll,
         // isKeywords         : template.isKeywords,
         // keywords           : template.keywords,
-        // selectedElemLength : template.selectedElemLength
+        selectedElemLength : 0,
         // email               : '',
         // emailPlaceholder    : 'Test email placeholder',
         // emailLabel          : '',

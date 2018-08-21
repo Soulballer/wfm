@@ -5,7 +5,8 @@
     :is-keywords="schema.isKeywords"
     :keywords="schema.keywords"
     :numbers="schema.numbers" 
-    :readonly="readonly" 
+    :readonly="readonly"
+    :selected-elem-length.sync="schema.selectedElemLength" 
     :selected-numbers.sync="schema.selectedNumbers" 
     :selected-groups.sync="schema.selectedGroups">
   </main-component>
@@ -20,9 +21,12 @@
   
 
   export default {
-    name       : 'editor-Wait-for-message',
-    props      : ['template', 'schema', 'step', 'stepId', 'steps', 'readonly'],
+    props      : ['template', 'schema', 'step', 'stepId', 'steps', 'readonly', 'isNew'],
     components : { MainComponent },
+
+    created() {
+      this.schema.isNew = this.isNew;
+    },
     validations () {
       return {
         schema : validator(this.template)
@@ -38,15 +42,20 @@
       groups             : template.groups,
       selectedGroups     : template.selectedGroups,
       showAll            : template.showAll,
-
+      isNew              : template.isNew,
       keywords           : template.keywords,
       selectedElemLength : template.selectedElemLength
   })};
 
   export const validator = (template) => {
     return {
-      // email    : generateValidators(template.validateRequired, {required}),
-      // password : generateValidators(template.validateRequired, {required}),
+      selectedElemLength    : generateValidators(true, {
+        custom(data, num) {
+          if (!num.isNew) return Boolean(data) 
+           
+          return true 
+        }
+      })
     };
   };
 
