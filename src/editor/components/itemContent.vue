@@ -115,6 +115,7 @@
 
     .input-element {
       padding: 0;
+      margin-right: 55px;
 
       font-family: inherit;
       font-size: 14px;
