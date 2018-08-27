@@ -276,7 +276,7 @@ export default {
             for (let stepNumber in step.flowNumberKeywords) {
               if (stepNumber == number.value && !step.isKeywords) {
                 number.usedData.push(step);
-                //number.checked = false;
+                number.checked = false;
                 if (!_.isArray(number['keywordsСollision'])) {
                   number['keywordsСollision'] = []
                 }
@@ -333,7 +333,7 @@ export default {
                 });
                 if (flagKeyword) {
                   number.usedData.push(step);
-                  //number.checked = false;
+                  number.checked = false;
                 }
               }
             }
@@ -1080,7 +1080,7 @@ export default {
   }
   .ui-checkbox {
     margin: 5px 0;
-    
+
     &__label {
       &-text {
         font-size:14px;
