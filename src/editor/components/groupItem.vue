@@ -16,10 +16,12 @@
         @open="changeOpenState"
       >
         <div slot="header" class="collapsible-header">
-          
+            <span ref="span" class="number-disabled" v-show="inputDisabled">{{group.name}}</span>
             <input
+              v-show="!inputDisabled"
+
               :disabled="inputDisabled"
-              :size="group.name.length * 0.88"
+              :style="{width: inputWidth + 'px'}"
               :value="group.name"
               @blur="updateName"
               @input="checkName"
@@ -169,6 +171,7 @@
         copyNumbers: [],
         errorClass: false,
         inputDisabled: true,
+        inputWidth: 0,
         open: false
       }
     },
@@ -193,7 +196,11 @@
 
         this.inputDisabled = false;
         this.$nextTick(() => this.$refs.name.focus());
+        this.getWidth();
         
+      },
+      getWidth() {
+        this.inputWidth = _.get(this.$refs, 'span.offsetWidth', 0);
       },
       handleAddNumber() {
         const {id} = this.group;

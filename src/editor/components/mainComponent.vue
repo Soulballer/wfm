@@ -45,8 +45,15 @@
             <div class="container" :class="{ 'error-empty-num': !selectedElemLength }">
           
               <div class="search-box" v-show="!readonly">
-                <or-textbox :disabled="readonly" class="search-filter" placeholder="Type to search" name="searchInput" v-model="searchValue" icon="search"></or-textbox> <!--use readonly attr for disabling or-textbox-->
+                <or-textbox :disabled="readonly" class="search-filter" placeholder="Search" name="searchInput" v-model="searchValue" icon="search"></or-textbox> <!--use readonly attr for disabling or-textbox-->
                 <ui-icon @click.native="clearSearch" class="clear-search" icon="close" v-if="searchValue"></ui-icon>
+                <div
+                  :class="{'create-group__button--inactive': localSelectedNumbers.length < 2}"
+                  @click="createGroup"
+                  class="button create-group__button"
+                >
+                  Create group
+                </div>
               </div>
               <ui-progress-linear
                 color="primary"
@@ -64,14 +71,6 @@
                       @click="changeFilter"
                     >
                       {{filterButtonText}}
-                    </div>
-                    <div
-                      :class="{'read-only': readonly}"
-                      class="button"
-                      v-show="localSelectedNumbers.length > 1 && !readonly"
-                      @click="createGroup"
-                    >
-                      Create group
                     </div>
                   </div>
                 </transition>
@@ -425,6 +424,7 @@ export default {
       this.searchValue = "";
     },
     createGroup () {
+      if (this.localSelectedNumbers.length < 2) return 
       const groupId = uuid.v4();
 
       // assign 'group' prop for every selected number
@@ -987,7 +987,7 @@ export default {
     position:relative;
     .clear-search {
       position: absolute;
-      right: 5px;
+      right: 95px;
       top: 17%;
       z-index: 2;
       cursor: pointer;
@@ -996,12 +996,12 @@ export default {
     }
     .ui-textbox {
       position:relative;
-      
-      border-bottom: 1px solid #dfdfdf;
+
+      margin-bottom: 5px;
       
       &__input {
         padding-left:25px;
-        padding-right:25px;
+        padding-right:125px;
         padding-top: 7px;
         font-size:14px;
         border: none;
@@ -1022,6 +1022,18 @@ export default {
           padding: 0;
           z-index: 10;
         }
+      }
+    }
+
+    .create-group__button {
+      position: absolute;
+      top: 8px;
+      right: 6px;
+
+      &--inactive {
+        color: #91969d;
+
+        cursor: default;
       }
     }
   }
@@ -1064,10 +1076,11 @@ export default {
     max-height: 180px;
     overflow-y:auto;
     overflow-x:hidden;
-    margin:14px 0;
+    margin:7px 0 14px;
   }
   .ui-checkbox {
-    margin-bottom:5px;
+    margin: 5px 0;
+    
     &__label {
       &-text {
         font-size:14px;

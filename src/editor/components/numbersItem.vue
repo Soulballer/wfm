@@ -12,13 +12,11 @@
       <div class="item-content">
         <div class="item-data">
           <span class="item-value">{{number.value}}</span>
-          <!-- can rework logic. show span with label and hide span and show input when we click on edit button. and move input inside span. and we will can delete widht calculator -->
-          <span ref="span" class="number-disabled" v-show="inputDisabled">{{number.name}}</span>
+          <span v-show="inputDisabled" ref="span" class="number-disabled" >{{localNumber}}</span>
           <input
-            v-model.trim="localNumber.name"
+            v-model="localNumber"
             v-show="!inputDisabled"
 
-            :style="{width: inputWidth + 'px'}"
             @blur="updateName"
             class="input-element"
             ref="name"
@@ -110,8 +108,10 @@
     components : { DataNumbers },
 
     computed: {
-      localNumber() {
-        return _.cloneDeep(this.number);
+      localNumber: {
+        get() {
+          return this.number.name;
+        }
       }
     },
     data() {
@@ -137,7 +137,7 @@
       handleRemove() {
         // remove group id
         _.set(this.number, 'group', undefined);
-        
+  
         if (!_.isEmpty(this.currentFlowDeployedData)) {
           this.isDeactivatingThisFlow = this.currentFlowDeployedData.data.triggers[0].params.name.split('/')[2] == this.number.value; 
         }
@@ -241,6 +241,10 @@
       display: flex;
 
       line-height: 24px;
+
+      .item-data {
+        font-weight: normal;
+      }
 
       .item-element {
         padding: 0;
