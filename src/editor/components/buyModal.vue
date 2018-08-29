@@ -15,7 +15,7 @@
           class="map__svg"
         ></states-map>
 
-        <p>Your active numbers</p>
+        <p>Your active numbers {{selectedState.name !== 'All' ? `in ${selectedState.name}` : ``}}</p>
         <ul :class="{ 'no-scroll': numbersFilteredByState.length < numbersAvailableToShow}" class="state-numbers scrollbar">
           <li 
             v-for="number in numbersFilteredByState"
