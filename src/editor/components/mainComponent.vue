@@ -104,7 +104,7 @@
                       :readonly="readonly"
                     ></numbers-items>
 
-                    <div class="no-active-numbers" v-show="_.isEmpty(selectedNumbers) && _.isEmpty(selectedGroups)">
+                    <div class="no-active-numbers" v-show="_.isEmpty(selectedNumbers) && _.isEmpty(selectedGroups) && readonly">
                         You have purchased numbers, but none of them was selected before saving the flow.
                     </div>
                   </div>
