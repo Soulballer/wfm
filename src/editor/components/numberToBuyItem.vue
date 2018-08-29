@@ -6,6 +6,7 @@
   >
     <div class="number-to-buy-item__number">
       <span>{{number.phoneNumber}}</span>
+      <span>{{number.region}}</span>
       <!-- <span>$ {{number.price}} monthly</span> -->
     </div>
   </or-checkbox>
@@ -76,6 +77,8 @@
         }
 
         &__label-text {
+          width: 100%;
+
           margin-left: 13px;
           margin-top: 0;
         }
@@ -83,6 +86,9 @@
     }
 
     &__number {
+      display: flex;
+      justify-content: space-between;
+
       span {
         color: #0F232E;
         line-height: 21px;

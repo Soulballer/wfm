@@ -301,7 +301,9 @@
         )
         .then(response => response.json())
         .then(num => {
-          this.numbersAvailableToBuy = num
+          this.numbersAvailableToBuy = this.selectedState.name === 'All' ? 
+            num.map(n => ({...n, region: this.getState(n.phoneNumber)})) : 
+            num.map(n => ({...n, region: ''}));
           this.isLoading = false;
         });
       },
@@ -501,8 +503,8 @@
           }
 
           .numbers-list {
-            height: 340px;
-            max-height: 340px;
+            height: 350px;
+            max-height: 350px;
             margin: 14px 0;
 
             .ui-select__empty p {
