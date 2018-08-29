@@ -314,7 +314,6 @@
       },
       updateName() {
         this.inputDisabled = true;
-        this.open = false;
         
         if (this.errorClass) {
           this.$refs.name.value = this.group.name;
