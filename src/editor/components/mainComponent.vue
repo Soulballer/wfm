@@ -151,6 +151,7 @@ export default {
     eventHub.$on('put number to general list', this.putNumberToGeneralList);
     eventHub.$on('remove number from general list', this.removeNumberFromGeneralList);
     eventHub.$on('update numbers data', this.updateNumbersData);
+    eventHub.$on('buy new number', this.addNewNumber);
     
   },
   destroyed () {
@@ -159,6 +160,7 @@ export default {
     eventHub.$off('put number to general list', this.putNumberToGeneralList);
     eventHub.$off('remove number from general list', this.removeNumberFromGeneralList);
     eventHub.$off('update numbers data', this.updateNumbersData);
+    eventHub.$off('buy new number', this.addNewNumber);
     document.removeEventListener('click', this.onExternalClick);
   },
 

@@ -90,23 +90,27 @@
       ref="confirmAddNumber"
       title="Add numbers"
     >
-      <or-checkbox
-        v-if="copyNumbers.length"
+      <div v-if="copyNumbers.length">
+        <or-checkbox
+          :value="allNumbersSelected"
+          @change="selectAll"
+          class="select-all-button"
+        >
+          {{selectAllButtonText}}
+        </or-checkbox>
+        <or-checkbox
+          v-for="number in copyNumbers"
+          v-model="number.checked"
 
-        :value="allNumbersSelected"
-        @change="selectAll"
-        class="select-all-button"
-      >
-        {{selectAllButtonText}}
-      </or-checkbox>
-      <or-checkbox
-        v-for="number in copyNumbers"
-        v-model="number.checked"
-
-        :key="number.id"
-      >
-        <span class="item-value">{{number.value}} {{number.name}}</span>
-      </or-checkbox>
+          :key="number.id"
+        >
+          <span class="item-value">{{number.value}} {{number.name}}</span>
+        </or-checkbox>
+      </div>
+      <div v-else>
+        All your available numbers are already in the groups.<br>
+        You can <a @click="buyNewNumbers" class="button">buy new numbers</a> or split one of your existing groups.
+      </div>
     </or-confirm>
 
   </div>  
@@ -142,12 +146,12 @@
     created () {
       eventHub.$on('remove number from group', this.handleNumberRemove)
       eventHub.$on('add numbers to group', this.clearSelected);
-      this.$on('open modal add to group', this.handleNumbersList);
+      eventHub.$on('open modal add to group', this.handleNumbersList);
     },
     destroyed () {
       eventHub.$off('remove number from group', this.handleNumberRemove);
       eventHub.$off('add numbers to group', this.clearSelected);
-      this.$off('open modal add to group', this.handleNumbersList);
+      eventHub.$off('open modal add to group', this.handleNumbersList);
     },
 
     computed: {
@@ -180,7 +184,11 @@
         if (!this.group.editable) return
 
         this.$refs.confirmAddNumber.open();
-        this.$emit('open modal add to group');
+        eventHub.$emit('open modal add to group');
+      },
+      buyNewNumbers() {
+        this.$refs.confirmAddNumber.close();
+        eventHub.$emit('buy new number')
       },
       clearSelected() {
         _.forEach(this.copyNumbers, n => n.checked = false);
@@ -438,6 +446,20 @@
     .addnumber-modal {
       .item-value {
         color: black;
+      }
+
+      .ui-modal .ui-modal__container > .ui-modal__body {
+        padding: 16px 24px;
+
+        .button {
+          padding: 0;
+          
+          font-size: 15px;
+
+          &:hover {
+            color: #0594ed;
+          }
+        }
       }
     }
   }
