@@ -103,6 +103,10 @@
                       :numbers="allFilteredNumbers"
                       :readonly="readonly"
                     ></numbers-items>
+
+                    <div class="no-active-numbers" v-show="_.isEmpty(selectedNumbers) && _.isEmpty(selectedGroups)">
+                        You have purchased numbers, but none of them was selected before saving the flow.
+                    </div>
                   </div>
                 </div>
 
@@ -1078,7 +1082,7 @@ export default {
     max-height: 180px;
     overflow-y:auto;
     overflow-x:hidden;
-    margin:7px 0 14px;
+    margin:7px 0 0;
   }
   .ui-checkbox {
     margin: 5px 0;
@@ -1172,6 +1176,12 @@ export default {
     &::-webkit-scrollbar-thumb:window-inactive {
     	background: #d8d8d8;
     }
+  }
+
+  .no-active-numbers {
+    margin-top: 20px;
+
+    font-size: 15px;
   }
 }
 
