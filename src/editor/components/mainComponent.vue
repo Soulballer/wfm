@@ -877,6 +877,10 @@ export default {
 
   .data {
     padding: 0 10px;
+
+    & ~ .button {
+      padding-top: 10px !important;
+    }
   }
 
   .container{
