@@ -114,7 +114,7 @@
       }
     },
     mounted(){
-      console.log('aaaaa-------', this.$refs.confirmRemove)
+      console.log('ssss-------', this.$refs.confirmRemove)
       document.body.appendChild(this.$refs.confirmRemove);
     },
     data() {
