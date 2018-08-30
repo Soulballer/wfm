@@ -114,8 +114,8 @@
       }
     },
     mounted(){
-      console.log('aaaaa-------', this.$refs.handleRemove)
-      document.body.appendChild(this.$refs.handleRemove);
+      console.log('aaaaa-------', this.$refs.confirmRemove)
+      document.body.appendChild(this.$refs.confirmRemove);
     },
     data() {
       return {
