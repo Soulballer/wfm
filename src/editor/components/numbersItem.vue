@@ -47,7 +47,6 @@
         </div>
       </div>
     </or-checkbox>
-    <div v-show="showModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0">
     <or-confirm
       :close-on-confirm="!isAllowed"
       :loading="removeProgress"
@@ -75,7 +74,6 @@
       </or-alert>
         Remove {{number.value}} from the global list?
     </or-confirm>
-    </div>
 
   </div>
 </template>
@@ -114,6 +112,9 @@
           return this.number.name;
         }
       }
+    },
+    mounted(){
+      document.body.appendChild(this.refs.handleRemove);
     },
     data() {
       return {
