@@ -124,7 +124,7 @@
         isDeployed: false,
         removeProgress: false,
         showWarn: false,
-        showModal: false;
+        showModal: false
       }
     },
     methods: {
