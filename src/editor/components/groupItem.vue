@@ -16,7 +16,7 @@
         @open="changeOpenState"
       >
         <div slot="header" class="collapsible-header">
-            <span ref="span" class="number-disabled" v-show="inputDisabled">{{group.name}}</span>
+            <span class="number-disabled" v-show="inputDisabled">{{group.name}}</span>
             <input
               v-show="!inputDisabled"
 

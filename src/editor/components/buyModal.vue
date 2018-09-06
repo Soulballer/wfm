@@ -34,7 +34,7 @@
       </div>
       
       <or-alert 
-        v-show="!isAllowed" 
+        v-if="!isAllowed" 
         
         @dismiss="isAllowed = true" 
         type="warning"
@@ -42,94 +42,96 @@
         Only Admin has permissions to manage account numbers. Please contact your admin or OneReach Support.
       </or-alert>
 
-      <div class="search-box">
-        <or-textbox
-          v-model="searchValue"
+      <div v-else>
+        <div class="search-box">
+          <or-textbox
+            v-model="searchValue"
 
-          class="search-filter" 
-          icon="search"
-          name="searchInput" 
-          placeholder="Search by numbers" 
-        ></or-textbox>
-        <ui-icon 
-          v-if="searchValue"
+            class="search-filter" 
+            icon="search"
+            name="searchInput" 
+            placeholder="Search by numbers" 
+          ></or-textbox>
+          <ui-icon 
+            v-if="searchValue"
 
-          @click.native="clearSearch"
-          class="clear-search" 
-          icon="close"
-        ></ui-icon>
-      </div>
+            @click.native="clearSearch"
+            class="clear-search" 
+            icon="close"
+          ></ui-icon>
+        </div>
 
-      <div class="numbers-container">
-        <ui-progress-linear 
-          v-if="isLoading"
-          
-          color="primary" 
-          size="24"
-        ></ui-progress-linear>
-        <div v-else>
-          <div
-            v-show="hasItemsInBuyList"
-
-            @click="changeBuyFilter"
-            class="button"
-          >{{buyfilterButtonText}}</div>
-          <div class="numbers-list scrollbar">
+        <div class="numbers-container">
+          <ui-progress-linear 
+            v-if="isLoading"
+            
+            color="primary" 
+            size="24"
+          ></ui-progress-linear>
+          <div v-else>
             <div
-              v-show="!filteredNumbers.length"
+              v-show="hasItemsInBuyList"
 
-              class="ui-select__empty"
-            >
-              <p>No matching phone numbers</p>
+              @click="changeBuyFilter"
+              class="button"
+            >{{buyfilterButtonText}}</div>
+            <div class="numbers-list scrollbar">
+              <div
+                v-show="!filteredNumbers.length"
+
+                class="ui-select__empty"
+              >
+                <p>No matching phone numbers</p>
+              </div>
+              <number-to-buy-item
+                v-for="number in splitToPagesNumbers"
+
+                :buyList="buyList"
+                :key="number.phoneNumber"
+                :number="number"
+                transition="expand">
+              </number-to-buy-item>
             </div>
-            <number-to-buy-item
-              v-for="number in splitToPagesNumbers"
 
-              :buyList="buyList"
-              :key="number.phoneNumber"
-              :number="number"
-              transition="expand">
-            </number-to-buy-item>
-          </div>
+            <div class="pagination">
+              <or-button
+                v-for="(list, key) in paginationButtons"
 
-          <div class="pagination">
-            <or-button
-              v-for="(list, key) in paginationButtons"
-
-              :class="{selected: pageNumber  === key + 1}"
-              :id="`${key + 1}button`"
-              :key="key"
-              @click="changePageNumber"
-              color="deafult"
-              type="secondary"
-            >{{key + 1}}
-            </or-button>
+                :class="{selected: pageNumber  === key + 1}"
+                :id="`${key + 1}button`"
+                :key="key"
+                @click="changePageNumber"
+                color="deafult"
+                type="secondary"
+              >{{key + 1}}
+              </or-button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="footer">
-        <or-button
-          :disabled="!hasItemsInBuyList || buyProgress"
-          @click="buyNumbers"
-          color="primary"
-        >
-          <span v-if="buyProgress">
-            <ui-progress-circular 
-              v-show="buyProgress"
-              
-              color="white" 
-              size="18" 
-              type="indeterminate"
-            ></ui-progress-circular>
-          </span>
-          <span v-else>
-            Buy {{hasItemsInBuyList ? `(${buyList.length})` : null}}
-          </span>
-        </or-button>
-        <!-- <div class="total">
-          Total: USD {{totalPrice}} mothly
-        </div> -->
+        <div class="footer">
+          <or-button
+            :disabled="!hasItemsInBuyList || buyProgress"
+            @click="buyNumbers"
+            color="primary"
+          >
+            <span v-if="buyProgress">
+              <ui-progress-circular 
+                v-show="buyProgress"
+                
+                color="white" 
+                size="18" 
+                type="indeterminate"
+              ></ui-progress-circular>
+            </span>
+            <span v-else>
+              Buy {{hasItemsInBuyList ? `(${buyList.length})` : null}}
+            </span>
+          </or-button>
+          <!-- <div class="total">
+            Total: USD {{totalPrice}} mothly
+          </div> -->
+        </div>
       </div>
     </div>
 
