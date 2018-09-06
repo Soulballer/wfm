@@ -47,13 +47,15 @@
               <div class="search-box" v-show="!readonly">
                 <or-textbox :disabled="readonly" class="search-filter" placeholder="Search" name="searchInput" v-model="searchValue" icon="search"></or-textbox> <!--use readonly attr for disabling or-textbox-->
                 <ui-icon @click.native="clearSearch" class="clear-search" icon="close" v-if="searchValue"></ui-icon>
-                <div
-                  :class="{'create-group__button--inactive': localSelectedNumbers.length < 2}"
+                <or-icon-button
+                  :class="{'create-group__button--inactive': !availableToGroup}"
+                  :tooltip="createGroupWarn" 
+                  tooltipPosition="left top"
                   @click="createGroup"
                   class="button create-group__button"
                 >
                   Create group
-                </div>
+                </or-icon-button>
               </div>
               <ui-progress-linear
                 color="primary"
@@ -170,6 +172,20 @@ export default {
 
 
   computed: {
+    availableToGroup() {
+      let usedNumber = [];
+      
+      if (this.localSelectedNumbers.length < 2) {
+        this.createGroupWarn = 'Min two numbers needed';
+        return false;
+      } else if(!_.isEmpty(this.localSelectedNumbers.filter(num => !num.editable))) {
+        this.createGroupWarn = 'Adding numbers in use is not allowed';
+        return false;
+      } else {
+        this.createGroupWarn = '';
+        return true;
+      }
+    },
     allLocalCheckedNumbers() {
       return _.concat(this.selectedNumbers, ...this.selectedGroups.map(group => group.numbers));
     },
@@ -254,6 +270,7 @@ export default {
     return {
       allAvailableNumbers: [],
       anyNumbersAvilable: true,
+      createGroupWarn: '',
       currentFlowDeployedData: {},
       currentShowState: this.readonly ? false : this.showAll,
       flowsList: [],
@@ -430,7 +447,7 @@ export default {
       this.searchValue = "";
     },
     createGroup () {
-      if (this.localSelectedNumbers.length < 2) return 
+      if (!this.availableToGroup) return 
       const groupId = uuid.v4();
 
       // assign 'group' prop for every selected number
@@ -470,6 +487,7 @@ export default {
 
       // remove selected numbers from numbers list
       this.localNumbers = _.reject(this.localNumbers, x => x.checked === true);
+      this.localSelectedNumbers = _.reject(this.localNumbers, x => x.checked === true);
 
       // uncheck selected numbers
       _.forEach(this.localSelectedNumbers, x => {
@@ -580,7 +598,8 @@ export default {
                     id: number.id
                   }), 'checked', false),
                   keywordsСollision: [],
-                  group: number.group
+                  group: number.group,
+                  editable: true
                 };
               })
               .sortBy('value')
@@ -674,9 +693,13 @@ export default {
             }
           })
           .value();
-          const usedAnywhere = [];
-          this.flowsList.filter(flow => _.forIn(flow.flowNumberKeywords, (val, key) => key.indexOf('+') < 0 ? usedAnywhere.push(key) : ''));
-          _.forEach(this.localGroups, g => {g.editable = !usedAnywhere.some(id => id === g.id)});
+
+          const usedAnywhereGroup = [], usedAnywhereNumber = [];
+          this.flowsList.filter(flow => _.forIn(flow.flowNumberKeywords, (val, key) => key.indexOf('+') < 0 ? usedAnywhereGroup.push(key) : usedAnywhereNumber.push(key)));
+          
+          _.forEach(this.localGroups, g => {g.editable = !usedAnywhereGroup.some(id => id === g.id)});
+          _.forEach(this.localNumbers, n => {n.editable = !usedAnywhereNumber.some(id => id === n.value)});
+
           this.keywordsСollisionData();
           this.isData = false;
       });
@@ -1039,6 +1062,29 @@ export default {
       position: absolute;
       top: 8px;
       right: 6px;
+
+      width: auto;
+      height: auto;
+
+      font: inherit;  
+      font-size: 12px;
+
+      background-color: white;
+      border-radius: 0;
+      cursor: pointer;
+
+      &:hover {
+        background-color: white;
+      }
+
+      .ui-icon-button__icon {
+        font: inherit;
+        color: inherit
+      }
+
+      .ui-ripple-ink {
+        display: none;
+      }
 
       &--inactive {
         color: #91969d;
