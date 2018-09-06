@@ -27,7 +27,7 @@
         default: {}
       }
     },
-     created() {
+    created() {
       eventHub.$on('reset state', this.clearBuyList);
     },
     destroyed() {

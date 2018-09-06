@@ -100,7 +100,7 @@
   .map__legend {
     position: absolute;
     bottom: 45px;
-    right: -25px;
+    right: 5px;
 
     font-size: 0px;
 

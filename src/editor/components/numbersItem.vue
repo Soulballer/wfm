@@ -47,10 +47,12 @@
         </div>
       </div>
     </or-checkbox>
+
     <or-confirm
       :close-on-confirm="!isAllowed"
       :loading="removeProgress"
       @confirm="handleRemove"
+      style="display: flex;"
       @deny="isAllowed = true; showWarn = false"
       confirmButtonText="Remove"
       ref="confirmRemove"
@@ -112,10 +114,6 @@
           return this.number.name;
         }
       }
-    },
-    mounted(){
-      console.log('ssss-------', this.$refs.confirmRemove)
-      document.body.appendChild(this.$refs.confirmRemove);
     },
     data() {
       return {

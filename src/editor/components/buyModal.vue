@@ -337,8 +337,8 @@
       padding: 0;
 
       .buy-modal-left {
-        flex-flow: 3;
-        padding: 72px;
+        flex-grow: 3;
+        padding: 4% ;
 
         .map {
           &__state {
@@ -356,7 +356,7 @@
           }
 
           &__svg {
-            margin-bottom: 50px;
+            margin-bottom: 6% ;
           }
 
           & > p {
@@ -543,7 +543,7 @@
 
       .footer {
         position: absolute;
-        bottom: 50px;
+        bottom: 35px;
         left: 0;
         right: 0;
 

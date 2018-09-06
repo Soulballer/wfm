@@ -415,7 +415,7 @@
             visibility: hidden;
             display: flex;
             position: relative;
-            z-index: 100;
+            z-index: 20;
 
             .ungroup_button {
               margin-top: 4px;
