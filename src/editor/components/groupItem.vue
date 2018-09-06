@@ -21,7 +21,6 @@
               v-show="!inputDisabled"
 
               :disabled="inputDisabled"
-              :style="{width: inputWidth + 'px'}"
               :value="group.name"
               @blur="updateName"
               @input="checkName"
@@ -175,7 +174,6 @@
         copyNumbers: [],
         errorClass: false,
         inputDisabled: true,
-        inputWidth: 0,
         open: false
       }
     },
@@ -204,11 +202,6 @@
 
         this.inputDisabled = false;
         this.$nextTick(() => this.$refs.name.focus());
-        this.getWidth();
-        
-      },
-      getWidth() {
-        this.inputWidth = _.get(this.$refs, 'span.offsetWidth', 0);
       },
       handleAddNumber() {
         const {id} = this.group;
