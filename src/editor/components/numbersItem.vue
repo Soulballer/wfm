@@ -1,6 +1,6 @@
 <template>
   <div class="numbers-item">
-
+1
     <or-checkbox
       v-model="number.checked"
 
