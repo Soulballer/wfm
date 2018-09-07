@@ -1,6 +1,5 @@
 <template>
   <div class="numbers-item">
-1
     <or-checkbox
       v-model="number.checked"
 
@@ -12,7 +11,7 @@
       <div class="item-content">
         <div class="item-data">
           <span class="item-value">{{number.value}}</span>
-          <span v-show="inputDisabled" ref="span" class="number-disabled" >{{localNumber}}</span>
+          <span v-show="inputDisabled" class="number-disabled" >{{localNumber}}</span>
           <input
             v-model="localNumber"
             v-show="!inputDisabled"
@@ -133,10 +132,6 @@
       editNumberItem() {
         this.inputDisabled = false;
         this.$nextTick(() => this.$refs.name.focus());
-        this.getWidth();
-      },
-      getWidth() {
-        this.inputWidth = _.get(this.$refs, 'span.offsetWidth', 0);
       },
       handleRemove() {
         // remove group id
@@ -178,7 +173,7 @@
         }
       },
       removeNumberItem() {
-        this.$refs.confirmRemove.open();
+        //this.$refs.confirmRemove.open();
         this.showModal = true;
       },
       updateName() {
