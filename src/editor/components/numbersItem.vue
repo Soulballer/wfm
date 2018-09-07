@@ -53,6 +53,7 @@
       :close-on-confirm="!isAllowed"
       :loading="removeProgress"
       @confirm="handleRemove"
+      class="ebanoe-modal"
       style="display: flex;"
       @deny="isAllowed = true; showWarn = false"
       confirmButtonText="Remove"
