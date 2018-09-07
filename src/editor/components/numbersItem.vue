@@ -1,5 +1,6 @@
 <template>
   <div class="numbers-item">
+
     <or-checkbox
       v-model="number.checked"
 
@@ -47,12 +48,10 @@
       </div>
     </or-checkbox>
 
-    <or-modal
-    v-if="showModal"
+    <or-confirm
       :close-on-confirm="!isAllowed"
       :loading="removeProgress"
       @confirm="handleRemove"
-      class="ebanoe-modal"
       style="display: flex;"
       @deny="isAllowed = true; showWarn = false"
       confirmButtonText="Remove"
@@ -76,7 +75,7 @@
         The number cannot be removed as there is a flow activated on it.
       </or-alert>
         Remove {{number.value}} from the global list?
-    </or-modal>
+    </or-confirm>
 
   </div>
 </template>
@@ -118,7 +117,6 @@
     },
     data() {
       return {
-        inputWidth: 0,
         inputDisabled: true,
         isAllowed: true,
         isDeactivatingThisFlow: false,
@@ -173,7 +171,7 @@
         }
       },
       removeNumberItem() {
-        //this.$refs.confirmRemove.open();
+        this.$refs.confirmRemove.open();
         this.showModal = true;
       },
       updateName() {
