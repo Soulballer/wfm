@@ -858,7 +858,7 @@ export default {
 
 </script>
 
-<style scoped lang="scss" rel="stylesheet/scss">
+<style scoped lang="scss">
 .ui-modal__container {
     width: 55rem;
   }

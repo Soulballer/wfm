@@ -48,7 +48,8 @@
       </div>
     </or-checkbox>
 
-    <or-confirm
+    <or-modal
+    v-if="showModal"
       :close-on-confirm="!isAllowed"
       :loading="removeProgress"
       @confirm="handleRemove"
@@ -75,7 +76,7 @@
         The number cannot be removed as there is a flow activated on it.
       </or-alert>
         Remove {{number.value}} from the global list?
-    </or-confirm>
+    </or-modal>
 
   </div>
 </template>
