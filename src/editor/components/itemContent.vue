@@ -36,7 +36,7 @@
       ref="confirmRemove"
       title="Move"
     >
-      Move {{number.value}} from {{group.name}} to the global list?
+      Move <b>{{number.value}}</b> from <b>{{group.name}}</b> to the global list?
     </or-confirm>
   </div>
 </template>

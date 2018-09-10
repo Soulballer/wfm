@@ -76,9 +76,9 @@
       class="ungroup-modal"
       confirmButtonText="Save"
       ref="confirmUngroup"
-      title="Ungroup"
+      title="Split"
     >
-      Ungroup {{group.name}} (move {{group.numbers.length}} phone numbers to the global list)?
+      Split <b>{{group.name}}</b> (move {{group.numbers.length}} phone numbers to the global list)?
     </or-confirm>
 
     <or-confirm

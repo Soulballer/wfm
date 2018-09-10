@@ -96,7 +96,7 @@
 
                     <groups
                       :allFilteredNumbers="allFilteredNumbers"
-                      :groups="allFilteredGroups"
+                      :groups="filteredByAlphabet"
                       :readonly="readonly"
                     ></groups>
 
@@ -238,6 +238,9 @@ export default {
     },
     filterButtonText () {
       return `Show  ${this.currentShowState ? this.selectedNumbersToShow : 'all'}`
+    },
+    filteredByAlphabet() {
+      return this.allFilteredGroups.sort((a,b) => _.toLower(a.name) > _.toLower(b.name))
     },
     groupsSelected () {
       return _.filter(this.groups, x => x.isSelected);
@@ -1196,6 +1199,7 @@ export default {
       
       .ui-checkbox__label-text {
         color: black;
+        font-weight: 400;
       }
 
       &:not(.all-selected) {
