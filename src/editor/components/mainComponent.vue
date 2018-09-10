@@ -69,7 +69,7 @@
                   <div class="buttons">
                     <div
                       class="button"
-                      v-show="hasResultsAfterFilter && showFilterButton"
+                      :class="hasResultsAfterFilter && showFilterButton ? '' : 'nothing-selected'"
                       @click="changeFilter"
                     >
                       {{filterButtonText}}
@@ -89,7 +89,7 @@
                       v-if="availableNumbers.length || availableGroups.length"
                       v-show="!readonly"
                       class="select-all-button"
-                      :class="{ 'all-selected' : allNumbersSelected, 'some-selected' : someFilterNumberChecked}"
+                      :class="{ 'all-selected' : allNumbersSelected, 'some-selected' : someFilterNumberChecked }"
                       :value="allNumbersSelected"
                     >{{selectAllButtonText}}
                     </or-checkbox>
@@ -201,7 +201,7 @@ export default {
     },
     allFilteredNumbers () {
       return _.filter(this.localNumbers, number =>
-        this.isAvilableIfNotChacked(number.checked) && this.avilableBySearch(number));
+        this.isAvilableIfNotChacked(number.checked) && this.availableBySearch(number));
     },
     allNumbersSelected () {
       return  _.every(this.availableNumbers, n => n.checked) && _.every(this.availableGroups, g => g.isSelected)
@@ -231,7 +231,7 @@ export default {
       let availableNumbers =  _.concat(this.localNumbers, ...this.groups.map(group => group.numbers));
       return _.filter(availableNumbers, n => 
         { /* can remove {} and return */
-          return this.avilableBySearch(n) &&
+          return this.availableBySearch(n) &&
             (this.currentShowState ? true : n.checked) &&
             !n.usedData.length
         });
@@ -246,16 +246,17 @@ export default {
       return Boolean(this.displayText.length);
     },
     hasResultsAfterFilter () {
-      const avilableBySearch = _.concat(_.filter(this.localNumbers, n => this.avilableBySearch(n)), _.filter(this.localGroups, group => this.groupAvailableBySearch(group)));
-      const allInTheSameState = _.every(avilableBySearch, n => n.checked == avilableBySearch[0].checked);
+      const availableBySearch = _.concat(_.filter(this.localNumbers, n => this.availableBySearch(n)), _.filter(this.localGroups, group => this.groupAvailableBySearch(group)));
+      const allInTheSameState = _.every(availableBySearch, n => n.checked == availableBySearch[0].checked);
       return !allInTheSameState;
     },
     selectAllButtonText () {
       return `${this.allNumbersSelected && (this.availableNumbers.length + this.availableGroups.length !== 0) ? 'Uns' : 'S'}elect all (${this.availableNumbers.length + this.availableGroups.length})`
     },
     selectedNumbersToShow () {
-      return ('selected (' + (parseInt(_.filter(this.localSelectedNumbers, n => this.avilableBySearch(n)).length)
-      + parseInt(_.filter(this.localSelectedGroups, n => this.groupAvailableBySearch(n)).length)) + ')');
+      let selectedLength = (parseInt(_.filter(this.localSelectedNumbers, n => this.availableBySearch(n)).length)
+      + parseInt(_.filter(this.localSelectedGroups, n => this.groupAvailableBySearch(n)).length));
+      return `selected  ${selectedLength ? "(" + selectedLength + ")" : ''}`;
     },
     showFilterButton () {
       return (!this.readonly && Boolean(this.localSelectedNumbers.length) &&
@@ -413,7 +414,7 @@ export default {
     addNewNumber () {
       this.$refs.buyModal.openModal();
     },
-    avilableBySearch (n) {
+    availableBySearch (n) {
       if (!n || !n.value) return;
       const parts = n.value.match(/\+?(\w+)/gi);
 
@@ -438,10 +439,10 @@ export default {
       
       const groupNum = _.concat([], ...g.numbers);
       
-      return groupNum.filter(number => this.avilableBySearch(number));
+      return groupNum.filter(number => this.availableBySearch(number));
     },
     changeFilter () {
-      this.currentShowState = !this.currentShowState;
+      if (this.hasResultsAfterFilter && this.showFilterButton) this.currentShowState = !this.currentShowState;
     },
     clearSearch () {
       this.searchValue = "";
@@ -1093,6 +1094,7 @@ export default {
       }
     }
   }
+  
   .button {
     padding: 0 10px;
     color: #0594ed;
@@ -1103,6 +1105,12 @@ export default {
     &.disabled {
       cursor:no-drop;
       color:#e7e7e7;
+    }
+
+    &.nothing-selected {
+      color: #91969d;
+
+      cursor: default;
     }
   }
 
