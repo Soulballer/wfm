@@ -1,13 +1,15 @@
 <template>
   <div class="item-content">
     <span class="item-value">{{number.value}}</span>
+    <span v-show="inputDisabled" class="number-disabled" >{{localNumber}}</span>
     <div>
       <input
-        v-model="number.name"
+        v-model="localNumber"
+        v-show="!inputDisabled"
 
         :disabled="inputDisabled"
-        :size="number.name.length * 0.75"
         @blur="updateName"
+        @input="checkName"
         class="input-element"
         ref="name"
         type="text"
@@ -56,13 +58,24 @@
         type : Boolean
       }
     },
-
+    
+    computed: {
+      localNumber: {
+        get() {
+          return this.number.name;
+        }
+      }
+    },
     data() {
       return {
+        errorClass: false,
         inputDisabled: true
       }
     },
     methods: {
+      checkName(e) {
+        this.errorClass = _.isEmpty(e.target.value.trim()) ? true : false;
+      },
       editNumberItem() {
         if (this.group.editable) {
           this.inputDisabled = false;
@@ -70,16 +83,23 @@
         }
       },
       handleRemove() {
-        console.log('-----', eventHub.store)
+        //console.log('-----', eventHub.store)
         eventHub.$emit('remove number from group', this.number);
       },
       removeNumberItem() {
         eventHub.$set(eventHub.store, 'deleteNumberModal', {number: this.number, group: this.group});
         if (this.group.editable) this.$refs.confirmRemove.open();
-        //if (this.group.editable) eventHub.$emit('open remove number from group modal', {number: this.number, group: this.group});
       },
       updateName() {
-        this.number.name = this.$refs.name.value;
+        this.inputDisabled = true;
+        
+        if (this.errorClass) {
+          this.$refs.name.value = this.number.name;
+          this.errorClass = false;
+          return
+        }
+
+        _.set(this.number, 'name', this.$refs.name.value);
 
         this.$http.put(
           this.$flow.gatewayUrl('identifiers',
@@ -111,6 +131,7 @@
     height: 25px;
     display: flex;
     align-items: center;
+    padding-right: 55px;
 
     &:hover .item-buttons {
       visibility: visible;

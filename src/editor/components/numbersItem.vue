@@ -18,6 +18,7 @@
             v-show="!inputDisabled"
 
             @blur="updateName"
+            @input="checkName"
             class="input-element"
             ref="name"
             type="text"
@@ -117,6 +118,7 @@
     },
     data() {
       return {
+        errorClass: false,
         inputDisabled: true,
         isAllowed: true,
         isDeactivatingThisFlow: false,
@@ -127,6 +129,9 @@
       }
     },
     methods: {
+      checkName(e) {
+        this.errorClass = _.isEmpty(e.target.value.trim()) ? true : false;
+      },
       editNumberItem() {
         this.inputDisabled = false;
         this.$nextTick(() => this.$refs.name.focus());
@@ -175,6 +180,14 @@
         this.showModal = true;
       },
       updateName() {
+        this.inputDisabled = true;
+        
+        if (this.errorClass) {
+          this.$refs.name.value = this.number.name;
+          this.errorClass = false;
+          return
+        }
+
         _.set(this.number, 'name', this.$refs.name.value);
           
         this.$http.put(
