@@ -3,6 +3,7 @@
     <numbers-item
       v-for="number in numbers"
 
+      :isLoading="isLoading"
       :key="number.name"
       :number="number"
       :readonly="readonly"
@@ -15,6 +16,12 @@
 
   export default {
     props: {
+      isLoading: {
+        type: Boolean,
+        default() {
+          return false
+        }
+      },
       numbers: {
         type: Array,
         default() {

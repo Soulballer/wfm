@@ -68,6 +68,8 @@
                 <transition name="expand-filter">
                   <div class="buttons">
                     <div
+                      v-show="!readonly"
+
                       class="button"
                       :class="hasResultsAfterFilter && showFilterButton ? '' : 'nothing-selected'"
                       @click="changeFilter"
@@ -91,16 +93,19 @@
                       class="select-all-button"
                       :class="{ 'all-selected' : allNumbersSelected, 'some-selected' : someFilterNumberChecked }"
                       :value="allNumbersSelected"
-                    >{{selectAllButtonText}}
+                    >
+                      {{selectAllButtonText}}
                     </or-checkbox>
 
                     <groups
                       :allFilteredNumbers="allFilteredNumbers"
                       :groups="filteredByAlphabet"
+                      :isLoading="isLoading"
                       :readonly="readonly"
                     ></groups>
 
                     <numbers-items
+                      :isLoading="isLoading"
                       :numbers="allFilteredNumbers"
                       :readonly="readonly"
                     ></numbers-items>
@@ -143,8 +148,6 @@
   import BuyModal from './buyModal.vue';
   import Groups from './groups.vue';
   import NumbersItems from './numbersItems.vue';
-
-  
 
 export default {
   props: {
@@ -505,8 +508,8 @@ export default {
       }
       
       return number.indexOf(query) > -1 ||
-      _.some(parts, a => a.toLowerCase().indexOf(query) === 0) ||
-      parts.join(' ').toLowerCase().indexOf(query) === 0;
+        _.some(parts, a => a.toLowerCase().indexOf(query) === 0) ||
+        parts.join(' ').toLowerCase().indexOf(query) === 0;
     },
     groupAvailableBySearch (g) {
       if (!g || !g.name) return;
@@ -635,7 +638,9 @@ export default {
       this.showDropdown = false;
     },
     updateNumbersData () {
-      //this.isData = true;
+      this.isData = true;
+      this.isLoading = true;
+
       //if (!this.localNumbers.length) this.isLoading = true;
       let self = this;
 
@@ -773,6 +778,7 @@ export default {
 
           this.keywordsСollisionData();
           this.isData = false;
+          this.isLoading = false;
       });
     },
     updateSelectedElemLength () {

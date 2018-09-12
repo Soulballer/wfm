@@ -16,19 +16,27 @@
         @open="changeOpenState"
       >
         <div slot="header" class="collapsible-header">
-            <span class="number-disabled" v-show="inputDisabled">{{group.name}}</span>
-            <input
-              v-show="!inputDisabled"
+          <span class="number-disabled" v-show="inputDisabled">{{group.name}}</span>
+          <input
+            v-show="!inputDisabled"
 
-              :disabled="inputDisabled"
-              :value="group.name"
-              @blur="updateName"
-              @input="checkName"
-              class="input-element"
-              ref="name"
-              type="text"
-            />
-            <span class="visible ui-icon header-icon material-icons {currentIcon}">{{currentIcon}}</span>
+            :disabled="inputDisabled"
+            :value="group.name"
+            @blur="updateName"
+            @input="checkName"
+            class="input-element"
+            ref="name"
+            type="text"
+          />
+          <span class="visible ui-icon header-icon material-icons {currentIcon}">{{currentIcon}}</span>
+
+          <or-progress-circular 
+            v-show="isLoading"
+            
+            color="primary" 
+            size="18" 
+            type="indeterminate"
+          ></or-progress-circular>
           
           <div v-if="!readonly && !group.usedData.length" class="group-buttons">
             <or-icon-button
@@ -130,6 +138,12 @@
       invalid: {
         type: Boolean,
         default: false
+      },
+      isLoading: {
+        type: Boolean,
+        default() {
+          return true
+        }
       },
       group: {
         type: Object,

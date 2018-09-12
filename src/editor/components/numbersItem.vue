@@ -24,6 +24,14 @@
             type="text"
           />  
         </div>
+        
+        <or-progress-circular 
+          v-show="isLoading"
+          
+          color="primary" 
+          size="18" 
+          type="indeterminate"
+        ></or-progress-circular>
 
         <data-numbers
           :data="number"
@@ -86,6 +94,12 @@
 
   export default {
     props: {
+      isLoading: {
+        type: Boolean,
+        default() {
+          return false
+        }
+      },
       number: {
         type: Object,
         default() {

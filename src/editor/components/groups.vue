@@ -5,6 +5,7 @@
 
       :allFilteredNumbers="allFilteredNumbers"
       :invalid="localGroupsNameCollision[index]"
+      :isLoading="isLoading"
       :group="group"
       :key="group.id"
       :readonly="readonly"
@@ -27,6 +28,12 @@
         type: Array,
         default() {
           return []
+        }
+      },
+      isLoading: {
+        type: Boolean,
+        default() {
+          return false
         }
       },
       readonly: {
