@@ -20,7 +20,6 @@
   import * as d3 from 'd3';
 
   export default {
-    name: 'StatesMap',
     props: {
       selectedState: {
         type: Object,

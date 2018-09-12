@@ -147,7 +147,84 @@
   
 
 export default {
-  name       : 'editor-Wait-for-message',
+  props: {
+    allCheckedNumbers: {
+      type: Array,
+      default () {
+        return [];
+      }
+    },
+    numbers: {
+      type: Array,
+      default () {
+        return [];
+      }
+    },
+    groups: {
+      type: Array,
+      default () {
+        return [];
+      },
+    },
+    isKeywords: {
+      type: Boolean
+    },
+    keywords: {
+      type: Array
+    },
+    selectedNumbers: {
+      type: Array,
+      twoWay: true,
+      default () {
+        return [];
+      },
+    },
+    selectedGroups: {
+      type: Array,
+      twoWay: true,
+      default () {
+        return [];
+      },
+    },
+    selectedElemLength: {
+      type: Number,
+      default: 0
+    },
+    readonly: {
+      type: Boolean,
+    },
+    showAll: {
+      type: Boolean,
+      default () {
+        return true;
+      },
+    },
+    template: {
+      type: Object
+    },
+    schema: {
+      type: Object
+    },
+    step: {
+      type: Object
+    },
+    steps: {
+      type: Array
+    },
+    stepId: {
+      type: String
+    },
+    v: {
+      type: Object,
+      default() {
+        return {
+          schema: {
+            selectedElemLength: {},
+          }
+        }
+      }
+    }
+  },
   components : { BuyModal, Groups, NumbersItems },
 
   created () {
@@ -157,7 +234,6 @@ export default {
     eventHub.$on('remove number from general list', this.removeNumberFromGeneralList);
     eventHub.$on('update numbers data', this.updateNumbersData);
     eventHub.$on('buy new number', this.addNewNumber);
-    
   },
   destroyed () {
     eventHub.$off('ungroup', this.handleUngroup);
@@ -168,7 +244,10 @@ export default {
     eventHub.$off('buy new number', this.addNewNumber);
     document.removeEventListener('click', this.onExternalClick);
   },
-
+  mounted() {
+    this.updateNumbersData();
+    document.addEventListener('click', this.onExternalClick);
+  },
 
   computed: {
     availableToGroup() {
@@ -206,7 +285,6 @@ export default {
       return  _.every(this.availableNumbers, n => n.checked) && _.every(this.availableGroups, g => g.isSelected)
     },
     availableNumbers () {
-      //let allNumbers = _.concat(this.localNumbers, ...this.localGroups.map(group => group.numbers));
       return _.filter(this.allFilteredNumbers, n => {
         return n.usedData.length === 0;
       });
@@ -460,14 +538,6 @@ export default {
         nextNum = _.isEmpty(nextNum) ? 1 : Math.max(...nextNum) + 1;
         nextNum = _.isNaN(nextNum) ? 1 : nextNum;
       
-      // add selectedNumbers to a new group
-      // this.localGroups.push({
-      //   name: `New group ${this.groups.length}`,
-      //   id: groupId,
-      //   isSelected: false,
-      //   numbers: this.selectedNumbers
-      // });
-      
       this.$http.post(
         this.$flow.gatewayUrl('identifiers-group',
         this.$flow.providersAccountId()),
@@ -707,95 +777,11 @@ export default {
     },
     updateSelectedElemLength () {
       let selectedLength = this.selectedNumbers.length + this.selectedGroups.length;
-      //this.schema.selectedElemLength = this.selectedElemLength;
       this.$emit('update:selectedElemLength', selectedLength);
-    }
-  },
-  mounted() {
-    this.updateNumbersData();
-    document.addEventListener('click', this.onExternalClick);
-  },
-  props: {
-    allCheckedNumbers: {
-      type: Array,
-      default () {
-        return [];
-      }
-    },
-    numbers: {
-      type: Array,
-      default () {
-        return [];
-      }
-    },
-    groups: {
-      type: Array,
-      default () {
-        return [];
-      },
-    },
-    isKeywords: {
-      type: Boolean
-    },
-    keywords: {
-      type: Array
-    },
-    selectedNumbers: {
-      type: Array,
-      twoWay: true,
-      default () {
-        return [];
-      },
-    },
-    selectedGroups: {
-      type: Array,
-      twoWay: true,
-      default () {
-        return [];
-      },
-    },
-    selectedElemLength: {
-      type: Number,
-      default: 0
-    },
-    readonly: {
-      type: Boolean,
-    },
-    showAll: {
-      type: Boolean,
-      default () {
-        return true;
-      },
-    },
-    template: {
-      type: Object
-    },
-    schema: {
-      type: Object
-    },
-    step: {
-      type: Object
-    },
-    steps: {
-      type: Array
-    },
-    stepId: {
-      type: String
-    },
-    v: {
-      type: Object,
-      default() {
-        return {
-          schema: {
-            selectedElemLength: {},
-          }
-        }
-      }
     }
   },
   watch: {
     allLocalCheckedNumbers() {
-      //this.schema.allCheckedNumbers = this.allLocalCheckedNumbers;
       this.allCheckedNumbers = this.allLocalCheckedNumbers;
       this.$emit('update:allCheckedNumbers', this.allLocalCheckedNumbers);
     },
@@ -805,7 +791,6 @@ export default {
         this.localSelectedNumbers = selectedNumbers;
         
         if( JSON.stringify(selectedNumbers) !==  JSON.stringify(this.selectedNumbers) ) {
-          //this.schema.selectedNumbers = selectedNumbers;
           this.selectedNumbers = selectedNumbers;
           this.$emit('update:selectedNumbers', selectedNumbers);
         }
@@ -826,29 +811,22 @@ export default {
       handler() {
         let selectedGroups = _.filter(this.localGroups, n => n.isSelected);
         this.localSelectedGroups = selectedGroups;
-        //this.schema.selectedGroups = selectedGroups;
-        //this.selectedGroups = selectedGroups;
         this.$emit('update:selectedGroups', selectedGroups);
       },
       deep: true,
     },
-    // filteredNumbers () {
-    //   if (!this.numbersTotalBy(n => n.checked) && !this.currentShowState && !this.readonly) this.currentShowState = true;
-    // },
     currentShowState () {
       if (!this.readonly)
         this.$emit('update:showAll', this.currentShowState);
     },
     keywords: {
       handler() {
-      //console.log('keywords added', this.isKeywords, this.schema.isKeywords)
         this.updataKeywordsСollisionData();
       },
       deep: true,
     },
     isKeywords: {
       handler() {
-        //console.log('keyword handler')
         this.updataKeywordsСollisionData();
       }
     }
@@ -1246,5 +1224,4 @@ export default {
     font-size: 15px;
   }
 }
-
 </style>
