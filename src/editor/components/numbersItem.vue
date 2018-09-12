@@ -53,12 +53,15 @@
       :close-on-confirm="!isAllowed"
       :loading="removeProgress"
       @confirm="handleRemove"
-      style="display: flex;"
       @deny="isAllowed = true; showWarn = false"
-      confirmButtonText="Remove"
+      confirmButtonText="Yes, release"
+      denyButtonText="Keep number"
       ref="confirmRemove"
-      title="Remove"
+      title=""
+      type="success"
     >
+      <h4>Remove {{number.value}} </h4>
+
       <or-alert 
         v-show="!isAllowed"
         
@@ -75,7 +78,9 @@
       >
         The number cannot be removed as there is a flow activated on it.
       </or-alert>
-        Remove {{number.value}} from the global list?
+        <p>You may have flows subscribed to this number.</p>
+        <p>If the number is released, your flows will still be activate but will not respond to this number</p>
+        <p>Are you sure you want to release <b>{{number.value}}</b></p>
     </or-confirm>
 
   </div>
@@ -146,7 +151,7 @@
 
         if (!this.number.usedData.length && !this.isDeactivatingThisFlow) {
           this.removeProgress = true;
-          this.$http.delete(
+          this.$http.delete(  
             this.$flow.gatewayUrl('identifiers',
             this.$flow.providersAccountId()),
             {
@@ -281,6 +286,47 @@
       .ui-icon-button {
         height: 25px !important;
         width: 25px !important;
+      }
+    }
+
+    .ui-modal {
+      &__header {
+        display: none;
+      }
+
+      &__body {
+        padding: 0 !important;
+
+        h4 {
+          margin-bottom: 45px;
+          padding: 12px 22px;
+
+          color: white;
+          
+          background-color:#F35958;
+        }
+        
+        p {
+          padding: 0 22px;
+
+          &:last-child {
+            margin-bottom: 130px;
+          }
+        }
+      }
+
+      &__footer {
+        button.ui-button.ui-button--type-secondary.ui-button--color-primary {
+          color: white;
+
+          border-color: #F35958;
+          background-color: #F35958;
+
+          &:hover {
+            border-color: #A35958;
+            background-color: #A35958;
+          }
+        }
       }
     }
   }

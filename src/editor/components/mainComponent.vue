@@ -114,7 +114,7 @@
 
               </div>
               <div
-                class="button"
+                class="button button__buynumber"
                 @click="addNewNumber"
                 v-show="!readonly"
               >+ Add new number</div> <!--please use button and add disabled attribute for readonly mode-->
@@ -859,7 +859,6 @@ export default {
 
 
 };
-
 </script>
 
 <style scoped lang="scss">
@@ -1104,6 +1103,10 @@ export default {
     box-sizing: content-box;
     font-size: 12px;
     cursor: pointer;
+
+    &.button__buynumber {
+      display: inline-block;
+    }
 
     &.disabled {
       cursor:no-drop;
