@@ -3,7 +3,6 @@
     <numbers-item
       v-for="number in numbers"
 
-      :currentFlowDeployedData="currentFlowDeployedData"
       :key="number.name"
       :number="number"
       :readonly="readonly"
@@ -16,12 +15,6 @@
 
   export default {
     props: {
-      currentFlowDeployedData: {
-        type: Object,
-        default() {
-          return {}
-        }
-      },
       numbers: {
         type: Array,
         default() {

@@ -53,7 +53,7 @@
       :close-on-confirm="!isAllowed"
       :loading="removeProgress"
       @confirm="handleRemove"
-      @deny="isAllowed = true; showWarn = false"
+      @deny="isAllowed = true"
       confirmButtonText="Yes, release"
       denyButtonText="Keep number"
       ref="confirmRemove"
@@ -70,17 +70,10 @@
       >
         Only Admin has permissions to manage account numbers. Please contact your admin or OneReach Support.
       </or-alert>
-      <or-alert 
-        v-show="showWarn"
 
-        @dismiss="showWarn = false" 
-        type="warning"
-      >
-        The number cannot be removed as there is a flow activated on it.
-      </or-alert>
-        <p>You may have flows subscribed to this number.</p>
-        <p>If the number is released, your flows will still be activate but will not respond to this number</p>
-        <p>Are you sure you want to release <b>{{number.value}}</b></p>
+      <p>You may have flows subscribed to this number.</p>
+      <p>If the number is released, your flows will still be active but will not respond to this number.</p>
+      <p>Are you sure you want to release <b>{{number.value}}</b>?</p>
     </or-confirm>
 
   </div>
@@ -93,12 +86,6 @@
 
   export default {
     props: {
-      currentFlowDeployedData: {
-        type: Object,
-        default() {
-          return {}
-        }
-      },
       number: {
         type: Object,
         default() {
@@ -126,10 +113,8 @@
         errorClass: false,
         inputDisabled: true,
         isAllowed: true,
-        isDeactivatingThisFlow: false,
         isDeployed: false,
         removeProgress: false,
-        showWarn: false,
         showModal: false
       }
     },
@@ -144,12 +129,8 @@
       handleRemove() {
         // remove group id
         _.set(this.number, 'group', undefined);
-  
-        if (!_.isEmpty(this.currentFlowDeployedData)) {
-          this.isDeactivatingThisFlow = this.currentFlowDeployedData.data.triggers[0].params.name.split('/')[2] == this.number.value; 
-        }
 
-        if (!this.number.usedData.length && !this.isDeactivatingThisFlow) {
+        if (_.isEmpty(this.number.usedData)) {
           this.removeProgress = true;
           this.$http.delete(  
             this.$flow.gatewayUrl('identifiers',
@@ -174,8 +155,6 @@
             }
             this.removeProgress = false;
           });
-        } else if(this.isDeactivatingThisFlow) {
-          this.showWarn = true;
         } else {
           this.isDeployed = true;
         }

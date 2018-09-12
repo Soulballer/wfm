@@ -101,13 +101,12 @@
                     ></groups>
 
                     <numbers-items
-                      :currentFlowDeployedData="currentFlowDeployedData"
                       :numbers="allFilteredNumbers"
                       :readonly="readonly"
                     ></numbers-items>
 
                     <div class="no-active-numbers" v-show="_.isEmpty(selectedNumbers) && _.isEmpty(selectedGroups) && readonly">
-                        You have purchased numbers, but none of them was selected before saving the flow.
+                        You have purchased numbers but none of them was selected before saving the flow.
                     </div>
                   </div>
                 </div>
@@ -275,7 +274,6 @@ export default {
       allAvailableNumbers: [],
       anyNumbersAvilable: true,
       createGroupWarn: '',
-      currentFlowDeployedData: {},
       currentShowState: this.readonly ? false : this.showAll,
       flowsList: [],
       isData: false,
@@ -658,7 +656,6 @@ export default {
         this.flowsList = _.chain(result.deployments)
           .filter(deployment => {
             if (deployment.flowId === currentFlowId) {
-              this.currentFlowDeployedData = deployment;
               return false;
             }
 
