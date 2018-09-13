@@ -1,5 +1,14 @@
 <template>
   <div class="main">
+    <or-alert 
+      v-show="!isAdmin"
+      
+      type="warning"
+    >
+      <p>You can only use available numbers (groups) in the flow.</p>
+      <p>Only Admin has permissions to manage account numbers.</p>
+    </or-alert>
+
     <h3>Flow number(s)</h3>
 
     <div class="no-numbers" v-if="!anyNumbersAvailable && !localGroups.length">
@@ -119,7 +128,7 @@
               </div>
               <div
                 class="button button__buynumber"
-                @click="addNewNumber"
+                @click="isAdmin ? addNewNumber() : ''"
                 v-show="!readonly"
               >+ Add new number</div> <!--please use button and add disabled attribute for readonly mode-->
             </div>
@@ -144,6 +153,7 @@
   import Promise from 'bluebird';
   import uuid from 'uuid';
   import eventHub from '../helpers/eventHub.js';
+  import { mapState } from 'vuex';
 
   import BuyModal from './buyModal.vue';
   import Groups from './groups.vue';
@@ -253,6 +263,9 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      isAdmin : ({auth}) => auth.role == 'ADMIN' ? false : true
+    }),
     availableToGroup() {
       let usedNumber = [];
       

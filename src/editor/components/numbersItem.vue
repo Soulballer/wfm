@@ -127,9 +127,7 @@
         errorClass: false,
         inputDisabled: true,
         isAllowed: true,
-        isDeployed: false,
-        removeProgress: false,
-        showModal: false
+        removeProgress: false
       }
     },
     methods: {
@@ -141,41 +139,34 @@
         this.$nextTick(() => this.$refs.name.focus());
       },
       handleRemove() {
-        // remove group id
-        _.set(this.number, 'group', undefined);
+        this.removeProgress = true;
 
-        if (_.isEmpty(this.number.usedData)) {
-          this.removeProgress = true;
-          this.$http.delete(  
-            this.$flow.gatewayUrl('identifiers',
-            this.$flow.providersAccountId()),
-            {
-              headers: {
-                Authorization: `USER ${this.$settings.token}`
-              },
-              params: {
-                identifier: this.number.value
-              }
+        this.$http.delete(  
+          this.$flow.gatewayUrl('identifiers',
+          this.$flow.providersAccountId()),
+          {
+            headers: {
+              Authorization: `USER ${this.$settings.token}`
+            },
+            params: {
+              identifier: this.number.value
             }
-          )
-          .then(() => eventHub.$emit('update numbers data'))
-          .then(() => {
-            this.removeProgress = false;
-            return eventHub.$emit('remove number from general list', this.number)
-          })
-          .catch((e) => {
-            if (e.status == '403') {
-              this.isAllowed = false;
-            }
-            this.removeProgress = false;
-          });
-        } else {
-          this.isDeployed = true;
-        }
+          }
+        )
+        .then(() => eventHub.$emit('update numbers data'))
+        .then(() => {
+          this.removeProgress = false;
+          return eventHub.$emit('remove number from general list', this.number)
+        })
+        .catch((e) => {
+          if (e.status == '403') {
+            this.isAllowed = false;
+          }
+          this.removeProgress = false;
+        });
       },
       removeNumberItem() {
         this.$refs.confirmRemove.open();
-        this.showModal = true;
       },
       updateName() {
         this.inputDisabled = true;

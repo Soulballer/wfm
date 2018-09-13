@@ -21,7 +21,7 @@
   
 
   export default {
-    props      : ['template', 'schema', 'step', 'stepId', 'steps', 'readonly', 'isNew'],
+    props      : ['isNew', 'readonly', 'schema', 'step', 'stepId', 'steps', 'template'],
     components : { MainComponent },
 
     created() {
@@ -50,8 +50,8 @@
   export const validator = (template) => {
     return {
       selectedElemLength    : generateValidators(true, {
-        custom(data, num) {
-          if (!num.isNew) return Boolean(data) 
+        custom(data, ctx) {
+          if (!ctx.isNew) return Boolean(data) 
            
           return true 
         }
@@ -62,7 +62,7 @@
   export const meta = {
     name    : 'test-external-component',
     type    : 'onereach-studio-form-editor',
-    version : '1.0'
+    version : '2.1.4'
   };
 </script>
 

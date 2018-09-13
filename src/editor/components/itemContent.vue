@@ -83,11 +83,10 @@
         }
       },
       handleRemove() {
-        //console.log('-----', eventHub.store)
         eventHub.$emit('remove number from group', this.number);
       },
       removeNumberItem() {
-        eventHub.$set(eventHub.store, 'deleteNumberModal', {number: this.number, group: this.group});
+        //eventHub.$set(eventHub.store, 'deleteNumberModal', {number: this.number, group: this.group});
         if (this.group.editable) this.$refs.confirmRemove.open();
       },
       updateName() {
