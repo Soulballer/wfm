@@ -58,7 +58,7 @@
                 <or-textbox :disabled="readonly" class="search-filter" placeholder="Search" name="searchInput" v-model="searchValue" icon="search"></or-textbox> <!--use readonly attr for disabling or-textbox-->
                 <ui-icon @click.native="clearSearch" class="clear-search" icon="close" v-if="searchValue"></ui-icon>
                 <or-icon-button
-                  :class="{'create-group__button--inactive': !availableToGroup && !isAdmin}"
+                  :class="{'create-group__button--inactive': !availableToGroup }"
                   :tooltip="createGroupWarn" 
                   tooltipPosition="left top"
                   @click="createGroup"
@@ -276,6 +276,7 @@ export default {
       
       if (!this.isAdmin) {
         this.createGroupWarn = 'You have no permission to create group'
+        return false;
       } else if (this.localSelectedNumbers.length < 2) {
         this.createGroupWarn = 'Min two numbers needed';
         return false;
@@ -351,6 +352,7 @@ export default {
     hasResultsAfterFilter () {
       const availableBySearch = _.concat(_.filter(this.localNumbers, n => this.availableBySearch(n)), _.filter(this.localGroups, group => this.groupAvailableBySearch(group)));
       const allInTheSameState = _.every(availableBySearch, n => n.checked == availableBySearch[0].checked);
+     
       return !allInTheSameState;
     },
     selectAllButtonText () {
