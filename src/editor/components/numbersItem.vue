@@ -39,7 +39,7 @@
         ></data-numbers>
 
         <div
-          v-if="!number.usedData.length && !readonly"
+          v-if="!number.usedData.length && !readonly && isAdmin"
 
           class="item-buttons"
         >
@@ -58,10 +58,9 @@
     </or-checkbox>
 
     <or-confirm
-      :close-on-confirm="!isAllowed"
+      :close-on-confirm="true"
       :loading="removeProgress"
       @confirm="handleRemove"
-      @deny="isAllowed = true"
       confirmButtonText="Yes, release"
       denyButtonText="Keep number"
       ref="confirmRemove"
@@ -69,15 +68,6 @@
       type="success"
     >
       <h4>Remove {{number.value}} </h4>
-
-      <or-alert 
-        v-show="!isAllowed"
-        
-        @dismiss="isAllowed = true" 
-        type="warning"
-      >
-        Only Admin has permissions to manage account numbers. Please contact your admin or OneReach Support.
-      </or-alert>
 
       <p>You may have flows subscribed to this number.</p>
       <p>If the number is released, your flows will still be active but will not respond to this number.</p>
@@ -94,6 +84,12 @@
 
   export default {
     props: {
+      isAdmin: {
+        type: Boolean,
+        default() {
+          return false
+        }
+      },
       isLoading: {
         type: Boolean,
         default() {
@@ -126,7 +122,6 @@
       return {
         errorClass: false,
         inputDisabled: true,
-        isAllowed: true,
         removeProgress: false
       }
     },
@@ -159,9 +154,6 @@
           return eventHub.$emit('remove number from general list', this.number)
         })
         .catch((e) => {
-          if (e.status == '403') {
-            this.isAllowed = false;
-          }
           this.removeProgress = false;
         });
       },

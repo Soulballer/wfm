@@ -2,6 +2,7 @@
   <main-component 
     :all-checked-numbers.sync="schema.allCheckedNumbers"
     :groups.sync="schema.groups"
+    :is-admin="schema.isAdmin"
     :is-keywords="schema.isKeywords"
     :keywords="schema.keywords"
     :numbers="schema.numbers" 
@@ -14,6 +15,7 @@
 
 <script>
   import {validators} from '_validators';
+  import { mapState } from 'vuex';
 
   import MainComponent from './components/mainComponent.vue';
 
@@ -26,6 +28,13 @@
 
     created() {
       this.schema.isNew = this.isNew;
+      this.schema.isAdmin = this.isAdmin;
+    },
+
+    computed: {
+      ...mapState({
+        isAdmin : ({auth}) => auth.role == 'ADMIN' ? true : false
+      })
     },
     validations () {
       return {

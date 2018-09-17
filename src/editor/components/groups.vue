@@ -5,6 +5,7 @@
 
       :allFilteredNumbers="allFilteredNumbers"
       :invalid="localGroupsNameCollision[index]"
+      :is-admin="isAdmin"
       :isLoading="isLoading"
       :group="group"
       :key="group.id"
@@ -28,6 +29,12 @@
         type: Array,
         default() {
           return []
+        }
+      },
+      isAdmin: {
+        type: Boolean,
+        default() {
+          return false
         }
       },
       isLoading: {

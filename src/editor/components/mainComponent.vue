@@ -1,8 +1,9 @@
 <template>
   <div class="main">
     <or-alert 
-      v-show="!isAdmin"
-      
+      v-show="!isAllowed"
+
+      @dismiss="isAllowed = true"      
       type="warning"
     >
       <p>You can only use available numbers (groups) in the flow.</p>
@@ -57,7 +58,7 @@
                 <or-textbox :disabled="readonly" class="search-filter" placeholder="Search" name="searchInput" v-model="searchValue" icon="search"></or-textbox> <!--use readonly attr for disabling or-textbox-->
                 <ui-icon @click.native="clearSearch" class="clear-search" icon="close" v-if="searchValue"></ui-icon>
                 <or-icon-button
-                  :class="{'create-group__button--inactive': !availableToGroup}"
+                  :class="{'create-group__button--inactive': !availableToGroup && !isAdmin}"
                   :tooltip="createGroupWarn" 
                   tooltipPosition="left top"
                   @click="createGroup"
@@ -109,11 +110,13 @@
                     <groups
                       :allFilteredNumbers="allFilteredNumbers"
                       :groups="filteredByAlphabet"
+                      :isAdmin="isAdmin"
                       :isLoading="isLoading"
                       :readonly="readonly"
                     ></groups>
 
                     <numbers-items
+                      :isAdmin="isAdmin"
                       :isLoading="isLoading"
                       :numbers="allFilteredNumbers"
                       :readonly="readonly"
@@ -126,11 +129,14 @@
                 </div>
 
               </div>
-              <div
-                class="button button__buynumber"
-                @click="isAdmin ? addNewNumber() : ''"
+              <or-icon-button
                 v-show="!readonly"
-              >+ Add new number</div> <!--please use button and add disabled attribute for readonly mode-->
+
+                :disabled="!isAdmin"
+                @click="isAdmin ? addNewNumber() : ''"
+                color="primary"
+                class="button button__buynumber"
+              >+ Add new number</or-icon-button> <!--please use button and add disabled attribute for readonly mode-->
             </div>
           </div>
         </transition>
@@ -153,7 +159,6 @@
   import Promise from 'bluebird';
   import uuid from 'uuid';
   import eventHub from '../helpers/eventHub.js';
-  import { mapState } from 'vuex';
 
   import BuyModal from './buyModal.vue';
   import Groups from './groups.vue';
@@ -178,6 +183,9 @@ export default {
       default () {
         return [];
       },
+    },
+    isAdmin: {
+      type: Boolean
     },
     isKeywords: {
       type: Boolean
@@ -263,13 +271,12 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      isAdmin : ({auth}) => auth.role == 'ADMIN' ? false : true
-    }),
     availableToGroup() {
       let usedNumber = [];
       
-      if (this.localSelectedNumbers.length < 2) {
+      if (!this.isAdmin) {
+        this.createGroupWarn = 'You have no permission to create group'
+      } else if (this.localSelectedNumbers.length < 2) {
         this.createGroupWarn = 'Min two numbers needed';
         return false;
       } else if(!_.isEmpty(this.localSelectedNumbers.filter(num => !num.editable))) {
@@ -370,6 +377,7 @@ export default {
       createGroupWarn: '',
       currentShowState: this.readonly ? false : this.showAll,
       flowsList: [],
+      isAllowed: this.isAdmin,
       isData: false,
       isLoading: false,
       localGroups: this.groups,
@@ -1100,6 +1108,19 @@ export default {
 
     &.button__buynumber {
       display: inline-block;
+      width: auto;
+      height: auto;
+
+      font-family: inherit;
+
+      border-radius: 0;
+      background-color: white;
+      opacity: 1;
+
+      &.is-disabled {
+        cursor:no-drop;
+        color:#91969d;
+      }
     }
 
     &.disabled {
@@ -1131,9 +1152,7 @@ export default {
       }
     }
   }
-  .ui-alert {
-    white-space: normal;
-  }
+
   .numbers-list {
     font-size:14px;
     min-height: 30px;
@@ -1243,4 +1262,16 @@ export default {
     font-size: 15px;
   }
 }
+
+  .ui-alert {
+    white-space: normal;
+
+    p {
+      font-size: 14px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
 </style>

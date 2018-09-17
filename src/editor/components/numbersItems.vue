@@ -3,6 +3,7 @@
     <numbers-item
       v-for="number in numbers"
 
+      :isAdmin="isAdmin"
       :isLoading="isLoading"
       :key="number.name"
       :number="number"
@@ -16,6 +17,12 @@
 
   export default {
     props: {
+      isAdmin: {
+        type: Boolean,
+        default() {
+          return false
+        }
+      },
       isLoading: {
         type: Boolean,
         default() {

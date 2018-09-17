@@ -38,7 +38,7 @@
             type="indeterminate"
           ></or-progress-circular>
           
-          <div v-if="!readonly && !group.usedData.length" class="group-buttons">
+          <div v-if="!readonly && !group.usedData.length && isAdmin" class="group-buttons">
             <or-icon-button
               :tooltip="!group.editable ? 'Group is in use, not allowed to edit' : ''"
               @click.stop="editGroup"
@@ -65,6 +65,7 @@
         <item-content
           v-for="number in group.numbers"
 
+          :is-admin="isAdmin"
           :group="group"
           :key="number.id"
           :number="number"
@@ -138,6 +139,12 @@
       invalid: {
         type: Boolean,
         default: false
+      },
+      isAdmin: {
+        type: Boolean,
+        default() {
+          return false
+        }
       },
       isLoading: {
         type: Boolean,

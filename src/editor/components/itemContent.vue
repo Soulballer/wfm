@@ -16,7 +16,7 @@
       />
     </div>
 
-    <div v-if="!readonly && !group.usedData.length" class="item-buttons">
+    <div v-if="!readonly && !group.usedData.length && isAdmin" class="item-buttons">
       <or-icon-button
         :tooltip="!group.editable ? 'Group is in use, not allowed to edit' : ''"
         @click="editNumberItem"
@@ -48,6 +48,12 @@
 
   export default {
     props: {
+      isAdmin: {
+        type: Boolean,
+        default() {
+          return false
+        }
+      },
       group: {
         type: Object
       },
