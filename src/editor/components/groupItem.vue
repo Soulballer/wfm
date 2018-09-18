@@ -11,15 +11,13 @@
       <or-collapsible
         :class="{'error-class-same-name': invalid}"
         :removeIcon="true"
-        @click.stop
-        @close="changeOpenState"
-        @open="changeOpenState"
+        @click.native="changeOpenState"
       >
         <div slot="header" class="collapsible-header">
           <span class="number-disabled" v-show="inputDisabled">{{group.name}}</span>
           <input
             v-show="!inputDisabled"
-
+          
             :disabled="inputDisabled"
             :value="group.name"
             @blur="updateName"
@@ -30,6 +28,11 @@
             type="text"
           />
           <span class="visible ui-icon header-icon material-icons {currentIcon}">{{currentIcon}}</span>
+
+          <data-numbers
+            :data="group"
+            :readonly="readonly"
+          ></data-numbers>
 
           <or-progress-circular 
             v-show="isLoading"
@@ -74,10 +77,6 @@
         ></item-content>
       </or-collapsible>
 
-      <data-numbers
-        :data="group"
-        :readonly="readonly"
-      ></data-numbers>
     </div>
 
     <or-confirm
@@ -259,8 +258,8 @@
       handleNumbersList() {
         this.copyNumbers = _
           .chain(_.cloneDeep(this.allFilteredNumbers))
-          .filter(n => !n.usedData.length)
-          .map(n => ({...n, checked: false}) )
+          .filter(n => n.editable)
+          .map(n => ({...n, checked: false}))
           .value()
       },
       handleNumberRemove(number) {
@@ -373,6 +372,7 @@
       }
 
       .or-collapsible {
+        width: 100%;
         padding-left: 8px;
 
         color: black;
@@ -390,7 +390,7 @@
         }
 
         & > .body-wrapper > .body {
-          padding: 5px;
+          padding: 5px 0 5px 5px;
         }
 
         & > .header {
@@ -428,9 +428,12 @@
           }
 
           .group-buttons {
-            visibility: hidden;
+            position: absolute;
+            right: 15px;
+
             display: flex;
-            position: relative;
+
+            visibility: hidden;
             z-index: 20;
 
             .ungroup_button {

@@ -19,6 +19,7 @@
 
             @blur="updateName"
             @input="checkName"
+            @keyup.13="updateName"
             class="input-element"
             ref="name"
             type="text"

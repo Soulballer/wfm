@@ -10,7 +10,7 @@
       <span v-if="data.keywordsСollision.length > 2">and {{data.keywordsСollision.length - 2}} other</span>
     </a>
 
-    <or-popover open-on="click" trigger="trigger3" class="data-numbers--popover">
+    <or-popover open-on="hover" trigger="trigger3" class="data-numbers--popover">
       <p v-for="d in data.usedData" :key="d.botId" class="data-numbers--popover__container">
         <a :href="'/#/bots/' + d.botId" target="_blank">{{d.botName}}</a> /
         <a :href="'/#/flows/' +d.botId + '/' + d.flowId" target="_blank">{{d.flowName}}</a>

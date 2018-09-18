@@ -272,8 +272,6 @@ export default {
 
   computed: {
     availableToGroup() {
-      let usedNumber = [];
-      
       if (!this.isAdmin) {
         this.createGroupWarn = 'You have no permission to create group'
         return false;

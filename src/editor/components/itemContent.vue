@@ -1,7 +1,7 @@
 <template>
   <div class="item-content">
     <span class="item-value">{{number.value}}</span>
-    <span v-show="inputDisabled" class="number-disabled" >{{localNumber}}</span>
+    <span v-show="inputDisabled" class="item-name" >{{localNumber}}</span>
     <div>
       <input
         v-model="localNumber"
@@ -10,6 +10,7 @@
         :disabled="inputDisabled"
         @blur="updateName"
         @input="checkName"
+        @keyup.13="updateName"
         class="input-element"
         ref="name"
         type="text"
@@ -137,6 +138,7 @@
     display: flex;
     align-items: center;
     padding-right: 55px;
+    margin-right: 15px;
 
     &:hover .item-buttons {
       visibility: visible;
@@ -160,6 +162,12 @@
 
     .item-value {
       margin-right: 0.5em;
+    }
+
+    .item-name {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
 
     .item-buttons {
