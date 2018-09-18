@@ -24,6 +24,7 @@
             :value="group.name"
             @blur="updateName"
             @input="checkName"
+            @keyup.13="updateName"
             class="input-element"
             ref="name"
             type="text"
@@ -287,6 +288,7 @@
               identifier: this.group.id
             }
           })
+          .catch((e) => console.log('e',e))
           .then(() => eventHub.$emit('update numbers data'))
           .then(() => eventHub.$emit('put number to general list', number))
           .then(() => {

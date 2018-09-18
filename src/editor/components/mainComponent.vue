@@ -299,11 +299,11 @@ export default {
     },
     allFilteredGroups () {
       return _.filter(this.localGroups, group => 
-        this.isAvilableIfNotChacked(group.isSelected) && !_.isEmpty(this.groupAvailableBySearch(group)));
+        this.isAvailableIfNotChecked(group.isSelected) && !_.isEmpty(this.groupAvailableBySearch(group)));
     },
     allFilteredNumbers () {
       return _.filter(this.localNumbers, number =>
-        this.isAvilableIfNotChacked(number.checked) && this.availableBySearch(number));
+        this.isAvailableIfNotChecked(number.checked) && this.availableBySearch(number));
     },
     allNumbersSelected () {
       return  _.every(this.availableNumbers, n => n.checked) && _.every(this.availableGroups, g => g.isSelected)
@@ -343,17 +343,15 @@ export default {
     filteredByAlphabet() {
       return this.allFilteredGroups.sort((a,b) => _.toLower(a.name) > _.toLower(b.name))
     },
-    groupsSelected () {
-      return _.filter(this.groups, x => x.isSelected);
-    },
     hasDisplayText() {
       return Boolean(this.displayText.length);
     },
     hasResultsAfterFilter () {
       const availableBySearch = _.concat(_.filter(this.localNumbers, n => this.availableBySearch(n)), _.filter(this.localGroups, group => this.groupAvailableBySearch(group)));
-      const allInTheSameState = _.every(availableBySearch, n => n.checked == availableBySearch[0].checked);
+      // const allInTheSameState = _.every(availableBySearch, n => n.checked == availableBySearch[0].checked);
      
-      return !allInTheSameState;
+      // return !allInTheSameState;
+      return availableBySearch.length
     },
     selectAllButtonText () {
       return `${this.allNumbersSelected && (this.availableNumbers.length + this.availableGroups.length !== 0) ? 'Uns' : 'S'}elect all (${this.availableNumbers.length + this.availableGroups.length})`
@@ -592,7 +590,7 @@ export default {
         x.checked = false;
       });
     },
-    isAvilableIfNotChacked (condition) {
+    isAvailableIfNotChecked (condition) {
       return this.currentShowState ? true : condition
     },
     handleAddNumbersToGroup (numbers) {
@@ -845,7 +843,7 @@ export default {
       deep: true,
     },
     currentShowState () {
-      if (!this.readonly)
+      if (!this.readonly) 
         this.$emit('update:showAll', this.currentShowState);
     },
     keywords: {
