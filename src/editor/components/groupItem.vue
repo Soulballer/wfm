@@ -406,6 +406,10 @@
 
             color: inherit;
           }
+
+          .ui-ripple-ink {
+            display: none;
+          }
         }
 
         .collapsible-header {
