@@ -177,7 +177,7 @@
       currentIcon() {
         return this.open
                 ? 'keyboard_arrow_down'
-                : 'keyboard_arrow_right'
+                : 'keyboard_arrow_right'      
       },
       numbersSelectedToAdd() {
         return _.filter(this.copyNumbers, num => num.checked)
@@ -247,12 +247,10 @@
             }
           }
         )
-        .then(() => eventHub.$emit('update numbers data'))
+        //.then(() => eventHub.$emit('update numbers data'))
         // remove selected numbers from general number list
-        .then(() => {
-          eventHub.$emit('add numbers to group', this.numbersSelectedToAdd);
-          this.clearSelected();
-        });
+        .then(() => this.clearSelected())
+        .then(() => eventHub.$emit('update numbers data'));
       },
       handleNumbersList() {
         this.copyNumbers = _
@@ -262,7 +260,6 @@
           .value()
       },
       handleNumberRemove(number) {
-        console.log('handle remove', this.$flow.providersAccountId())
         // remove number from group numbers
         this.group.numbers = _.reject(this.group.numbers, number);
 

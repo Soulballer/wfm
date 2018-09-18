@@ -5,7 +5,7 @@
     :is-admin="schema.isAdmin"
     :is-keywords="schema.isKeywords"
     :keywords="schema.keywords"
-    :numbers="schema.numbers" 
+    :numbers.sync="schema.numbers" 
     :readonly="readonly"
     :selected-elem-length.sync="schema.selectedElemLength" 
     :selected-numbers.sync="schema.selectedNumbers" 

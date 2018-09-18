@@ -250,7 +250,6 @@ export default {
 
   created () {
     eventHub.$on('ungroup', this.handleUngroup);
-    eventHub.$on('add numbers to group', this.handleAddNumbersToGroup);
     eventHub.$on('put number to general list', this.putNumberToGeneralList);
     eventHub.$on('remove number from general list', this.removeNumberFromGeneralList);
     eventHub.$on('update numbers data', this.updateNumbersData);
@@ -258,7 +257,6 @@ export default {
   },
   destroyed () {
     eventHub.$off('ungroup', this.handleUngroup);
-    eventHub.$off('add numbers to group', this.handleAddNumbersToGroup);
     eventHub.$off('put number to general list', this.putNumberToGeneralList);
     eventHub.$off('remove number from general list', this.removeNumberFromGeneralList);
     eventHub.$off('update numbers data', this.updateNumbersData);
@@ -591,10 +589,6 @@ export default {
     isAvailableIfNotChecked (condition) {
       return this.currentShowState ? true : condition
     },
-    handleAddNumbersToGroup (numbers) {
-      // remove numbers added to group from general list
-      _.forEach(numbers, n => this.localNumbers = _.reject(this.localNumbers, n))
-    },
     handleUngroup (group) {
       // put group numbers back to general number list
       this.localNumbers = _.sortBy(this.localNumbers.concat(group.numbers), n => n.value)
@@ -709,7 +703,7 @@ export default {
 
           const numbersOutGroups =
             _.reject(numbers, numbersReducer)
-
+            
           const groups =
             _.map(groupsData, g => ({
               name: g.name,
@@ -729,7 +723,7 @@ export default {
           }
           if (JSON.stringify(numbersOutGroups) !== JSON.stringify(this.numbers)) {
             this.$emit('update:numbers', numbersOutGroups);
-             self.localNumbers = numbersOutGroups; // assign groups and numbers
+            self.localNumbers = numbersOutGroups; // assign groups and numbers
           }
     
           this.isData = false;
