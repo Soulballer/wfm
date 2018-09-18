@@ -247,7 +247,6 @@
             }
           }
         )
-        //.then(() => eventHub.$emit('update numbers data'))
         // remove selected numbers from general number list
         .then(() => this.clearSelected())
         .then(() => eventHub.$emit('update numbers data'));

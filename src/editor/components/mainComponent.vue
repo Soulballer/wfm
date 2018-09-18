@@ -251,14 +251,12 @@ export default {
   created () {
     eventHub.$on('ungroup', this.handleUngroup);
     eventHub.$on('put number to general list', this.putNumberToGeneralList);
-    eventHub.$on('remove number from general list', this.removeNumberFromGeneralList);
     eventHub.$on('update numbers data', this.updateNumbersData);
     eventHub.$on('buy new number', this.addNewNumber);
   },
   destroyed () {
     eventHub.$off('ungroup', this.handleUngroup);
     eventHub.$off('put number to general list', this.putNumberToGeneralList);
-    eventHub.$off('remove number from general list', this.removeNumberFromGeneralList);
     eventHub.$off('update numbers data', this.updateNumbersData);
     eventHub.$off('buy new number', this.addNewNumber);
     document.removeEventListener('click', this.onExternalClick);
@@ -602,9 +600,6 @@ export default {
     putNumberToGeneralList (number) {
       // put number back to general list from group list
       this.localNumbers = _.sortBy(this.localNumbers.concat(number), n => n.value)
-    },
-    removeNumberFromGeneralList (number) {
-      this.localNumbers = _.reject(this.localNumbers, number);
     },
     removeSelection (optionName) {
       this.localSelectedNumbers = _.forEach(this.localSelectedNumbers, number => {

@@ -59,7 +59,7 @@
     </or-checkbox>
 
     <or-confirm
-      :close-on-confirm="true"
+      :close-on-confirm="removeProgress"
       :loading="removeProgress"
       @confirm="handleRemove"
       confirmButtonText="Yes, release"
@@ -152,9 +152,8 @@
         .then(() => eventHub.$emit('update numbers data'))
         .then(() => {
           this.removeProgress = false;
-          return eventHub.$emit('remove number from general list', this.number)
         })
-        .catch((e) => {
+        .catch(() => {
           this.removeProgress = false;
         });
       },
