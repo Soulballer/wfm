@@ -164,14 +164,10 @@
     components: { DataNumbers, ItemContent },
 
     created () {
-      eventHub.$on('remove number from group', this.handleNumberRemove)
-      eventHub.$on('add numbers to group', this.clearSelected);
-      eventHub.$on('open modal add to group', this.handleNumbersList);
+      eventHub.$on(`remove number from group/${this.group.id}`, this.handleNumberRemove)
     },
     destroyed () {
-      eventHub.$off('remove number from group', this.handleNumberRemove);
-      eventHub.$off('add numbers to group', this.clearSelected);
-      eventHub.$off('open modal add to group', this.handleNumbersList);
+      eventHub.$off(`remove number from group/${this.group.id}`, this.handleNumberRemove);
     },
 
     computed: {
@@ -203,7 +199,7 @@
         if (!this.group.editable) return
 
         this.$refs.confirmAddNumber.open();
-        eventHub.$emit('open modal add to group');
+        this.handleNumbersList()
       },
       buyNewNumbers() {
         this.$refs.confirmAddNumber.close();
@@ -253,7 +249,10 @@
         )
         .then(() => eventHub.$emit('update numbers data'))
         // remove selected numbers from general number list
-        .then(() => eventHub.$emit('add numbers to group', this.numbersSelectedToAdd));
+        .then(() => {
+          eventHub.$emit('add numbers to group', this.numbersSelectedToAdd);
+          this.clearSelected();
+        });
       },
       handleNumbersList() {
         this.copyNumbers = _
@@ -263,6 +262,7 @@
           .value()
       },
       handleNumberRemove(number) {
+        console.log('handle remove', this.$flow.providersAccountId())
         // remove number from group numbers
         this.group.numbers = _.reject(this.group.numbers, number);
 

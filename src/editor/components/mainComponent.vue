@@ -378,10 +378,10 @@ export default {
       isAllowed: this.isAdmin,
       isData: false,
       isLoading: false,
-      localGroups: this.groups,
-      localSelectedGroups: this.selectedGroups,
+      localGroups: _.clone(this.groups),
+      localSelectedGroups: _.clone(this.selectedGroups),
       localNumbers: _.clone(this.numbers),
-      localSelectedNumbers: this.selectedNumbers,
+      localSelectedNumbers: _.clone(this.selectedNumbers),
       searchValue: '',
       showDropdown: false
     }
@@ -656,7 +656,7 @@ export default {
     closeDropdown() {
       this.showDropdown = false;
     },
-    updateNumbersData () {
+    updateNumbersData() {
       this.isData = true;
       this.isLoading = true;
 

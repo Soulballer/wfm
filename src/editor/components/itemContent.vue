@@ -90,7 +90,7 @@
         }
       },
       handleRemove() {
-        eventHub.$emit('remove number from group', this.number);
+        eventHub.$emit(`remove number from group/${this.group.id}`, this.number);
       },
       removeNumberItem() {
         //eventHub.$set(eventHub.store, 'deleteNumberModal', {number: this.number, group: this.group});
