@@ -285,7 +285,6 @@
           })
           .catch((e) => console.log('e',e))
           .then(() => eventHub.$emit('update numbers data'))
-          .then(() => eventHub.$emit('put number to general list', number))
           .then(() => {
             if (_.size(this.group.numbers) < 2) {
               this.handleUngroup(this.group);
@@ -311,7 +310,6 @@
           }
         )
         .then(() => eventHub.$emit('update numbers data'))
-        .then(() => eventHub.$emit('ungroup', this.group))
       },
       openUngroupConfirm() {
         if (!this.group.editable) return 

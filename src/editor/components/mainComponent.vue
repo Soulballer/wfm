@@ -249,14 +249,10 @@ export default {
   components : { BuyModal, Groups, NumbersItems },
 
   created () {
-    eventHub.$on('ungroup', this.handleUngroup);
-    eventHub.$on('put number to general list', this.putNumberToGeneralList);
     eventHub.$on('update numbers data', this.updateNumbersData);
     eventHub.$on('buy new number', this.addNewNumber);
   },
   destroyed () {
-    eventHub.$off('ungroup', this.handleUngroup);
-    eventHub.$off('put number to general list', this.putNumberToGeneralList);
     eventHub.$off('update numbers data', this.updateNumbersData);
     eventHub.$off('buy new number', this.addNewNumber);
     document.removeEventListener('click', this.onExternalClick);
@@ -587,19 +583,9 @@ export default {
     isAvailableIfNotChecked (condition) {
       return this.currentShowState ? true : condition
     },
-    handleUngroup (group) {
-      // put group numbers back to general number list
-      this.localNumbers = _.sortBy(this.localNumbers.concat(group.numbers), n => n.value)
-      // remove group from groups list
-      this.localGroups = _.reject(this.localGroups, group)
-    },
     numbersTotalBy (f) {
       if (!f) return this.localNumbers.length;
       return _.filter(this.localNumbers, f).length;
-    },
-    putNumberToGeneralList (number) {
-      // put number back to general list from group list
-      this.localNumbers = _.sortBy(this.localNumbers.concat(number), n => n.value)
     },
     removeSelection (optionName) {
       this.localSelectedNumbers = _.forEach(this.localSelectedNumbers, number => {
