@@ -25,7 +25,7 @@
       <div     
         @keydown.enter.prevent="openDropdown"
       >
-        <div class="ui-select__display" @click="toggleDropdown" :class="{'error-class-same-name': !localSelectedNumbers.length && !localSelectedGroups.length}">
+        <div class="ui-select__display" @click="toggleDropdown" :class="{'no-numbers-selected': !localSelectedNumbers.length && !localSelectedGroups.length && !isNew}">
           <div
             class="ui-select__display-value"
             :class="{ 'is-placeholder': !hasDisplayText }"
@@ -190,6 +190,9 @@ export default {
     isKeywords: {
       type: Boolean
     },
+    isNew: {
+      type: Boolean
+    },
     keywords: {
       type: Array
     },
@@ -338,9 +341,7 @@ export default {
     },
     hasResultsAfterFilter () {
       const availableBySearch = _.concat(_.filter(this.localNumbers, n => this.availableBySearch(n)), _.filter(this.localGroups, group => this.groupAvailableBySearch(group)));
-      // const allInTheSameState = _.every(availableBySearch, n => n.checked == availableBySearch[0].checked);
-     
-      // return !allInTheSameState;
+
       return availableBySearch.length
     },
     selectAllButtonText () {
@@ -782,6 +783,8 @@ export default {
   },
   watch: {
     allLocalCheckedNumbers() {
+      if (_.isEmpty(this.allLocalCheckedNumbers)) this.currentShowState = true;
+
       this.allCheckedNumbers = this.allLocalCheckedNumbers;
       this.$emit('update:allCheckedNumbers', this.allLocalCheckedNumbers);
     },
@@ -830,9 +833,7 @@ export default {
         this.updataKeywordsСollisionData();
       }
     }
-  },
-
-
+  }
 };
 </script>
 
@@ -1235,6 +1236,22 @@ export default {
     font-size: 15px;
   }
 }
+  .no-numbers-selected {
+    position: relative;
+
+    border: 1px solid #f95d5d;
+
+    &:after {
+      content: "No number or group selected";
+
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+
+      color: #f95d5d;
+      font-size: 12px;
+    }
+  }
 
   .ui-alert {
     white-space: normal;

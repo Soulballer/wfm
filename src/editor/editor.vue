@@ -4,6 +4,7 @@
     :groups.sync="schema.groups"
     :is-admin="schema.isAdmin"
     :is-keywords="schema.isKeywords"
+    :is-new="isNew"
     :keywords="schema.keywords"
     :numbers.sync="schema.numbers" 
     :readonly="readonly"
