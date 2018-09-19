@@ -1,31 +1,37 @@
 <template>
-  <main-component 
-    :all-checked-numbers.sync="schema.allCheckedNumbers"
-    :groups.sync="schema.groups"
-    :is-admin="schema.isAdmin"
-    :is-keywords="schema.isKeywords"
-    :is-new="isNew"
-    :keywords="schema.keywords"
-    :numbers.sync="schema.numbers" 
-    :readonly="readonly"
-    :selected-elem-length.sync="schema.selectedElemLength" 
-    :selected-numbers.sync="schema.selectedNumbers" 
-    :selected-groups.sync="schema.selectedGroups">
-  </main-component>
+  <div>
+    <main-component 
+      :all-checked-numbers.sync="schema.allCheckedNumbers"
+      :groups.sync="schema.groups"
+      :is-admin="schema.isAdmin"
+      :is-keywords="schema.isKeywords"
+      :is-new="isNew"
+      :keywords="schema.keywords"
+      :numbers.sync="schema.numbers" 
+      :readonly="readonly"
+      :selected-elem-length.sync="schema.selectedElemLength" 
+      :selected-numbers.sync="schema.selectedNumbers" 
+      :selected-groups.sync="schema.selectedGroups">
+    </main-component>
+
+    <popups>
+    </popups>
+  </div>
 </template>
 
 <script>
-  import {validators} from '_validators';
+  import { validators } from '_validators';
   import { mapState } from 'vuex';
 
   import MainComponent from './components/mainComponent.vue';
+  import Popups from './components/popups.vue';
 
   const {required, jsExpressionNonEmptyString, generateValidators} = validators;
   
 
   export default {
     props      : ['isNew', 'readonly', 'schema', 'step', 'stepId', 'steps', 'template'],
-    components : { MainComponent },
+    components : { MainComponent, Popups },
 
     created() {
       this.schema.isNew = this.isNew;

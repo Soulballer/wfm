@@ -93,8 +93,10 @@
         eventHub.$emit(`remove number from group/${this.group.id}`, this.number);
       },
       removeNumberItem() {
-        //eventHub.$set(eventHub.store, 'deleteNumberModal', {number: this.number, group: this.group});
-        if (this.group.editable) this.$refs.confirmRemove.open();
+        console.log('for safari')
+        eventHub.$set(eventHub.store, 'deleteNumberModal', {number: this.number, group: this.group});
+        eventHub.$emit('popup open')
+        //if (this.group.editable) this.$refs.confirmRemove.open();
       },
       updateName() {
         this.inputDisabled = true;
