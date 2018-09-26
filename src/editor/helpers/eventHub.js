@@ -7,7 +7,6 @@ export default new Vue({
   watch: {
     'store.entities' : {
       handler(value) {
-        console.log("!!!!entities!!!!")
         this.$emit('entities-change', value);
       },
       deep: true

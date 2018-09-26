@@ -14,8 +14,7 @@
       :selected-groups.sync="schema.selectedGroups">
     </main-component>
 
-    <popups>
-    </popups>
+  
   </div>
 </template>
 
@@ -24,14 +23,14 @@
   import { mapState } from 'vuex';
 
   import MainComponent from './components/mainComponent.vue';
-  import Popups from './components/popups.vue';
+  //import Popups from './components/popups.vue';
 
   const {required, jsExpressionNonEmptyString, generateValidators} = validators;
   
 
   export default {
     props      : ['isNew', 'readonly', 'schema', 'step', 'stepId', 'steps', 'template'],
-    components : { MainComponent, Popups },
+    components : { MainComponent },
 
     created() {
       this.schema.isNew = this.isNew;

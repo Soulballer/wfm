@@ -152,6 +152,8 @@
       ></buy-modal>
     </div>
 
+        <popups>
+    </popups>
   </div>
 </template>
 
@@ -162,6 +164,7 @@
 
   import BuyModal from './buyModal.vue';
   import Groups from './groups.vue';
+  import Popups from './popups.vue';
   import NumbersItems from './numbersItems.vue';
 
 export default {
@@ -249,7 +252,7 @@ export default {
       }
     }
   },
-  components : { BuyModal, Groups, NumbersItems },
+  components : { BuyModal, Groups, NumbersItems , Popups},
 
   created () {
     eventHub.$on('update numbers data', this.updateNumbersData);

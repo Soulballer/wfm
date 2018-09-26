@@ -16,7 +16,6 @@
   import eventHub from '../helpers/eventHub.js';
 
   export default {
-    name: 'NumbersToBuyItem',
     props: {
       buyList: {
         type: Array,

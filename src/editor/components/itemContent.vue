@@ -31,16 +31,6 @@
         type="flat"
       ></or-icon-button>
     </div>
-
-    <or-confirm
-      :contain-focus="false"
-      @confirm="handleRemove"
-      confirmButtonText="Move"
-      ref="confirmRemove"
-      title="Move"
-    >
-      Move <b>{{number.value}}</b> from <b>{{group.name}}</b> to the global list?
-    </or-confirm>
   </div>
 </template>
 
@@ -93,10 +83,8 @@
         eventHub.$emit(`remove number from group/${this.group.id}`, this.number);
       },
       removeNumberItem() {
-        console.log('for safari')
-        eventHub.$set(eventHub.store, 'deleteNumberModal', {number: this.number, group: this.group});
-        eventHub.$emit('popup open')
-        //if (this.group.editable) this.$refs.confirmRemove.open();
+        eventHub.$set(eventHub.store, 'deleteNumberFromGroup', {number: this.number, group: this.group});
+        eventHub.$emit('remove number from group popup');
       },
       updateName() {
         this.inputDisabled = true;

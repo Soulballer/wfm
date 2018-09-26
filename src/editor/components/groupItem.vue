@@ -79,48 +79,6 @@
 
     </div>
 
-    <or-confirm
-      :contain-focus="false"
-      @confirm="handleUngroup"
-      class="ungroup-modal"
-      confirmButtonText="Save"
-      ref="confirmUngroup"
-      title="Split"
-    >
-      Split <b>{{group.name}}</b> (move {{group.numbers.length}} phone numbers to the global list)?
-    </or-confirm>
-
-    <or-confirm
-      :contain-focus="false"
-      @confirm="handleAddNumber"
-      class="addnumber-modal"
-      confirmButtonText="Add"
-      ref="confirmAddNumber"
-      title="Add numbers"
-    >
-      <div v-if="copyNumbers.length">
-        <or-checkbox
-          :value="allNumbersSelected"
-          @change="selectAll"
-          class="select-all-button"
-        >
-          {{selectAllButtonText}}
-        </or-checkbox>
-        <or-checkbox
-          v-for="number in copyNumbers"
-          v-model="number.checked"
-
-          :key="number.id"
-        >
-          <span class="item-value">{{number.value}} {{number.name}}</span>
-        </or-checkbox>
-      </div>
-      <div v-else>
-        All your available numbers are already in the groups.<br>
-        You can <a @click="buyNewNumbers" class="button">buy new numbers</a> or split one of your existing groups.
-      </div>
-    </or-confirm>
-
   </div>  
 </template>
 
@@ -171,24 +129,14 @@
     },
 
     computed: {
-      allNumbersSelected() {
-        return _.every(this.copyNumbers, n => n.checked);
-      },
       currentIcon() {
         return this.open
-                ? 'keyboard_arrow_down'
-                : 'keyboard_arrow_right'      
-      },
-      numbersSelectedToAdd() {
-        return _.filter(this.copyNumbers, num => num.checked)
-      },
-      selectAllButtonText () {
-        return `${this.allNumbersSelected ? 'Uns' : 'S'}elect all (${this.copyNumbers.length})`
-      },
+          ? 'keyboard_arrow_down'
+          : 'keyboard_arrow_right'      
+      }
     },
     data() {
       return {
-        copyNumbers: [],
         errorClass: false,
         inputDisabled: true,
         open: false
@@ -198,15 +146,8 @@
       addToGroup() {
         if (!this.group.editable) return
 
-        this.$refs.confirmAddNumber.open();
-        this.handleNumbersList()
-      },
-      buyNewNumbers() {
-        this.$refs.confirmAddNumber.close();
-        eventHub.$emit('buy new number')
-      },
-      clearSelected() {
-        _.forEach(this.copyNumbers, n => n.checked = false);
+        eventHub.$set(eventHub.store, 'addNumbersData', { ...this.allFilteredNumbers, group: this.group});
+        eventHub.$emit('add number to group');
       },
       changeOpenState() {
         this.open = !this.open
@@ -219,44 +160,6 @@
 
         this.inputDisabled = false;
         this.$nextTick(() => this.$refs.name.focus());
-      },
-      handleAddNumber() {
-        const {id} = this.group;
-
-        // set group id to selected numbers
-        _.forEach(this.numbersSelectedToAdd, n => _.set(n, 'group', id))
-
-        // add selected numbers to group numbers
-        this.group.numbers = _.concat(this.group.numbers, this.numbersSelectedToAdd)
-
-        this.$http.put(
-          this.$flow.gatewayUrl('identifiers-group', this.$flow.providersAccountId()),
-          {
-            channel: 'text',
-            group: {
-              // array of number IDs
-              numbers: _.map(this.group.numbers, `value`)
-            }
-          },
-          {
-            headers: {
-              Authorization: `USER ${this.$settings.token}`,
-            },
-            params: {
-              identifier: this.group.id,
-            }
-          }
-        )
-        // remove selected numbers from general number list
-        .then(() => this.clearSelected())
-        .then(() => eventHub.$emit('update numbers data'));
-      },
-      handleNumbersList() {
-        this.copyNumbers = _
-          .chain(_.cloneDeep(this.allFilteredNumbers))
-          .filter(n => n.editable)
-          .map(n => ({...n, checked: false}))
-          .value()
       },
       handleNumberRemove(number) {
         // remove number from group numbers
@@ -282,44 +185,21 @@
             params: {
               identifier: this.group.id
             }
-          })
-          .catch((e) => console.log('e',e))
-          .then(() => eventHub.$emit('update numbers data'))
-          .then(() => {
-            if (_.size(this.group.numbers) < 2) {
-              this.handleUngroup(this.group);
-            }
-          });
-      },
-      handleUngroup() {
-        const {numbers} = this.group
-
-        // remove group ID from numbers
-        _.forEach(numbers, x => _.set(x, 'group', undefined))
-
-        this.$http.delete(
-          this.$flow.gatewayUrl('identifiers-group', this.$flow.providersAccountId()),
-          {
-            headers: {
-              Authorization: `USER ${this.$settings.token}`
-            },
-            params: {
-              group: this.group.id,
-              channel: 'text'
-            }
           }
         )
+        .catch((e) => console.log('e',e))
         .then(() => eventHub.$emit('update numbers data'))
+        .then(() => {
+          if (_.size(this.group.numbers) < 2) {
+            this.handleUngroup(this.group);
+          }
+        });
       },
       openUngroupConfirm() {
         if (!this.group.editable) return 
 
-        this.$refs.confirmUngroup.open();
-      },
-      selectAll() {
-        const condition = _.every(this.copyNumbers, n => n.checked);
-
-        _.forEach(this.copyNumbers, n => { n.checked = !condition })
+        eventHub.$set(eventHub.store, 'splitGroupData', { ...this.group });
+        eventHub.$emit('split group');
       },
       updateName() {
         this.inputDisabled = true;
@@ -457,26 +337,6 @@
 
     &.unabled .ui-checkbox.is-disabled .ui-checkbox__checkmark {
       display: block;
-    }
-
-    .addnumber-modal {
-      .item-value {
-        color: black;
-      }
-
-      .ui-modal .ui-modal__container > .ui-modal__body {
-        padding: 16px 24px;
-
-        .button {
-          padding: 0;
-          
-          font-size: 15px;
-
-          &:hover {
-            color: #0594ed;
-          }
-        }
-      }
     }
   }
 </style>
