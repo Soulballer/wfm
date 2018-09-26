@@ -43,13 +43,31 @@
 
           :key="number.id"
         >
-          <span>{{number.value}} {{number.name}}</span>
+          <span class="item-value">{{number.value}} {{number.name}}</span>
         </or-checkbox>
       </div>
       <div v-else>
         All your available numbers are already in the groups.<br>
         You can <a @click="buyNewNumbers" class="button">buy new numbers</a> or split one of your existing groups.
       </div>
+    </or-confirm>
+
+    <or-confirm
+      :close-on-confirm="removeProgress"
+      :loading="removeProgress"
+      @confirm="handleRemoveNumber"
+      class="remove-modal"
+      confirmButtonText="Yes, release"
+      denyButtonText="Keep number"
+      ref="confirmRemove"
+      title=""
+      type="success"
+    >
+      <h4>Remove {{numberToRemove.value}} </h4>
+
+      <p>You may have flows subscribed to this number.</p>
+      <p>If the number is released, your flows will still be active but will not respond to this number.</p>
+      <p>Are you sure you want to release <b>{{numberToRemove.value}}</b>?</p>
     </or-confirm>
 
   </div>
@@ -67,11 +85,13 @@
     },
     created() {
       eventHub.$on('add number to group', this.addNumberToGroup);
+      eventHub.$on('remove number from account', this.removeNumber);
       eventHub.$on('remove number from group popup', this.removeNumberFromGroup);
       eventHub.$on('split group', this.splitGroup);
     },
     destroyed () {
       eventHub.$off('add number to group', this.addNumberToGroup)
+      eventHub.$off('remove number from account', this.removeNumber);
       eventHub.$off('remove number from group popup', this.removeNumberFromGroup);
       eventHub.$off('split group', this.splitGroup);
     },
@@ -95,6 +115,9 @@
       numbersSelectedToAdd() {
         return _.filter(this.copyNumbers, num => num.checked)
       },
+      numberToRemove() {
+       return eventHub.store.numberToRemove ? eventHub.store.numberToRemove : {value : ''};
+      },
       selectAllButtonText () {
         return `${this.allNumbersSelected ? 'Uns' : 'S'}elect all (${this.copyNumbers.length})`
       },
@@ -104,7 +127,8 @@
     },
     data() {
       return {
-        copyNumbers: []
+        copyNumbers: [],
+        removeProgress: false
       }
     },
     methods: {
@@ -156,10 +180,32 @@
           .filter(n => n.editable && n.value)
           .map(n => ({...n, checked: false}))
           .value()
-        console.log(this.copyNumbers)
       },
       handleRemove() {
         eventHub.$emit(`remove number from group/${this.group.id}`, this.number);
+      },
+      handleRemoveNumber() {
+        this.removeProgress = true;
+
+        this.$http.delete(  
+          this.$flow.gatewayUrl('identifiers',
+          this.$flow.providersAccountId()),
+          {
+            headers: {
+              Authorization: `USER ${this.$settings.token}`
+            },
+            params: {
+              identifier: this.numberToRemove.value
+            }
+          }
+        )
+        .then(() => eventHub.$emit('update numbers data'))
+        .then(() => {
+          this.removeProgress = false;
+        })
+        .catch(() => {
+          this.removeProgress = false;
+        });
       },
       handleUngroup() {
         const { numbers } = this.splitGroupData
@@ -181,6 +227,9 @@
         )
         .then(() => eventHub.$emit('update numbers data'))
       },
+      removeNumber() {
+        this.$refs.confirmRemove.open();
+      },
       removeNumberFromGroup() {
         this.$refs.confirmRemove.open();
       },
@@ -197,9 +246,75 @@
 </script>
 
 <style lang="scss" scoped>
+  .remove-modal {
+    .ui-modal {
+      &__header {
+        display: none;
+      }
+
+      &__body {
+        padding: 0 !important;
+
+        h4 {
+          margin-bottom: 45px;
+          padding: 12px 22px;
+
+          color: white;
+          
+          background-color:#F35958;
+        }
+        
+        p {
+          padding: 0 22px;
+
+          &:last-child {
+            margin-bottom: 130px;
+          }
+        }
+      }
+    
+
+      &__footer {
+        button.ui-button.ui-button--type-secondary.ui-button--color-primary {
+          color: white;
+
+          border-color: #F35958;
+          background-color: #F35958;
+
+          &:hover {
+            border-color: #A35958;
+            background-color: #A35958;
+          }
+        }
+      }
+    }
+  }
+
   .addnumber-modal {
     .item-value {
       color: black;
+      font-weight: normal;
+    }
+
+    .ui-checkbox {
+      .ui-checkbox__label-text {
+        color: black;
+        font-weight: normal;
+      }
+
+      .ui-checkbox {
+        &__checkmark {
+          &:before {
+            background-color: #f7f7f7 !important;
+            border: 1px solid #c7c7c7;
+          }
+          &:after {
+            border-color: #132530 !important;
+            border-right-color: #132530;
+            border-bottom-color: #132530;
+          }
+        }
+      }
     }
 
     .ui-modal .ui-modal__container > .ui-modal__body {

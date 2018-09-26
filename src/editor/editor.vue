@@ -13,8 +13,6 @@
       :selected-numbers.sync="schema.selectedNumbers" 
       :selected-groups.sync="schema.selectedGroups">
     </main-component>
-
-  
   </div>
 </template>
 
@@ -23,7 +21,6 @@
   import { mapState } from 'vuex';
 
   import MainComponent from './components/mainComponent.vue';
-  //import Popups from './components/popups.vue';
 
   const {required, jsExpressionNonEmptyString, generateValidators} = validators;
   

@@ -58,23 +58,6 @@
       </div>
     </or-checkbox>
 
-    <or-confirm
-      :close-on-confirm="removeProgress"
-      :loading="removeProgress"
-      @confirm="handleRemove"
-      confirmButtonText="Yes, release"
-      denyButtonText="Keep number"
-      ref="confirmRemove"
-      title=""
-      type="success"
-    >
-      <h4>Remove {{number.value}} </h4>
-
-      <p>You may have flows subscribed to this number.</p>
-      <p>If the number is released, your flows will still be active but will not respond to this number.</p>
-      <p>Are you sure you want to release <b>{{number.value}}</b>?</p>
-    </or-confirm>
-
   </div>
 </template>
 
@@ -122,8 +105,7 @@
     data() {
       return {
         errorClass: false,
-        inputDisabled: true,
-        removeProgress: false
+        inputDisabled: true
       }
     },
     methods: {
@@ -134,31 +116,9 @@
         this.inputDisabled = false;
         this.$nextTick(() => this.$refs.name.focus());
       },
-      handleRemove() {
-        this.removeProgress = true;
-
-        this.$http.delete(  
-          this.$flow.gatewayUrl('identifiers',
-          this.$flow.providersAccountId()),
-          {
-            headers: {
-              Authorization: `USER ${this.$settings.token}`
-            },
-            params: {
-              identifier: this.number.value
-            }
-          }
-        )
-        .then(() => eventHub.$emit('update numbers data'))
-        .then(() => {
-          this.removeProgress = false;
-        })
-        .catch(() => {
-          this.removeProgress = false;
-        });
-      },
       removeNumberItem() {
-        this.$refs.confirmRemove.open();
+        eventHub.$set(eventHub.store, 'numberToRemove', { ...this.number });
+        eventHub.$emit('remove number from account');
       },
       updateName() {
         this.inputDisabled = true;
@@ -262,47 +222,6 @@
       .ui-icon-button {
         height: 25px !important;
         width: 25px !important;
-      }
-    }
-
-    .ui-modal {
-      &__header {
-        display: none;
-      }
-
-      &__body {
-        padding: 0 !important;
-
-        h4 {
-          margin-bottom: 45px;
-          padding: 12px 22px;
-
-          color: white;
-          
-          background-color:#F35958;
-        }
-        
-        p {
-          padding: 0 22px;
-
-          &:last-child {
-            margin-bottom: 130px;
-          }
-        }
-      }
-
-      &__footer {
-        button.ui-button.ui-button--type-secondary.ui-button--color-primary {
-          color: white;
-
-          border-color: #F35958;
-          background-color: #F35958;
-
-          &:hover {
-            border-color: #A35958;
-            background-color: #A35958;
-          }
-        }
       }
     }
   }
