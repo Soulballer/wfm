@@ -786,7 +786,7 @@ export default {
   },
   watch: {
     allLocalCheckedNumbers() {
-      if (_.isEmpty(this.allLocalCheckedNumbers)) this.currentShowState = true;
+      if (_.isEmpty(this.allLocalCheckedNumbers) && !this.readonly) this.currentShowState = true;
 
       this.allCheckedNumbers = this.allLocalCheckedNumbers;
       this.$emit('update:allCheckedNumbers', this.allLocalCheckedNumbers);
