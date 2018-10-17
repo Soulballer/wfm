@@ -43,9 +43,11 @@
         eventHub.$emit('buyList:update', []);
       },
       updateBuyList(event) {
-        eventHub.$emit('buyList:update',
-        event ? _.concat(this.buyList, this.number)
-              : _.reject(this.buyList, this.number))
+        if (event) {
+          eventHub.$emit('buyList:update', _.concat(this.buyList, this.number))
+        } else {
+          _.delay(() => eventHub.$emit('buyList:update', _.reject(this.buyList, this.number)), 250);
+        }
       }
     }
   }

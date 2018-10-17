@@ -202,6 +202,7 @@
         .then(() => eventHub.$emit('update numbers data'))
         .then(() => {
           this.removeProgress = false;
+          this.$refs.confirmRemove.close();
         })
         .catch(() => {
           this.removeProgress = false;

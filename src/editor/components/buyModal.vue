@@ -22,7 +22,7 @@
 
             :key="number.id"
           >
-            {{number.value}} <span>{{number.state}}</span>
+            <span>{{number.value}}</span><span>{{number.state}}</span>
           </li>
         </ul>
       </div>
@@ -30,7 +30,7 @@
 
     <div class="buy-modal-right">
       <div class="buy-modal-right__header">
-        <p>Buy a numbers</p><p>in <b>{{selectedState.name === 'All' ? 'All states' : selectedState.name}}</b></p>
+        <p>Buy numbers</p><p>in <b>{{selectedState.name === 'All' ? 'All states' : selectedState.name}}</b></p>
       </div>
       
       <or-alert 
@@ -101,7 +101,7 @@
                 :id="`${key + 1}button`"
                 :key="key"
                 @click="changePageNumber"
-                color="deafult"
+                color="default"
                 type="secondary"
               >{{key + 1}}
               </or-button>
@@ -173,9 +173,12 @@
             ? `selected (${this.buyList.length})`
             : 'all'}`;
       },
+      buyListFiltered() {
+        return _.filter(this.buyList, n => this.availableBySearch(n));
+      },
       filteredNumbers() {
         return this.showSelected
-          ? this.buyList
+          ? this.buyListFiltered
           : this.allFilteredNumbers
       },
       hasItemsInBuyList() {
@@ -303,9 +306,7 @@
         )
         .then(response => response.json())
         .then(num => {
-          this.numbersAvailableToBuy = this.selectedState.name === 'All' ? 
-            num.map(n => ({...n, region: this.getState(n.phoneNumber)})) : 
-            num.map(n => ({...n, region: ''}));
+          this.numbersAvailableToBuy = num.map(n => ({...n, region: this.getState(n.phoneNumber)}));
           this.isLoading = false;
         });
       },
@@ -388,7 +389,8 @@
 
               span {
                 display: inline-block;
-                margin-left: 20px;
+                width: 100px;
+                margin-right: 20px;
 
                 color: #868B93;
               }
